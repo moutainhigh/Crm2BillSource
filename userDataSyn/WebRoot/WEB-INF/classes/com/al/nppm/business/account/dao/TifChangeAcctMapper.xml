@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.al.nppm.business.account.dao.TifChangeAcctMapper" >
+
+  <insert id="insertTifChangeAcct" parameterType="map" >
+    insert into tif_change_acct
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="areaCode != null" >
+        AREA_CODE,
+      </if>
+      <if test="serialnumber != null" >
+        SERIALNUMBER,
+      </if>
+      <if test="servId != null" >
+        SERV_ID,
+      </if>
+      <if test="orgAcctId != null" >
+        ORG_ACCT_ID,
+      </if>
+      <if test="dstAcctId != null" >
+        DST_ACCT_ID,
+      </if>
+      <if test="inputDate != null" >
+        INPUT_DATE,
+      </if>
+      <if test="procDate != null" >
+        PROC_DATE,
+      </if>
+      <if test="state != null" >
+        STATE,
+      </if>
+      <if test="notes != null" >
+        NOTES,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="areaCode != null" >
+        #{areaCode,jdbcType=VARCHAR},
+      </if>
+      <if test="serialnumber != null" >
+        #{serialnumber,jdbcType=VARCHAR},
+      </if>
+      <if test="servId != null" >
+        #{servId,jdbcType=BIGINT},
+      </if>
+      <if test="orgAcctId != null" >
+        #{orgAcctId,jdbcType=BIGINT},
+      </if>
+      <if test="dstAcctId != null" >
+        #{dstAcctId,jdbcType=BIGINT},
+      </if>
+      <if test="inputDate != null" >
+        #{inputDate,jdbcType=DATE},
+      </if>
+      <if test="procDate != null" >
+        #{procDate,jdbcType=DATE},
+      </if>
+      <if test="state != null" >
+        #{state,jdbcType=CHAR},
+      </if>
+      <if test="notes != null" >
+        #{notes,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+ <insert id="insertTifOcsChangeAcct" parameterType="map" >
+    insert into tif_ocs_change_acct
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="areaCode != null" >
+        AREA_CODE,
+      </if>
+      <if test="serialnumber != null" >
+        SERIALNUMBER,
+      </if>
+      <if test="servId != null" >
+        SERV_ID,
+      </if>
+      <if test="orgAcctId != null" >
+        ORG_ACCT_ID,
+      </if>
+      <if test="dstAcctId != null" >
+        DST_ACCT_ID,
+      </if>
+      <if test="inputDate != null" >
+        INPUT_DATE,
+      </if>
+      <if test="procDate != null" >
+        PROC_DATE,
+      </if>
+      <if test="state != null" >
+        STATE,
+      </if>
+      <if test="notes != null" >
+        NOTES,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="areaCode != null" >
+        #{areaCode,jdbcType=VARCHAR},
+      </if>
+      <if test="serialnumber != null" >
+        #{serialnumber,jdbcType=VARCHAR},
+      </if>
+      <if test="servId != null" >
+        #{servId,jdbcType=BIGINT},
+      </if>
+      <if test="orgAcctId != null" >
+        #{orgAcctId,jdbcType=BIGINT},
+      </if>
+      <if test="dstAcctId != null" >
+        #{dstAcctId,jdbcType=BIGINT},
+      </if>
+      <if test="inputDate != null" >
+        #{inputDate,jdbcType=DATE},
+      </if>
+      <if test="procDate != null" >
+        #{procDate,jdbcType=DATE},
+      </if>
+      <if test="state != null" >
+        #{state,jdbcType=CHAR},
+      </if>
+      <if test="notes != null" >
+        #{notes,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+</mapper>

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.al.nppm.business.account.dao.TifTaskMapper" >
+
+<select id="getTifTaskCfgList"  parameterType="java.util.HashMap" resultType="map">
+select TASK_ID taskId,SERVER_IP serverIp,JOB_NAME jobName,TARGETOBJECT targetobject,TARGETMETHOD targetmethod,
+ARGUMENTS arguments,CRON_EXPRESSION cronExpression,IS_EFFECT isEffect,IS_START isStart,TASK_DESCRIBE taskDescribe,
+UPDATE_BY updateBy,UPDATE_DATE updateDate
+	from tif_task_cfg where 1=1	 
+
+	<if test="SERVER_IP != null and  SERVER_IP !='' ">
+		AND SERVER_IP=#{SERVER_IP,jdbcType=VARCHAR} 
+	</if>
+	<choose>
+    	<when test="TASK_ID != null and  TASK_ID.indexOf(',')>=0 ">
+			and TASK_ID in (${TASK_ID})
+		</when>
+		<when test="TASK_ID != null and  TASK_ID !='' ">
+			AND TASK_ID=#{TASK_ID,jdbcType=VARCHAR} 
+		</when>
+		
+	</choose>		 
+		  
+</select>
+
+ 
+  
+</mapper>
