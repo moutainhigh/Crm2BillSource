@@ -57,8 +57,8 @@ public interface IAccountMapper {
 	public int insertExtAcct(Map map);
 	public int updateExtAcct(Map map);
 	
-	public int getAccountById(long accountId);
-	public List<Map<String,Object>> getPaymentPlanByID(long paymentPlanId);
+	public int getAccountById(Map ma);
+	public List<Map<String,Object>> getPaymentPlanByID(Map map);
 	public List<Map<String,Object>> getAccout(long acctId);
 	public List<Map<String,Object>> getAccoutFromProdInstId(Map map);
 	public List<Map<String,Object>> getAccoutForAccNum(long acctId);
@@ -154,6 +154,8 @@ public interface IAccountMapper {
 	public int insertTaxPayer1(Map map);
 	public long getCountTaxPayer(Map map);
 	public int updateTaxPayer1(Map map);
+	public Map getTaxPayerInfo(Map map);
+
 
 	
 

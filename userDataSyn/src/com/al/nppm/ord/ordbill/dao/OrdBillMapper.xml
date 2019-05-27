@@ -765,6 +765,14 @@ select
 	<!-- and ARCH_GRP_ID =360000127050 -->
     ORDER BY FINISH_DATE, ARCH_GRP_ID limit 0, 200
   </select>
+  <select id="selectOrdBillCustId" resultType="java.util.HashMap" parameterType="java.lang.Long" >
+    select
+     ARCH_GRP_ID, CUST_ORDER_ID, REGION_ID regionId, CREATE_ORG_ID, CREATE_STAFF, CREATE_DATE, 
+    FINISH_DATE, PROC_FLAG, PROC_DATE, PROC_CNT, NOTES,CUST_ID custId
+    from ord_bill  
+    where 
+	ARCH_GRP_ID =#{ARCH_GRP_ID,jdbcType=BIGINT}
+  </select>
   <update id="updateOrdBill" parameterType="map" >
     update ord_bill
     <set >

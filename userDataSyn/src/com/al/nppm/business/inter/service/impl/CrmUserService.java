@@ -631,6 +631,7 @@ public class CrmUserService {
 			        int ord_cust_contact_info_relCount=ordBillDao.getCountOrdCustContactInfoRel(queryord_cust_contact_info_relMap);
 			        if(ord_cust_contact_info_relCount==1){
 			        	ord_cust_contact_info_relMap.put("statusCd", 1000);
+			        	ord_cust_contact_info_relMap.put("routeId", queryord_cust_contact_info_relMap.get("custId"));
 			        	try{
 			    			accountDao.insertCustCcontactInfoRel(ord_cust_contact_info_relMap);
 			    		}catch (Exception e) {
@@ -645,7 +646,7 @@ public class CrmUserService {
 			        	cust_contact_info_relUpdate.put("updateStaff", ord_cust_contact_info_relMap.get("updateStaff"));
 			        	cust_contact_info_relUpdate.put("updateDate", ord_cust_contact_info_relMap.get("updateDate"));
 			        	cust_contact_info_relUpdate.put("remark", ord_cust_contact_info_relMap.get("remark"));
-			        	
+			        	cust_contact_info_relUpdate.put("routeId", ord_cust_contact_info_relMap.get("custId"));
 			        	cust_contact_info_relUpdate.put("custConnectId", ord_cust_contact_info_relMap.get("custConnectId"));//修改条件
 			    		
 			        	try{
@@ -675,6 +676,7 @@ public class CrmUserService {
 			        int ord_party_certCount=ordBillDao.getCountOrdPartyCert(queryord_party_certMap);
 			        if(ord_party_certCount==1){
 			        	ord_party_certMap.put("statusCd", 1000);
+			        	ord_party_certMap.put("routeId", queryord_party_certMap.get("partyId"));
 			        	try{
 			    			accountDao.insertPartyCert1(ord_party_certMap);
 			    		}catch (Exception e) {
@@ -695,6 +697,7 @@ public class CrmUserService {
 			        	party_certUpdate.put("updateDate", ord_party_certMap.get("updateDate"));
 			        	party_certUpdate.put("remark", ord_party_certMap.get("remark"));
 			        	party_certUpdate.put("partyCertId", ord_party_certMap.get("partyCertId"));
+			        	party_certUpdate.put("routeId", ord_party_certMap.get("custId"));
 			    		
 			        	try{
 			    			accountDao.updatePartyCert1(party_certUpdate);
@@ -719,6 +722,7 @@ public class CrmUserService {
 			    		String attrValue= ord_cust_attrMap.get("attrValue").toString();
 				        if(!(attrValue==null||attrValue.equals(""))){
 				        	ord_cust_attrMap.put("statusCd", 1000);
+				        	ord_cust_attrMap.put("custId", ord_cust_attrMap.get("custId"));
 				        	try{
 				    			accountDao.insertCustAttr1(ord_cust_attrMap);
 				    		}catch (Exception e) {
@@ -737,6 +741,7 @@ public class CrmUserService {
 			    		cust_attrUpdate.put("updateDate", ord_cust_attrMap.get("updateDate"));
 			    		cust_attrUpdate.put("remark", ord_cust_attrMap.get("remark"));
 			    		cust_attrUpdate.put("custAttrId", ord_cust_attrMap.get("custAttrId"));
+			    		cust_attrUpdate.put("routeId", ord_cust_attrMap.get("custId"));
 			    		
 			        	try{
 			    			accountDao.updateCustAttr(cust_attrUpdate);
@@ -829,8 +834,9 @@ public class CrmUserService {
 								.toString());
 						routeCustId = Long.parseLong(accountMap.get("custId")
 								.toString());
+						accountMap.put("routeId", accountMap.get("custId"));
 						// acct_id=acctId;//全局使用acct_id
-						int aCount = accountDao.getAccountById(acctId);
+						int aCount = accountDao.getAccountById(accountMap);
 						accountMap.put("statusCd", 1);
 						if (serviceOfferId == 2010100000) {
 							if (aCount > 0) {
@@ -862,7 +868,7 @@ public class CrmUserService {
 								msg.setMessage("修改中账户存在多条ACCT_ID:" + acctId);
 								return -1;
 							}//add end;
-							accountMap.put("routeId", routeCustId);
+							//accountMap.put("routeId", routeCustId);
 							
 							//add by wangbaoqiang begin
 							
@@ -907,9 +913,9 @@ public class CrmUserService {
 						paymentMap = paymentPlanList.get(0);
 						long acctId = Long.parseLong(paymentMap.get("acctId")
 								.toString());
-
+						paymentMap.put("routeId", paymentMap.get("acctId"));
 						List<Map<String, Object>> oldPaymentPlanList = accountDao
-								.getPaymentPlanByID(acctId);
+								.getPaymentPlanByID(paymentMap);
 						if (oldPaymentPlanList.size() > 0) {
 							//add by wangbaoqiang 若ord表有記錄，失效所有的生效记录  begin
 							for (int i = 0; i < oldPaymentPlanList.size(); i++) {
@@ -930,7 +936,7 @@ public class CrmUserService {
 							}
 						}
 						paymentMap.put("statusCd", 1);
-						paymentMap.put("routeId", routeCustId);
+						//paymentMap.put("routeId", routeCustId);
 						accountDao.insertPaymentPlan(paymentMap);
 						paymentMap.put(
 								"executetime",
@@ -983,10 +989,11 @@ public class CrmUserService {
 						int operType = Integer.parseInt(extAcctMap.get(
 								"operType").toString());
 						extAcctMap.put("executetime", d.format(df1.parse(extAcctMap.get("updateDate").toString())));
+						extAcctMap.put("routeId", extAcctMap.get("extAcctId"));
 						if (operType == 1000) {
 							//add by wangbaoqiang begin
 							try {
-								extAcctMap.put("routeId", routeCustId);
+								//extAcctMap.put("routeId", routeCustId);
 								extAcctMap.put("statusCd", 1);
 								accountDao.insertExtAcct(extAcctMap);
 							} catch (Exception e) {
@@ -1022,7 +1029,7 @@ public class CrmUserService {
 								extAcctobjList1.add(extAcctMap);
 								//add by wangbaoqiang begin
 								try {
-									extAcctMap.put("routeId", routeCustId);
+									extAcctMap.put("routeId", extAcctMap.get("extAcctId"));
 									extAcctMap.put("statusCd", 1);
 									accountDao.insertExtAcct(extAcctMap);
 									extAcctMap.put("action", 1);
@@ -2474,7 +2481,7 @@ public class CrmUserService {
 					}//取接口表ord_prod_inst表，判断是否为组合产品，组合产品不加账务关系 end
 					if (operType == 1000)// 直接插入账务关系
 					{
-						long acctCnt = accountDao.getAccountById(Long.parseLong(acctId));
+						long acctCnt = accountDao.getAccountById(servAcctMap);//要在确认一下
 						String prodInstId = servAcctMap.get("prodInstId").toString();
 						if (acctCnt == 0) {
 							msg.setMessage("用户(" + prodInstId + ")的支付账户(" + acctId + ")在计费不存在") ;
@@ -2737,7 +2744,7 @@ public class CrmUserService {
 					String acctId = servAcctMap.get("acctId").toString();
 					if (operType == 1000)// 直接插入账务关系
 					{
-						long acctCnt = accountDao.getAccountById(Long.parseLong(acctId));
+						long acctCnt = accountDao.getAccountById(servAcctMap);//要在确认
 						String prodInstId = servAcctMap.get("prodInstId").toString();
 						if (acctCnt == 0) {
 							msg.setMessage("用户(" + prodInstId + ")的支付账户(" + acctId + ")在计费不存在") ;
@@ -4242,10 +4249,20 @@ public class CrmUserService {
 						}else if ("4060300001".equals(service_offer_id)) {//解挂
 							stopType = "130001";
 							statusCd = "120000";
-						}else if ("4041600000".equals(service_offer_id)) {//预开户激活
+						}else if ("4060201003".equals(service_offer_id)) {//一证超五卡不合规单停
+							stopType = "150003";
+							statusCd = "120000";
+						}else if ("4060201004".equals(service_offer_id)) {//一证超五卡不合规双停
+							stopType = "150004";
+							statusCd = "120000";
+						}else if ("4070201003".equals(service_offer_id)) {//一证超五卡不合规单停复机
 							stopType = "0";
 							statusCd = "100000";
-						}else {
+						}else if ("4070201004".equals(service_offer_id)) {//一证超五卡不合规双停复机
+							stopType = "0";
+							statusCd = "100000";
+						}
+						else {
 							stopType = oldStopType;
 							statusCd = oldStateCd;
 						}
@@ -6204,22 +6221,33 @@ public String insertTaxPayer(long V_ARCH_GRP_ID,long V_ORDER_ITEM_ID){
 		e.printStackTrace();
 		return "取一般纳税人接口表数据时出错";
 	}
+	if (ord_tax_payerList.size() !=1 ) {
+		return "取一般纳税人接口表数据时出错";
+	}
   Map ord_tax_payerMap=ord_tax_payerList.get(0);
-  
-  int ord_tax_payerCount=ordBillDao.getCountOrdTaxPayer(queryord_tax_payerMap);
   long cust_id;
-  try{
+  List<Map<String, Object>> ordCustList = ordBillDao.selectOrdBillCustId(V_ARCH_GRP_ID);
+  Map ordCustMap = ordCustList.get(0);
+  cust_id = Long.parseLong(ordCustMap.get("custId").toString());
+  ord_tax_payerMap.put("routeId", cust_id);
+  ord_tax_payerMap.put("stautsCd", 1000);
+  ord_tax_payerMap.put("custId", cust_id);
+  long tax_payerCount=accountDao.getCountTaxPayer(ord_tax_payerMap);
+  //int ord_tax_payerCount=ordBillDao.getCountOrdTaxPayer(queryord_tax_payerMap);
+
+/*  try{
   	cust_id=accountDao.getCustId(ord_tax_payerMap);
   }catch (Exception e) {
 		e.printStackTrace();
 		return "纳税人获取客户出错";
-	}
-  if(ord_tax_payerCount==1){
-  	ord_tax_payerMap.put("statusCd", 1000);
-  	ord_tax_payerMap.put("custId", cust_id);
+	}*/
+
+  if(tax_payerCount==0){
+	  /*ord_tax_payerMap.put("statusCd", 1000);
+  	ord_tax_payerMap.put("routeId", cust_id);
   	String tax_province_code=ord_tax_payerMap.get("taxProvinceCode").toString();
   	tax_province_code=tax_province_code.equals("")?"915":tax_province_code;
-  	ord_tax_payerMap.put("taxProvinceCode", tax_province_code);   	
+  	ord_tax_payerMap.put("taxProvinceCode", tax_province_code);*/   	
   	try{
 			accountDao.insertTaxPayer1(ord_tax_payerMap);
 			
@@ -6227,15 +6255,31 @@ public String insertTaxPayer(long V_ARCH_GRP_ID,long V_ORDER_ITEM_ID){
   		e.printStackTrace();
   		return "新增一般纳税人时出错";
   	}
-  }else if(ord_tax_payerCount==2){
+  }else{
   	Map querytax_payerMap=new HashMap();
+  	Map queryTaxpayerFlagMap=new HashMap();
+  	Map tax_payerUpdate=new HashMap();
+  	String oldGgeneralTaxplayer = "";
+  	String newGgeneralTaxplayer = "";
   	querytax_payerMap.put("status_cd", 1000);
   	querytax_payerMap.put("tax_payer_id", ord_tax_payerMap.get("taxPayerId"));
-  	long tax_payerCount=accountDao.getCountTaxPayer(querytax_payerMap);
-  	if(tax_payerCount==0){
-  		return "纳税人标识在计费不存在！";
-  	}
-  	Map tax_payerUpdate=new HashMap();
+  	querytax_payerMap.put("routeId", cust_id);
+  	newGgeneralTaxplayer = ord_tax_payerMap.get("generalTaxpayerFlag").toString();
+  	try {
+  	  	queryTaxpayerFlagMap=accountDao.getTaxPayerInfo(querytax_payerMap);
+  	    oldGgeneralTaxplayer = queryTaxpayerFlagMap.get("generalTaxplayerFlag").toString();
+
+	} catch (Exception e) {
+		e.printStackTrace();
+  		return "取TAX_PAYER.GENERAL_TAXPAYER_FLAG出错";
+	}
+  	if ("0".equals(newGgeneralTaxplayer)) {
+  		tax_payerUpdate.put("expDate", new Date());
+	}else if ("1".equals(newGgeneralTaxplayer)
+			&&"0".equals(oldGgeneralTaxplayer)) {
+  		tax_payerUpdate.put("effDate", new Date());
+	}
+  	
   	tax_payerUpdate.put("statusCd", 1000);//更新条件
   	tax_payerUpdate.put("taxPayerId", ord_tax_payerMap.get("taxPayerId"));//更新条件
 
@@ -6249,9 +6293,12 @@ public String insertTaxPayer(long V_ARCH_GRP_ID,long V_ORDER_ITEM_ID){
   	tax_payerUpdate.put("generalTaxpayerFlag", ord_tax_payerMap.get("generalTaxpayerFlag"));
   	tax_payerUpdate.put("vatInvoicesFlag", ord_tax_payerMap.get("vatInvoicesFlag"));
   	tax_payerUpdate.put("statusDate", d.format(new Date()));
+  	tax_payerUpdate.put("effDate", ord_tax_payerMap.get("effDate"));
+  	tax_payerUpdate.put("expDate", ord_tax_payerMap.get("expDate"));
   	tax_payerUpdate.put("updateStaff", ord_tax_payerMap.get("updateStaff"));
   	tax_payerUpdate.put("updateDate", ord_tax_payerMap.get("updateDate"));
-  	tax_payerUpdate.put("remark", ord_tax_payerMap.get("remark"));		
+  	tax_payerUpdate.put("remark", ord_tax_payerMap.get("remark"));	
+  	tax_payerUpdate.put("routeId", cust_id);		
   	try{
 			accountDao.updateTaxPayer1(tax_payerUpdate);
 		}catch (Exception e) {
@@ -6268,6 +6315,7 @@ public String insertTaxPayer(long V_ARCH_GRP_ID,long V_ORDER_ITEM_ID){
   
   for(int i=0;i<ord_tax_payer_attrList.size();i++){
   	Map ord_tax_payer_attrMap=ord_tax_payer_attrList.get(i);
+  	ord_tax_payer_attrMap.put("routeId", cust_id);
   	queryord_tax_payer_attrMap.put("tax_payer_attr_id", ord_tax_payer_attrMap.get("taxPayerAttrId"));
       int ord_tax_payer_attrCount=ordBillDao.getCountOrdTaxPayerAttr(queryord_tax_payer_attrMap);
       if(ord_tax_payer_attrCount==1){
@@ -6282,11 +6330,7 @@ public String insertTaxPayer(long V_ARCH_GRP_ID,long V_ORDER_ITEM_ID){
           		e.printStackTrace();
           		return "增加纳税人属性出错";
           	}
-      	}else{
-      		
       	}
-      	
-      	
       }else{
       	Map tax_payer_attrUpdate=new HashMap();
       	tax_payer_attrUpdate.put("statusCd", 1100);
@@ -6297,6 +6341,7 @@ public String insertTaxPayer(long V_ARCH_GRP_ID,long V_ORDER_ITEM_ID){
       	tax_payer_attrUpdate.put("updateDate", df.format(new Date()));
       	tax_payer_attrUpdate.put("remark", "接口更新,ARCH_GRP_ID ="+V_ARCH_GRP_ID);
       	tax_payer_attrUpdate.put("taxPayerAttrId", ord_tax_payer_attrMap.get("taxPayerAttrId"));//更新条件
+      	tax_payer_attrUpdate.put("routeId", cust_id);
 
   		
       	try{

@@ -2,15 +2,16 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.al.nppm.business.account.dao.IAccountMapper" >
 
-<select id="getPaymentPlanByID" resultType="java.util.HashMap" parameterType="java.lang.Long"  >
+<select id="getPaymentPlanByID" resultType="java.util.HashMap" parameterType="java.util.HashMap"  >
     select PAYMENT_PLAN_ID paymentPlanId ,ROUTE_ID routeId from payment_plan 
     where ACCT_ID = #{acctId,jdbcType=BIGINT}
     and route_id = #{routeId,jdbcType=BIGINT}
     and exp_date>now()
 </select>
 
-<select id="getAccountById" resultType="java.lang.Integer" parameterType="java.lang.Long"  >
+<select id="getAccountById" resultType="java.lang.Integer" parameterType="java.util.HashMap"  >
     select count(1) from account where acct_id = #{acctId,jdbcType=BIGINT}
+    and route_id = #{routeId,jdbcType=BIGINT}
 </select>
  <!-- add by wangbaoqiang begin --> 
  <select id="getAccout" resultType="java.util.HashMap" parameterType="java.lang.Long"  >
@@ -3338,6 +3339,13 @@ and route_id = #{routeId,jdbcType=BIGINT}
   
 <select id="getCountTaxPayer" resultType="java.lang.Long" parameterType="map"  >
 SELECT COUNT(1)
+        FROM TAX_PAYER
+	WHERE STATUS_CD=#{status_cd,jdbcType=BIGINT}
+	AND TAX_PAYER_ID=#{tax_payer_id,jdbcType=BIGINT}
+	and route_id = #{routeId,jdbcType=BIGINT}
+</select>
+<select id="getTaxPayerInfo" resultType="map" parameterType="map"  >
+SELECT GENERAL_TAXPAYER_FLAG generalTaxplayerFlag
         FROM TAX_PAYER
 	WHERE STATUS_CD=#{status_cd,jdbcType=BIGINT}
 	AND TAX_PAYER_ID=#{tax_payer_id,jdbcType=BIGINT}

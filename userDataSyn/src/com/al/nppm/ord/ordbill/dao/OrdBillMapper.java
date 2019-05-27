@@ -141,6 +141,7 @@ public interface OrdBillMapper {
 	public Long selectCntOrdProdInstState(Map map);
 	public List<Map<String,Object>> selectOrdProdInstStateFor1000(Map map);
 	public List<Map<String,Object>> selectOrdProdInstStateFor1300(Map map);
+	public List<Map<String,Object>> selectOrdBillCustId(long archGrpId);
 	
 
 	
