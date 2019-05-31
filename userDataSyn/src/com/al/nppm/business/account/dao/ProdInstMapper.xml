@@ -82,7 +82,7 @@ select seq_prod_inst_acct_rel_id.nextval
 select user_seq_id.nextval
 </select>
 
-<select id="getProdInstOBJ" resultType="java.util.HashMap" parameterType="java.lang.Long"  >
+<select id="getProdInstOBJ" resultType="java.util.HashMap" parameterType="java.util.HashMap"  >
 SELECT 
 PROD_INST_ID prodInstId, PROD_ID, ACC_PROD_INST_ID accProdInst, PROD_USE_TYPE, ACC_NUM accNum, ACCOUNT, PAYMENT_MODE_CD paymentModeCd, 
     ADDRESS_DESC, OWNER_CUST_ID, PROD_INST_PWD, EXCH_ID, ADDRESS_ID, REGION_ID regionId, LAN_ID, 
@@ -161,10 +161,9 @@ and route_id = #{routeId,jdbcType=BIGINT}
     SELECT   acct_id acctId
     from PROD_INST_ACCT_REL
     where  STATUS_CD = '1'
-     <if test="prodInstId != null">
     and prod_inst_id = #{prodInstId,jdbcType=BIGINT}
     and route_id = #{routeId,jdbcType=BIGINT}
-    </if>  
+
 </select>
 <!-- add by wangbaoqiang begin -->
 <select id="getProdInstFromAcctId" resultType="java.util.HashMap" parameterType="map"  >
@@ -2131,7 +2130,15 @@ and route_id = #{routeId,jdbcType=BIGINT}
   	AND STATUS_CD NOT IN ('110001', '110002', '150000', '170000')
   	and route_id = #{routeId,jdbcType=BIGINT}
   </update>
-  
+  <update id="updateProdInstOwnerCust" parameterType="map">
+  	UPDATE PROD_INST
+  	<set>
+  		OWNER_CUST_ID =  #{ownerCustId}
+  	</set>
+  	where  PROD_INST_ID = #{prodInstId} 
+  	AND STATUS_CD NOT IN ('110001', '110002')
+  	and route_id = #{routeId,jdbcType=BIGINT}
+  </update>
    <select id="getProdInstState" resultType="java.util.HashMap" parameterType="map">
 	 SELECT * 
 	 FROM PROD_INST_STATE_EXT
@@ -2263,6 +2270,7 @@ and route_id = #{routeId,jdbcType=BIGINT}
  	from prod_inst_acct_rel A
  	WHERE A.ACCT_ID=#{acctId}
     AND A.EXP_DATE>#{statusDate,jdbcType=DATE}
+    and route_id = #{routeId,jdbcType=BIGINT}
   </select>
     <select id="getCntProdInstIdFromAcctRel" resultType="java.lang.Long" parameterType="java.util.HashMap">
  	select count(1)

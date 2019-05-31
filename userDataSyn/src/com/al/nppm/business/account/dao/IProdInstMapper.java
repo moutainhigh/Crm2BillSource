@@ -48,7 +48,7 @@ public interface IProdInstMapper {
 	
 	public List<Map<String,Object>> getProdInstAcctId(Map map);
 	public List<Map<String,Object>> getProdInstFromAcctId(Map map); //add by wangbaoqiang
-	public List<Map<String,Object>> getProdInstOBJ(long prodInstId); 
+	public List<Map<String,Object>> getProdInstOBJ(Map map); 
 	public List<Map<String,Object>> getProdInstRegion(Map map);
 	public List<Map<String,Object>> getProdInstAccNumId(Map map);
 	public List<Map<String,Object>> getProdInstStateId(Map map);
@@ -107,6 +107,7 @@ public interface IProdInstMapper {
 
 	
 	public int updateProdInstServ(Map map);
+	public int updateProdInstOwnerCust(Map map);
 	public int updateProdInstAccNum2(Map map);
 	public int updateProdInstStateExt2(Map map);
 	public int updateAccount(Map map);

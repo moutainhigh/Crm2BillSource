@@ -59,7 +59,7 @@ public interface IAccountMapper {
 	
 	public int getAccountById(Map ma);
 	public List<Map<String,Object>> getPaymentPlanByID(Map map);
-	public List<Map<String,Object>> getAccout(long acctId);
+	public List<Map<String,Object>> getAccout(Map map);
 	public List<Map<String,Object>> getAccoutFromProdInstId(Map map);
 	public List<Map<String,Object>> getAccoutForAccNum(long acctId);
 	public long getCntAccoutFromProdInstId(Map map);

@@ -14,7 +14,7 @@
     and route_id = #{routeId,jdbcType=BIGINT}
 </select>
  <!-- add by wangbaoqiang begin --> 
- <select id="getAccout" resultType="java.util.HashMap" parameterType="java.lang.Long"  >
+ <select id="getAccout" resultType="java.util.HashMap" parameterType="java.util.HashMap"  >
     select ACCT_ID acctId, ACCT_NAME acctName, ACCT_CD acctCd, CUST_ID custId, ACCT_LOGIN_NAME acctLoginName, LOGIN_PASSWORD loginPassword, 
     ACCT_BILLING_TYPE acctBillingType, PROD_INST_ID prodInstId, EFF_DATE effDate, EXP_DATE expDate, STATUS_CD statusCd, STATUS_DATE statusDate,
      CREATE_STAFF createStaff,CREATE_DATE createDate, UPDATE_STAFF updateStaff, UPDATE_DATE updateDate, REMARK remark, EXT_ACCT_ID extAcctId,
@@ -49,7 +49,7 @@
 </select>
 <!-- add end -->
 <select id="getCustomerById" resultType="java.lang.Long" parameterType="java.util.HashMap"  >
-    select count(1) from customer where cust_id = #{cust_id,jdbcType=BIGINT}
+    select count(1) from customer where cust_id = #{custId,jdbcType=BIGINT}
     and route_id = #{routeId,jdbcType=BIGINT}
 </select>
 
@@ -2421,6 +2421,9 @@ select seq_bill_service_log_id.nextval
        <if test="microblog != null" >
         MICROBLOG,
       </if>
+      <if test="routeId != null" >
+        ROUTE_ID,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="contactId != null" >
@@ -2506,6 +2509,9 @@ select seq_bill_service_log_id.nextval
       </if>
        <if test="microblog != null" >
        #{microblog,jdbcType=VARCHAR},
+      </if>
+      <if test="routeId != null" >
+       #{routeId,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
