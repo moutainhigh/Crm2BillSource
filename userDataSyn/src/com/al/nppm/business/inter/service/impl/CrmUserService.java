@@ -37,6 +37,7 @@ import com.al.nppm.business.account.dao.OfferInstMapper;
 import com.al.nppm.business.account.dao.ProductNetworkMapper;
 import com.al.nppm.business.account.dao.TifChangeAcctMapper;
 import com.al.nppm.business.account.dao.TifVpnGroupMapper;
+import com.al.nppm.business.core.SynMapContextHolder;
 import com.al.nppm.business.inter.http.state.statePublic;
 import com.al.nppm.business.syntomq.datasyn.DataSynDeal;
 import com.al.nppm.business.syntomq.datasyn.Msg;
@@ -181,6 +182,7 @@ public class CrmUserService {
 		if (list.size() > 0) {
         	sumCount=list.size();
 			for (int i = 0; i < list.size(); i++) {
+				SynMapContextHolder.init();//初始化送密集框架的变量
                 int flag = -1;
 				int iCount = -1;
 				String areaCode = "";
@@ -193,7 +195,7 @@ public class CrmUserService {
 				TransactionStatus status = transactionManager.getTransaction(def); // 获得事务状态
 
 				try {
-					custobjList1 = new ArrayList<Map<String, Object>>();
+					/*custobjList1 = new ArrayList<Map<String, Object>>();
 					acctobjList1 = new ArrayList<Map<String, Object>>();
 					taxPayerobjList1 = new ArrayList<Map<String, Object>>();
 					taxPayerAttrobjList1 = new ArrayList<Map<String, Object>>();
@@ -224,7 +226,8 @@ public class CrmUserService {
 					contactsInfoList1= new ArrayList<Map<String, Object>>();
 					contactsInfoAttrList1= new ArrayList<Map<String, Object>>();
 					tifVpnGroupList1 = new ArrayList<Map<String,Object>>();
-					tifVpnMemList1  = new ArrayList<Map<String,Object>>();
+					tifVpnMemList1  = new ArrayList<Map<String,Object>>();*/
+					SynMapContextHolder.initSynMap(synMap);//初始化变量
 					synMap.put("CUSTOMER", custobjList1);
 					synMap.put("ACCOUNT", acctobjList1);
 					synMap.put("PROD_INST", prodInstobjList1);
