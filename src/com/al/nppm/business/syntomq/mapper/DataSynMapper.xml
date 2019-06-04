@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?><!--Converted at: Tue Apr 02 11:11:58 CST 2013-->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.al.nppm.business.syntomq.mapper.DataSynMapper">
+
+	<insert id="insertDataSynStatistics" parameterType="map">
+		insert into data_syn_statistics(BEGIN_TIME,END_TIME,ORDER_TYPE,RECEIVE_CNT,REJ_CNT,ERR_CNT,REJ_RATE)
+		values(#{bDate},#{eDate},#{orderType},#{receiveCnt},#{rejCnt},#{errCnt},#{rejRate})
+	</insert>
+
+	<!-- <select id="queryOrdBill" resultType="map">
+		select a.* from ord_bill a where a.create_date between #{bDate} and #{eDate} 
+	</select> -->
+	
+</mapper>

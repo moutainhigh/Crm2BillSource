@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.al.nppm.business.account.dao.IRouteMapper" >
+    <select id="getProdInstRoute" resultType="java.lang.Long" parameterType="java.lang.Long"  >
+      SELECT route_id routeId
+        FROM PROD_INST_ROUTE
+       WHERE prod_inst_id = #{prodInstId,jdbcType=BIGINT}
+</select>
+
+    <insert id="insertProdInstRoute" parameterType="map">
+        insert into PROD_INST_ROUTE (
+        prod_inst_id,
+        route_id
+        )
+        values (
+        #{prodInstId,jdbcType=BIGINT},
+        #{routeId,jdbcType=BIGINT}
+        )
+    </insert>
+
+
+
+
+    <select id="getOfferInstRoute" resultType="java.lang.Long" parameterType="java.lang.Long"  >
+      SELECT route_id routeId
+        FROM OFFER_INST_ROUTE
+       WHERE offer_inst_id = #{offerInstId,jdbcType=BIGINT}
+</select>
+
+    <insert id="insertOfferInstRoute" parameterType="map">
+        insert into OFFER_INST_ROUTE (
+        offer_inst_id,
+        route_id
+        )
+        values (
+        #{offerInstId,jdbcType=BIGINT},
+        #{routeId,jdbcType=BIGINT}
+        )
+    </insert>
+
+
+    <select id="getAccountByObjId" resultType="java.lang.Long" parameterType="java.lang.Long"  >
+      SELECT ACCT_ID acctId
+        FROM account
+       WHERE ACCT_ID = #{objId,jdbcType=BIGINT}
+       and ROUTE_ID = #{objId,jdbcType=BIGINT}
+</select>
+
+<update id="updateProdInstRoute" parameterType="map" >
+    update PROD_INST_ROUTE
+    <set >
+		ROUTE_ID = #{newRouteId,jdbcType=BIGINT}
+    </set>
+    where PROD_INST_ID = #{prodInstId,jdbcType=BIGINT}
+    and ROUTE_ID  = #{routeId,jdbcType=BIGINT}
+  </update>
+
+</mapper>

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.al.nppm.business.account.dao.CustomerMapper" >
+
+  <select id="getForCountByUseCustId" resultType="java.lang.Long" parameterType="map" >
+    select	count(*)
+    from customer
+	where CUST_ID = #{useCustId}
+	and route_id = #{routeId,jdbcType=BIGINT}
+  </select>
+  
+  <select id="getForCountByOwnerCustId" resultType="java.lang.Long" parameterType="map" >
+    select	count(*)
+    from customer
+	where CUST_ID = #{ownerCustId}
+	and route_id = #{routeId,jdbcType=BIGINT}
+  </select>
+  
+</mapper>
