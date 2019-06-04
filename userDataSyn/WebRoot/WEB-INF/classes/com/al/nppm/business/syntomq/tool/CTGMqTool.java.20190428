@@ -1,0 +1,76 @@
+package com.al.nppm.business.syntomq.tool;
+
+import java.util.Properties;
+
+import com.al.nppm.common.utils.PropertiesUtil;
+import com.ctg.mq.api.CTGMQFactory;
+import com.ctg.mq.api.IMQProducer;
+import com.ctg.mq.api.PropertyKeyConst;
+import com.ctg.mq.api.bean.MQMessage;
+import com.ctg.mq.api.bean.MQSendResult;
+import com.ctg.mq.api.bean.MQSendStatus;
+import com.ctg.mq.api.exception.MQException;
+
+
+public class CTGMqTool {
+	private static PropertiesUtil propertiesUtil=new PropertiesUtil("config/sysConfig.properties");
+	private static IMQProducer producer;
+	private static String topic =propertiesUtil.readProperty("mq.topic");
+	private static Properties properties = new Properties();
+	static{
+		
+		
+       /* properties.setProperty(PropertyKeyConst.ProducerGroupName, "PID_billinginfo_queue_2_billing");
+        properties.setProperty(PropertyKeyConst.NamesrvAddr, "10.1.234.73:9876;10.1.234.79:9876");
+        properties.setProperty(PropertyKeyConst.NamesrvAuthID, "admin");
+        properties.setProperty(PropertyKeyConst.NamesrvAuthPwd, "123456");*/
+		/*
+		properties.setProperty(PropertyKeyConst.ProducerGroupName, "PID_billinginfo_queue_2_billing");
+        properties.setProperty(PropertyKeyConst.NamesrvAddr, "10.141.77.25:9876");
+        properties.setProperty(PropertyKeyConst.NamesrvAuthID, "admin");
+        properties.setProperty(PropertyKeyConst.NamesrvAuthPwd, "123456");
+        */
+		properties.setProperty(PropertyKeyConst.ProducerGroupName, propertiesUtil.readProperty("mq.ProducerGroupName"));
+        properties.setProperty(PropertyKeyConst.NamesrvAddr, propertiesUtil.readProperty("mq.NamesrvAddr"));
+        properties.setProperty(PropertyKeyConst.NamesrvAuthID, propertiesUtil.readProperty("mq.NamesrvAuthID"));
+        properties.setProperty(PropertyKeyConst.NamesrvAuthPwd, propertiesUtil.readProperty("mq.NamesrvAuthPwd"));
+        
+        producer = CTGMQFactory.createProducer(properties);
+        try {
+			producer.connect();
+		} catch (MQException e) {
+			
+			e.printStackTrace();
+		}
+	}
+	/**
+	 * <p>发送到消息队列</p>
+	 * @throws Exception 
+	 */
+	public static STATUS send(String messageId,String messageType,String msg) throws Exception {
+        try {
+            if(producer.connect() != 0){
+                return STATUS.CONNECTERR;
+            }
+            MQMessage message = new MQMessage(topic,messageId,messageType,msg.getBytes());
+            MQSendResult sendResult = producer.send(message);
+            if (sendResult.getSendStatus()==MQSendStatus.SEND_OK) {
+//            	producer.close();
+				return STATUS.SENDOK;
+			}else{
+//				producer.close();
+				
+				return STATUS.SENDERR;
+			}
+        } catch (Exception e) {
+        	e.printStackTrace();
+        	throw e;
+        	
+        }
+        //return null;
+	}
+
+}
+
+
+	
