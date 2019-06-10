@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.al.nppm.business.account.dao.TifVpnGroupMapper" >
-   <select id="selectTifVpnGroup" resultType="java.util.HashMap" parameterType="map" >
+   <select id="selectTifVpnGroup" resultType="java.util.Map" parameterType="map" >
     select 
     vpn_code, vpn_name, eff_date, exp_date, state, vpn_type, vpn_number
     from tif_vpn_group
@@ -15,14 +15,14 @@
     and mem_number = #{memNumber,jdbcType=VARCHAR}
     and exp_date > now()    
   </select>
-  <select id="selectTifVpnMemId" resultType="java.util.HashMap" parameterType="map" >
+  <select id="selectTifVpnMemId" resultType="java.util.Map" parameterType="map" >
     select 
     vpn_mem_id vpnMemId
     from tif_vpn_mem
     where mem_number = #{accNum,jdbcType=VARCHAR}
     and exp_date > #{statusDate,jdbcType=VARCHAR}  
   </select>
-  <select id="selectTifVpnMem" resultType="java.util.HashMap" parameterType="map" >
+  <select id="selectTifVpnMem" resultType="java.util.Map" parameterType="map" >
     select 
     vpn_mem_id vpnMemId, vpn_code vpnCode, mem_number memNumber, offer_id offerId, eff_date effDate, exp_date expDate, mem_seq memSeq, serv_id servId
     from tif_vpn_mem

@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.al.nppm.business.account.dao.IAccountMapper" >
 
-<select id="getPaymentPlanByID" resultType="java.util.HashMap" parameterType="java.util.HashMap"  >
+<select id="getPaymentPlanByID" resultType="java.util.Map" parameterType="java.util.HashMap"  >
     select PAYMENT_PLAN_ID paymentPlanId ,ROUTE_ID routeId from payment_plan 
     where ACCT_ID = #{acctId,jdbcType=BIGINT}
     and route_id = #{routeId,jdbcType=BIGINT}
@@ -14,7 +14,7 @@
     and route_id = #{routeId,jdbcType=BIGINT}
 </select>
  <!-- add by wangbaoqiang begin --> 
- <select id="getAccout" resultType="java.util.HashMap" parameterType="java.util.HashMap"  >
+ <select id="getAccout" resultType="java.util.Map" parameterType="java.util.HashMap"  >
     select ACCT_ID acctId, ACCT_NAME acctName, ACCT_CD acctCd, CUST_ID custId, ACCT_LOGIN_NAME acctLoginName, LOGIN_PASSWORD loginPassword, 
     ACCT_BILLING_TYPE acctBillingType, PROD_INST_ID prodInstId, EFF_DATE effDate, EXP_DATE expDate, STATUS_CD statusCd, STATUS_DATE statusDate,
      CREATE_STAFF createStaff,CREATE_DATE createDate, UPDATE_STAFF updateStaff, UPDATE_DATE updateDate, REMARK remark, EXT_ACCT_ID extAcctId,
@@ -23,7 +23,7 @@
     and route_id = #{routeId,jdbcType=BIGINT}
 </select>
 
- <select id="getAccoutFromProdInstId" resultType="java.util.HashMap" parameterType="map"  >
+ <select id="getAccoutFromProdInstId" resultType="java.util.Map" parameterType="map"  >
     select ACCT_ID acctId, ACCT_NAME, ACCT_CD, CUST_ID, ACCT_LOGIN_NAME, LOGIN_PASSWORD, ACCT_BILLING_TYPE, 
     PROD_INST_ID prodInstId, EFF_DATE, EXP_DATE, STATUS_CD, STATUS_DATE, CREATE_STAFF, CREATE_DATE, 
     UPDATE_STAFF, UPDATE_DATE, REMARK, EXT_ACCT_ID, EXT1_ACCT_ID, EXT2_ACCT_ID, EXT3_ACCT_ID, 
@@ -32,7 +32,7 @@
     and route_id = #{routeId,jdbcType=BIGINT}
 </select>
  <!-- add by wangbaoqiang begin --> 
- <select id="getAccoutForAccNum" resultType="java.util.HashMap" parameterType="java.util.HashMap"  >
+ <select id="getAccoutForAccNum" resultType="java.util.Map" parameterType="java.util.HashMap"  >
     select ACCT_ID acctId, ACCT_NAME acctName, ACCT_CD acctCd, CUST_ID custId, ACCT_LOGIN_NAME acctLoginName, LOGIN_PASSWORD loginPassword, 
     ACCT_BILLING_TYPE acctBillingType, PROD_INST_ID prodInstId, EFF_DATE effDate, EXP_DATE expDate, STATUS_CD statusCd, STATUS_DATE statusDate,
      CREATE_STAFF createStaff, CREATE_DATE createDate, UPDATE_STAFF updateStaff, UPDATE_DATE updateDate, REMARK remark,
@@ -184,7 +184,7 @@
   </insert>                          
 
 
-<select id="getPaymentPlanByAcct"  parameterType="java.util.HashMap" resultType="java.util.HashMap">
+<select id="getPaymentPlanByAcct"  parameterType="java.util.HashMap" resultType="java.util.Map">
 		 SELECT PAYMENT_PLAN_ID paymentPlanId FROM PAYMENT_PLAN WHERE ACCT_ID = #{acctId} AND EXP_DATE > now() 
 </select>
 
@@ -1471,7 +1471,7 @@
   
 <!--   测试使用 -->
   
-<select id="getProdInstTest" resultType="java.util.HashMap" parameterType="map"  >  
+<select id="getProdInstTest" resultType="java.util.Map" parameterType="map"  >
 select 
    PROD_INST_ID, PROD_ID, ACC_PROD_INST_ID, PROD_USE_TYPE, ACC_NUM, ACCOUNT, PAYMENT_MODE_CD, 
     ADDRESS_DESC, OWNER_CUST_ID, PROD_INST_PWD, EXCH_ID, ADDRESS_ID, REGION_ID, LAN_ID, 
@@ -1482,7 +1482,7 @@ select
     where prod_inst_id= #{prodInstId,jdbcType=BIGINT}
     and route_id = #{routeId,jdbcType=BIGINT}
  </select> 
- <select id="getProdInstStateTest" resultType="java.util.HashMap" parameterType="map"  >  
+ <select id="getProdInstStateTest" resultType="java.util.Map" parameterType="map"  >
  select 
      PROD_INST_STATE_ID, PROD_INST_ID, STOP_TYPE, 
       EFF_DATE, EXP_DATE, STOP_DIRECTION, 
@@ -1494,7 +1494,7 @@ select
    where prod_inst_id= #{prodInstId,jdbcType=BIGINT}
    and route_id = #{routeId,jdbcType=BIGINT}
  </select> 
-  <select id="getProdInstAccNumTest" resultType="java.util.HashMap" parameterType="map"  >  
+  <select id="getProdInstAccNumTest" resultType="java.util.Map" parameterType="map"  >
  select 
    PROD_INST_ACC_NUM_ID, PROD_INST_ID, ACC_NUM_TYPE, 
       ACC_NUM, PLAT_ID, PASSWORD, 
@@ -1506,7 +1506,7 @@ select
    where prod_inst_id= #{prodInstId,jdbcType=BIGINT}
    and route_id = #{routeId,jdbcType=BIGINT}
  </select> 
-   <select id="getProdInstPaymodeTest" resultType="java.util.HashMap" parameterType="map"  >  
+   <select id="getProdInstPaymodeTest" resultType="java.util.Map" parameterType="map"  >
  select 
    PAYMODE_ID, PROD_INST_ID, PAYMENT_MODE_CD, 
       EFF_DATE, EXP_DATE, STATUS_CD, 
@@ -1517,7 +1517,7 @@ select
    where prod_inst_id= #{prodInstId,jdbcType=BIGINT}
    and route_id = #{routeId,jdbcType=BIGINT}
  </select> 
-  <select id="getProdInstRegionTest" resultType="java.util.HashMap" parameterType="map"  >  
+  <select id="getProdInstRegionTest" resultType="java.util.Map" parameterType="map"  >
  select 
   PROD_INST_REGION_ID, PROD_INST_ID, REGION_ID, EFF_DATE, EXP_DATE, STATUS_CD, CREATE_STAFF, 
     UPDATE_STAFF, CREATE_DATE, STATUS_DATE, UPDATE_DATE, LAST_ORDER_ITEM_ID, REMARK, 
@@ -1526,7 +1526,7 @@ select
    where prod_inst_id= #{prodInstId,jdbcType=BIGINT}
    and route_id = #{routeId,jdbcType=BIGINT}
  </select> 
-   <select id="getProdInstAcctRelTest" resultType="java.util.HashMap" parameterType="map"  >  
+   <select id="getProdInstAcctRelTest" resultType="java.util.Map" parameterType="map"  >
  select 
  PROD_INST_ACCT_REL_ID, ACCT_ID, PROD_INST_ID, 
       ACCT_ITEM_GROUP_ID, PRIORITY, PAYMENT_LIMIT_TYPE, 
@@ -1539,7 +1539,7 @@ select
       where PROD_INST_ACCT_REL_ID = #{prodInstAcctRelId,jdbcType=BIGINT}
       and route_id = #{routeId,jdbcType=BIGINT}
       </select>
-   <select id="getOfferInstTest" resultType="java.util.HashMap" parameterType="map"  >  
+   <select id="getOfferInstTest" resultType="java.util.Map" parameterType="map"  >
  select 
  OFFER_INST_ID, OFFER_ID, OFFER_TYPE, 
       OWNER_CUST_ID, EFF_DATE, EXP_DATE, 
@@ -1553,7 +1553,7 @@ select
  and route_id = #{routeId,jdbcType=BIGINT}
 </select>
 
-<select id="getOfferInstObjTest" resultType="java.util.HashMap" parameterType="map"  >  
+<select id="getOfferInstObjTest" resultType="java.util.Map" parameterType="map"  >
  select 
 OFFER_OBJ_INST_REL_ID, OFFER_INST_ID, OBJ_TYPE, 
       OBJ_ID, OFFER_OBJ_REL_ID, ROLE_ID, 
@@ -1565,7 +1565,7 @@ OFFER_OBJ_INST_REL_ID, OFFER_INST_ID, OBJ_TYPE,
  where   OFFER_OBJ_INST_REL_ID= #{offerObjInstRelId,jdbcType=BIGINT}
  and route_id = #{routeId,jdbcType=BIGINT}
 </select>
-<select id="getOfferInstAttrTest" resultType="java.util.HashMap" parameterType="map"  >  
+<select id="getOfferInstAttrTest" resultType="java.util.Map" parameterType="map"  >
  select 
 OFFER_INST_ATTR_ID, OFFER_INST_ID, PAR_OFFER_INST_ATTR_ID, OBJ_TYPE, OBJ_ID, ATTR_ID, 
     ATTR_VALUE_ID, ATTR_VALUE, EFF_DATE, EXP_DATE, APPLY_REGION_ID, STATUS_CD, CREATE_STAFF, 
@@ -1846,13 +1846,6 @@ select seq_bill_service_log_id.nextval
  			where PARTY_ID = #{partyId,jdbcType=BIGINT}
  			and route_id = #{routeId,jdbcType=BIGINT}
   </update> 
-
-<select id="getCountOrd_Party_Ind" resultType="java.lang.Integer" parameterType="map"  >
-      SELECT COUNT(1) 
-        FROM ORD_PARTY_IND
-       WHERE ORDER_ITEM_ID = #{order_item_id,jdbcType=BIGINT}
-         AND ARCH_GRP_ID = #{arch_grp_id,jdbcType=BIGINT}
-</select>
 
   <insert id="insertPartyInd" parameterType="map" >
     insert into party_ind

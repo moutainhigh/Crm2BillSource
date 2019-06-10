@@ -1,11 +1,11 @@
 package com.al.nppm.ord.ordbill.dao;
 
+import org.apache.ibatis.annotations.Param;
+import org.springframework.stereotype.Repository;
+
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-
-import org.apache.ibatis.annotations.Param;
-import org.springframework.stereotype.Repository;
 @Repository
 public interface OrdBillMapper {
  
@@ -59,6 +59,7 @@ public interface OrdBillMapper {
 
 	public List<Map<String,Object>> selectOrdOfferProdInstRel(Map map);
 	public List<Map<String,Object>> selectOrdOfferProdInstRel1300(Map map);
+    public List<Map<String,Object>> selectOrdOfferProdInstRelForRole(Map map);
 
 	public List<Map<String,Object>> selectOrdOfferObjInstRel(Map map);
 	public List<Map<String,Object>> selectOrdOfferInstAttr(Map map);
