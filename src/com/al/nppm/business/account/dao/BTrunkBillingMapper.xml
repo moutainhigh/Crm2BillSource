@@ -56,7 +56,7 @@
       </if>
     </trim>
   </insert>
-  <select id="countTrunkBilling" resultType="int" parameterType="map" >
+  <select id="countTrunkBilling" resultType="java.lang.Long" parameterType="map" >
     select count(1) from b_trunk_billing
     WHERE acc_nbr = #{accNbr,jdbcType=VARCHAR}
   </select>

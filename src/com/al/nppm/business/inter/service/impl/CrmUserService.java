@@ -401,7 +401,28 @@ public class CrmUserService {
 		}
 
 	}
+    /* 一次性费用处理 */
+    public void oneItemrunTask(Map map,Message msg) throws Exception {
+        String remarks = "处理中";
+        System.out.println("----------定时执行一次性费用- oneItemResult--------------"
+                + new Date());
+        long archGrpId = Long.parseLong(map.get("ARCH_GRP_ID").toString());
+        List<Map<String, Object>> oneList = ordBillDao.getOneItemResultFromArchGrpId(archGrpId);
+        if (oneList.size() > 0) {
+            for (int i = 0; i < oneList.size(); i++) {
 
+                Map mapTemp = new HashMap();
+                try {
+                    mapTemp = oneList.get(i);
+                    int flag = InsertItemPlan(msg, mapTemp);
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    msg.setMessage("一次性费用处理失败");
+                }
+            }
+        }
+    }
 	public int InsertItemPlan(Message msg, Map map) throws Exception {
 		try {
 
@@ -409,6 +430,10 @@ public class CrmUserService {
 			Date date = new Date();
 			Long chargeMethod = Long.parseLong(map.get("CHARGE_METHOD")
 					.toString());
+            Long acctItemTypeId = Long.parseLong(map.get("ACCT_ITEM_TYPE_ID").toString());
+            Long archGrpId = Long.parseLong(map.get("ARCH_GRP_ID").toString());
+            Long orderItemId = Long.parseLong(map.get("ORDER_ITEM_ID").toString());
+            Long prodInstId = Long.parseLong(map.get("PROD_INST_ID").toString());
 			if (chargeMethod == 6) // 转计费代收
 			{
 				long feeBillId = prodinstDao.getSequeId();
@@ -429,60 +454,65 @@ public class CrmUserService {
 				feeBillMap.put("notes", "CRM一次性费用");
 
 				ordBillDao.insertTifFeeBill(feeBillMap);
-			} else {
-
-				Map oneItem = new HashMap();
-				long interPlanId = prodinstDao.getSequeId();
-				oneItem.put("interPlanId", interPlanId);// zhujian
-
-				// 0418 offerInstId 查找acct_id
-				long offerInstId = Long.parseLong(map.get("OFFER_INST_ID")
-						.toString());
-				Map mapOfferInst = new HashMap();
-				mapOfferInst.put("offerInstId", offerInstId);
-
-				List<Map<String, Object>> offerlist = ordBillDao
-						.getOneItemInstId(mapOfferInst);
-				long instId = 0;
-				if (offerlist.size() > 0) {
-					Map offer = offerlist.get(0);
-					instId = Long.parseLong(offer.get("prodInstId").toString());
-					oneItem.put("objectId", offer.get("prodInstId"));
-					// oneItem.put("acctId", offer.get("acctId")) ;
-				} else {
-					msg.setMessage("未找到prod_inst_id");
-					return -1;
-				}
-				Map servAcctMap = new HashMap();
-				servAcctMap.put("prodInstId", instId);
-				List<Map<String, Object>> servAcctList = ordBillDao
-						.getOneItemAcctId(servAcctMap);
-
-				if (servAcctList.size() > 0) {
-					Map acctMap = servAcctList.get(0);
-					oneItem.put("objectId", acctMap.get("acctId"));
-					// oneItem.put("acctId", offer.get("acctId")) ;
-				} else {
-					msg.setMessage("未找到Acct_id");
-					return -1;
-				}
-
-				oneItem.put("offerInstId", map.get("OFFER_INST_ID"));
-				oneItem.put("offerId", map.get("OFFER_ID"));
-				oneItem.put("objectType", 2);
-				// oneItem.put("objectId",map.get("PROD_INST_ID")) ;
-				// oneItem.put("acctId", map.get("ACCT_ID")) ;
-				oneItem.put("operType", 1);
-				oneItem.put("operState", 0);
-				oneItem.put("effDate", map.get("CREATE_DATE"));
-				oneItem.put("orderDate", map.get("CREATE_DATE"));
-				oneItem.put("createDate", df.format(date));
-				oneItem.put("operDate", df.format(date));
-				oneItem.put("amount", map.get("PAID_IN_AMOUNT"));
-
-				ordBillDao.insertPayToPlan(oneItem);
-
 			}
+            if (acctItemTypeId == 63) {
+                Map oneItem = new HashMap();
+                long interPlanId = prodinstDao.getSeq("SEQ_INTER_PLAN_ID");
+                oneItem.put("interPlanId", interPlanId);// zhujian
+
+                // 0418 offerInstId 查找acct_id
+                long acctId = Long.parseLong(map.get("ACCT_ID")
+                        .toString());
+               /* Map mapOfferInst = new HashMap();
+                mapOfferInst.put("offerInstId", offerInstId);
+
+                List<Map<String, Object>> offerlist = ordBillDao
+                        .getOneItemInstId(mapOfferInst);
+                long instId = 0;
+                if (offerlist.size() > 0) {
+                    Map offer = offerlist.get(0);
+                    instId = Long.parseLong(offer.get("prodInstId").toString());
+                    oneItem.put("objectId", offer.get("prodInstId"));
+                    // oneItem.put("acctId", offer.get("acctId")) ;
+                } else {
+                    msg.setMessage("未找到prod_inst_id");
+                    return -1;
+                }*/
+                if (acctId < 1) {
+                    Map servAcctMap = new HashMap();
+                    servAcctMap.put("prodInstId", prodInstId);
+                    long routeId = routeServiceDao.getRouteIdForProdInst(archGrpId, orderItemId, prodInstId, msg);
+                    if (routeId < 0) {
+                        msg.setMessage("预存取用户routeId失败");
+                        return -1;
+                    }
+                    servAcctMap.put("routeId", routeId);
+                    List<Map<String, Object>> servAcctList = prodinstDao
+                            .getProdInstAcctIdForNull(servAcctMap);
+
+                    if (servAcctList.size() > 0) {
+                        Map acctMap = servAcctList.get(0);
+                        oneItem.put("objectId", acctMap.get("acctId"));
+                        // oneItem.put("acctId", offer.get("acctId")) ;
+                    }
+                } else {
+                    oneItem.put("objectId", acctId);
+                }
+
+                oneItem.put("offerInstId", map.get("OFFER_INST_ID"));
+                oneItem.put("offerId", map.get("OFFER_ID"));
+                oneItem.put("objectType", 2);
+                oneItem.put("operType", 1);
+                oneItem.put("operState", 0);
+                oneItem.put("effDate", map.get("CREATE_DATE"));
+                oneItem.put("orderDate", map.get("CREATE_DATE"));
+                oneItem.put("createDate", df.format(date));
+                oneItem.put("operDate", df.format(date));
+                oneItem.put("amount", map.get("PAID_IN_AMOUNT"));
+                oneItem.put("depositType",4);
+                prodinstDao.insertPayToPlan(oneItem);
+
+            }
 			msg.setMessage("处理成功");
 
 		} catch (Exception e) {
@@ -1220,15 +1250,22 @@ public class CrmUserService {
 									}
 																	}
 							}
+							//退订
 							else if (operType.equals("1100")
 									&& !String.valueOf(serviceOfferId).equals("3020501002")) {
 								if (deleteOfferInst(offerInstMap, userMap, msg, routeId) < 0) {
 									return -1;
 								}
 							}
+							//crm活动预存
+                            if (doInsertPayToPlan(offerInstMap, userMap, msg, routeId,serviceOfferId)  < 0) {
+                                return -1;
+                            }
+
 						}
 					}
-
+                    //一次性费用和crm普通预存
+                    oneItemrunTask(map, msg);
 				} catch (Exception e) {
                     if ("".equals(msg.getMessage()) || msg.getMessage() == null) {
                         msg.setMessage("处理ORD_OFFER_INST失败");
@@ -1878,6 +1915,132 @@ public class CrmUserService {
 
 		return 1;
 	}
+
+    /**
+     *
+     * @param itemMap
+     * @param userMap
+     * @param msg
+     * @param acctId
+     * @return
+     * @throws Exception
+     */
+    public int doInsertPayToPlan(Map itemMap, Map userMap, Message msg,
+                                long acctId,long serviceOfferId) throws Exception {
+
+        try {
+            SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            SimpleDateFormat d = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+            SimpleDateFormat dfhhmmss = new SimpleDateFormat("HHmmss");
+            Date date = new Date();
+            Map map = itemMap;
+            List<Map<String, Object>> ordOfferList = ordBillDao.selectOrdOfferInstFromRowId(map);
+            if (ordOfferList.size() != 1) {
+                msg.setMessage("订购取销售品实例接口表出错");
+                return -1;
+            }
+            Map ordOfferInstMap = ordOfferList.get(0);
+            long archGrpId = Long.parseLong(ordOfferInstMap.get("ARCH_GRP_ID").toString());
+            long orderItemId = Long.parseLong(ordOfferInstMap.get("ORDER_ITEM_ID").toString());
+            long offerInstId = Long.parseLong(ordOfferInstMap.get("offerInstId").toString());
+            String operType = ordOfferInstMap.get("operType").toString();
+            //取crmRent表
+            List<Map<String, Object>> ordCrmRentList = ordBillDao.selectCrmRent(archGrpId, orderItemId, offerInstId);
+            for (Map<String,Object> ordCrmRentMap :ordCrmRentList) {
+                String state = ordCrmRentMap.get("state").toString();
+                String returnType = ordCrmRentMap.get("returnType").toString();
+                String returnRuleId = ordCrmRentMap.get("returnRuleId").toString();
+                Map servAcctMap = new HashMap();
+                String prodInstId = ordCrmRentMap.get("PROD_INST_ID").toString();
+                acctId = Long.parseLong(ordCrmRentMap.get("ACCT_ID").toString());
+                //取该用户下的acctId
+                if (!"".equals(prodInstId)) {
+                    servAcctMap.put("prodInstId", prodInstId);
+                    long routeId = routeServiceDao.getRouteIdForProdInst(archGrpId, orderItemId, Long.parseLong(prodInstId), msg);
+                    if (routeId < 0) {
+                        msg.setMessage("预存取用户routeId失败");
+                        return -1;
+                    }
+                    servAcctMap.put("routeId", routeId);
+                    List<Map<String, Object>> servAcctList = prodinstDao
+                            .getProdInstAcctIdForNull(servAcctMap);
+
+                    if (servAcctList.size() > 0) {
+                        Map acctMap = servAcctList.get(0);
+                        acctId = Long.parseLong(acctMap.get("acctId").toString());
+                    }
+                }
+                Map oneItemResultMap = new HashMap();
+                if (String.valueOf(serviceOfferId).equals("3020501001")
+                        &&operType.equals("1000")) {
+                    if ("1".equals(state)) {
+                        try {
+                            oneItemResultMap = ordBillDao.selectOneItemResult(archGrpId, orderItemId);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            msg.setMessage("获取one_item_result表失败");
+                            return -1;
+                        }
+                        String acctItemTypeId = oneItemResultMap.get("ACCT_ITEM_TYPE_ID").toString();
+
+                        Map oneItem = new HashMap();
+                        long interPlanId = prodinstDao.getSeq("SEQ_INTER_PLAN_ID");
+                        long depositType = 3;
+
+                        if ("1".equals(returnType)) {
+                            //翼支付红包
+                            depositType = 1;
+                        } else if ("2".equals(returnType)) {
+                            //翼支付红包金
+                            depositType = 2;
+                        } else if ("".equals(returnType)
+                                && "21101".equals(acctItemTypeId)) {
+                            //活动预存款
+                            depositType = 3;
+                        } else if ("".equals(returnType)
+                                && "10014".equals(acctItemTypeId)) {
+                            //活动赠款
+                            depositType = 4;
+                        }
+                        oneItem.put("interPlanId", interPlanId);// zhujian
+                        oneItem.put("offerInstId", oneItemResultMap.get("OFFER_INST_ID"));
+                        oneItem.put("offerId", oneItemResultMap.get("OFFER_ID"));
+                        oneItem.put("objectType", 2);
+                        oneItem.put("objectId",oneItemResultMap.get("PROD_INST_ID")) ;
+                        oneItem.put("acctId", acctId) ;
+                        oneItem.put("operType", 1);
+                        oneItem.put("operState", 0);
+                        oneItem.put("effDate", oneItemResultMap.get("CREATE_DATE"));
+                        oneItem.put("orderDate", oneItemResultMap.get("CREATE_DATE"));
+                        oneItem.put("createDate", df.format(date));
+                        oneItem.put("operDate", df.format(date));
+                        oneItem.put("amount", oneItemResultMap.get("PAID_IN_AMOUNT"));
+                        oneItem.put("depositType", depositType);
+                        try {
+                            prodinstDao.insertPayToPlan(oneItem);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            msg.setMessage("插入inter_pay_plan表失败");
+                            return  -1;
+                        }
+                }
+
+
+                } else if (!String.valueOf(serviceOfferId).equals("3020501001")
+                        &&operType.equals("1100")) {
+
+                }
+            }
+
+        } catch (Exception e) {
+            // TODO: handle exception
+            msg.setMessage("处理账户ORD_OFFER_PROD_INST_失败");
+            e.printStackTrace();
+            throw e;
+        }
+
+        return 1;
+    }
 	// 销售品角色
 	public int insertOfferProdInst(Map itemMap, Map userMap, Message msg,
 			long acctId) throws Exception {

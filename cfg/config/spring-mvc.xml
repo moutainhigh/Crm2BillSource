@@ -86,7 +86,6 @@
         <context:include-filter type="annotation" expression="org.springframework.stereotype.Controller" />
         <context:include-filter type="annotation" expression="org.springframework.stereotype.Service" />
     </context:component-scan>
-
 	<!-- 处理资料 -->
 	<bean id="fileTaskJob" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
 		<property name="targetObject">
@@ -231,6 +230,8 @@
 	</bean>  
 	
 	<bean id="taskcfg" lazy-init="true" class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
-	</bean> 
-	
+	</bean>
+	<!--德鲁伊配置-->
+	<!-- 引入配置文件 -->
+	<import resource="spring-druid.xml" />
 </beans>

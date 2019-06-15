@@ -165,6 +165,14 @@ and route_id = #{routeId,jdbcType=BIGINT}
     and route_id = #{routeId,jdbcType=BIGINT}
 
 </select>
+    <select id="getProdInstAcctIdForNull" resultType="java.util.Map" parameterType="map"  >
+    SELECT   IFNULL(acct_id,0) acctId
+    from PROD_INST_ACCT_REL
+    where  STATUS_CD = '1'
+    and prod_inst_id = #{prodInstId,jdbcType=BIGINT}
+    and route_id = #{routeId,jdbcType=BIGINT}
+
+</select>
 <!-- add by wangbaoqiang begin -->
 <select id="getProdInstFromAcctId" resultType="java.util.Map" parameterType="map"  >
     SELECT   prod_inst_id prodInstId
@@ -2644,6 +2652,97 @@ and route_id = #{routeId,jdbcType=BIGINT}
             </if>
         </trim>
     </insert>
+    <insert id="insertPayToPlan" parameterType="map" >
+        insert into inter_pay_to_plan
+        <trim prefix="(" suffix=")" suffixOverrides="," >
+            <if test="interPlanId != null" >
+                inter_plan_id,
+            </if>
+            <if test="offerInstId != null" >
+                offer_inst_id,
+            </if>
+            <if test="offerId != null" >
+                offer_id,
+            </if>
+            <if test="objectType != null" >
+                object_type,
+            </if>
+            <if test="objectId != null" >
+                object_id,
+            </if>
+            <if test="operType != null" >
+                oper_type,
+            </if>
+            <if test="operState != null" >
+                oper_state,
+            </if>
+            <if test="effDate != null" >
+                eff_date,
+            </if>
+            <if test="orderDate != null" >
+                order_date,
+            </if>
+            <if test="createDate != null" >
+                create_date,
+            </if>
+            <if test="operDate != null" >
+                oper_date,
+            </if>
+            <if test="acctId != null" >
+                acct_id,
+            </if>
+            <if test="amount != null" >
+                amount,
+            </if>
+            <if test="depositType != null" >
+                deposit_type
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides="," >
+            <if test="interPlanId != null" >
+                #{interPlanId,jdbcType=BIGINT},
+            </if>
+            <if test="offerInstId != null" >
+                #{offerInstId,jdbcType=BIGINT},
+            </if>
+            <if test="offerId != null" >
+                #{offerId,jdbcType=BIGINT},
+            </if>
+            <if test="objectType != null" >
+                #{objectType,jdbcType=BIGINT},
+            </if>
+            <if test="objectId != null" >
+                #{objectId,jdbcType=BIGINT},
+            </if>
+            <if test="operType != null" >
+                #{operType,jdbcType=BIGINT},
+            </if>
+            <if test="operState != null" >
+                #{operState,jdbcType=BIGINT},
+            </if>
+            <if test="effDate != null" >
+                #{effDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="orderDate != null" >
+                #{orderDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="createDate != null" >
+                #{createDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="operDate != null" >
+                #{operDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="acctId != null" >
+                #{acctId,jdbcType=BIGINT},
+            </if>
+            <if test="amount != null" >
+                #{amount,jdbcType=DECIMAL}
+            </if>
+            <if test="depositType != null" >
+                #{depositType,jdbcType=BIGINT}
+            </if>
+        </trim>
+    </insert>
 
 
     <update id="updateProdInstAcctRelAttr" parameterType="map">
@@ -2970,4 +3069,14 @@ and route_id = #{routeId,jdbcType=BIGINT}
 	and route_id = #{routeId,jdbcType=BIGINT}
   </select>
     <select id="selectProdInstAttrId" resultType="java.lang.Long"></select>
+    <select id="getOneItemAcctId" resultType="map" parameterType="map"  >
+select acct_id acctId from prod_inst_acct_rel
+where PROD_INST_ID=#{prodInstId,jdbcType=BIGINT}
+
+</select>
+
+    <select id="getOneItemInstId" resultType="map" parameterType="map"  >
+select OBJ_ID prodInstId from offer_obj_inst_rel
+where OFFER_INST_ID=#{offerInstId,jdbcType=BIGINT}
+</select>
 </mapper>
