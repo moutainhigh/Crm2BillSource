@@ -198,7 +198,247 @@ SELECT
     </set>
     where  ARCH_GRP_ID = #{archGrpId,jdbcType=BIGINT}
   </update>
-
+    <insert id="insertOneItemResultHis" parameterType="map">
+        insert into one_item_result_his
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="oneAcctItemId != null">
+                ONE_ACCT_ITEM_ID,
+            </if>
+            <if test="archGrpId != null">
+                ARCH_GRP_ID,
+            </if>
+            <if test="custOrderId != null">
+                CUST_ORDER_ID,
+            </if>
+            <if test="orderItemId != null">
+                ORDER_ITEM_ID,
+            </if>
+            <if test="sourceType != null">
+                SOURCE_TYPE,
+            </if>
+            <if test="billId != null">
+                BILL_ID,
+            </if>
+            <if test="paymentId != null">
+                PAYMENT_ID,
+            </if>
+            <if test="acctItemTypeId != null">
+                ACCT_ITEM_TYPE_ID,
+            </if>
+            <if test="billAcctItemTypeId != null">
+                BILL_ACCT_ITEM_TYPE_ID,
+            </if>
+            <if test="balanceTypeId != null">
+                BALANCE_TYPE_ID,
+            </if>
+            <if test="billingCycleId != null">
+                BILLING_CYCLE_ID,
+            </if>
+            <if test="itemSourceId != null">
+                ITEM_SOURCE_ID,
+            </if>
+            <if test="acctId != null">
+                ACCT_ID,
+            </if>
+            <if test="prodInstId != null">
+                PROD_INST_ID,
+            </if>
+            <if test="offerInstId != null">
+                OFFER_INST_ID,
+            </if>
+            <if test="offerId != null">
+                OFFER_ID,
+            </if>
+            <if test="realAmount != null">
+                REAL_AMOUNT,
+            </if>
+            <if test="taxRateConfigId != null">
+                TAX_RATE_CONFIG_ID,
+            </if>
+            <if test="taxRate != null">
+                TAX_RATE,
+            </if>
+            <if test="tax != null">
+                TAX,
+            </if>
+            <if test="price != null">
+                PRICE,
+            </if>
+            <if test="resultItemType != null">
+                RESULT_ITEM_TYPE,
+            </if>
+            <if test="createDate != null">
+                CREATE_DATE,
+            </if>
+            <if test="chargeMethod != null">
+                CHARGE_METHOD,
+            </if>
+            <if test="statusCd != null">
+                STATUS_CD,
+            </if>
+            <if test="statusDate != null">
+                STATUS_DATE,
+            </if>
+            <if test="oriAcctItemId != null">
+                ORI_ACCT_ITEM_ID,
+            </if>
+            <if test="lanId != null">
+                LAN_ID,
+            </if>
+            <if test="ifChargeOff != null">
+                IF_CHARGE_OFF,
+            </if>
+            <if test="mergeAcctDealTime != null">
+                MERGE_ACCT_DEAL_TIME,
+            </if>
+            <if test="paidInAmount != null">
+                PAID_IN_AMOUNT,
+            </if>
+            <if test="receiptId != null">
+                RECEIPT_ID,
+            </if>
+            <if test="busiName != null">
+                BUSI_NAME,
+            </if>
+            <if test="extAcctItemId != null">
+                EXT_ACCT_ITEM_ID,
+            </if>
+            <if test="prodId != null">
+                PROD_ID,
+            </if>
+            <if test="staffId != null">
+                STAFF_ID,
+            </if>
+            <if test="orgId != null">
+                ORG_ID,
+            </if>
+            <if test="procFlag != null">
+                PROC_FLAG,
+            </if>
+            <if test="remarks != null">
+                REMARKS,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="oneAcctItemId != null">
+                #{oneAcctItemId,jdbcType=BIGINT},
+            </if>
+            <if test="archGrpId != null">
+                #{archGrpId,jdbcType=BIGINT},
+            </if>
+            <if test="custOrderId != null">
+                #{custOrderId,jdbcType=BIGINT},
+            </if>
+            <if test="orderItemId != null">
+                #{orderItemId,jdbcType=BIGINT},
+            </if>
+            <if test="sourceType != null">
+                #{sourceType,jdbcType=INTEGER},
+            </if>
+            <if test="billId != null">
+                #{billId,jdbcType=BIGINT},
+            </if>
+            <if test="paymentId != null">
+                #{paymentId,jdbcType=BIGINT},
+            </if>
+            <if test="acctItemTypeId != null">
+                #{acctItemTypeId,jdbcType=BIGINT},
+            </if>
+            <if test="billAcctItemTypeId != null">
+                #{billAcctItemTypeId,jdbcType=BIGINT},
+            </if>
+            <if test="balanceTypeId != null">
+                #{balanceTypeId,jdbcType=BIGINT},
+            </if>
+            <if test="billingCycleId != null">
+                #{billingCycleId,jdbcType=BIGINT},
+            </if>
+            <if test="itemSourceId != null">
+                #{itemSourceId,jdbcType=BIGINT},
+            </if>
+            <if test="acctId != null">
+                #{acctId,jdbcType=BIGINT},
+            </if>
+            <if test="prodInstId != null">
+                #{prodInstId,jdbcType=BIGINT},
+            </if>
+            <if test="offerInstId != null">
+                #{offerInstId,jdbcType=BIGINT},
+            </if>
+            <if test="offerId != null">
+                #{offerId,jdbcType=BIGINT},
+            </if>
+            <if test="realAmount != null">
+                #{realAmount,jdbcType=BIGINT},
+            </if>
+            <if test="taxRateConfigId != null">
+                #{taxRateConfigId,jdbcType=BIGINT},
+            </if>
+            <if test="taxRate != null">
+                #{taxRate,jdbcType=DECIMAL},
+            </if>
+            <if test="tax != null">
+                #{tax,jdbcType=BIGINT},
+            </if>
+            <if test="price != null">
+                #{price,jdbcType=BIGINT},
+            </if>
+            <if test="resultItemType != null">
+                #{resultItemType,jdbcType=INTEGER},
+            </if>
+            <if test="createDate != null">
+                #{createDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="chargeMethod != null">
+                #{chargeMethod,jdbcType=BIGINT},
+            </if>
+            <if test="statusCd != null">
+                #{statusCd,jdbcType=BIGINT},
+            </if>
+            <if test="statusDate != null">
+                #{statusDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="oriAcctItemId != null">
+                #{oriAcctItemId,jdbcType=BIGINT},
+            </if>
+            <if test="lanId != null">
+                #{lanId,jdbcType=BIGINT},
+            </if>
+            <if test="ifChargeOff != null">
+                #{ifChargeOff,jdbcType=INTEGER},
+            </if>
+            <if test="mergeAcctDealTime != null">
+                #{mergeAcctDealTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="paidInAmount != null">
+                #{paidInAmount,jdbcType=BIGINT},
+            </if>
+            <if test="receiptId != null">
+                #{receiptId,jdbcType=BIGINT},
+            </if>
+            <if test="busiName != null">
+                #{busiName,jdbcType=VARCHAR},
+            </if>
+            <if test="extAcctItemId != null">
+                #{extAcctItemId,jdbcType=VARCHAR},
+            </if>
+            <if test="prodId != null">
+                #{prodId,jdbcType=BIGINT},
+            </if>
+            <if test="staffId != null">
+                #{staffId,jdbcType=BIGINT},
+            </if>
+            <if test="orgId != null">
+                #{orgId,jdbcType=BIGINT},
+            </if>
+            <if test="procFlag != null">
+                #{procFlag,jdbcType=INTEGER},
+            </if>
+            <if test="remarks != null">
+                #{remarks,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
 
 <insert id="insertPayToPlan" parameterType="map" >
     insert into inter_pay_to_plan
@@ -317,11 +557,23 @@ select
   ARCH_GRP_ID, ORDER_ITEM_ID, OFFER_INST_ATTR_ID offerInstAttrId, OFFER_INST_ID offerInstId, PAR_OFFER_INST_ATTR_ID parOfferInstAttrId, 
     OBJ_TYPE objType, OBJ_ID objId, ATTR_ID attrId, ATTR_VALUE_ID attrValueId, ATTR_VALUE attrValue, EFF_DATE effDate, EXP_DATE expDate, APPLY_REGION_ID applyRegionId, 
     BUSI_MOD_EFF_DATE busiModEffDate, ROW_ID rowId, OLD_ROW_ID oldRowId, OPER_TYPE operType, STATUS_CD statusCd, STATUS_DATE statusDate, CREATE_STAFF createStaff, 
-    CREATE_DATE createDate, UPDATE_STAFF updateStaff, UPDATE_DATE updateDate, REMARK remark, VER_NUM verNum, ATTR_CODE attrCode
+    CREATE_DATE createDate, UPDATE_STAFF updateStaff, UPDATE_DATE updateDate, REMARK remark, VER_NUM verNum, ATTR_CODE attrCode,OFFER_ATTR_ID offerAttrId
 from ord_offer_inst_attr
  WHERE ARCH_GRP_ID = #{ARCH_GRP_ID,jdbcType=BIGINT} 
      AND  ORDER_ITEM_ID = #{ORDER_ITEM_ID,jdbcType=BIGINT} 
      AND  OFFER_INST_ID = #{offerInstId,jdbcType=BIGINT}
+</select>
+    <select id="selectOrdOfferInstAttrDec" resultType="java.util.Map" parameterType="map"  >
+select
+  ARCH_GRP_ID, ORDER_ITEM_ID, OFFER_INST_ATTR_ID offerInstAttrId, OFFER_INST_ID offerInstId, PAR_OFFER_INST_ATTR_ID parOfferInstAttrId,
+    OBJ_TYPE objType, OBJ_ID objId, ATTR_ID attrId, ATTR_VALUE_ID attrValueId, ATTR_VALUE attrValue, EFF_DATE effDate, EXP_DATE expDate, APPLY_REGION_ID applyRegionId,
+    BUSI_MOD_EFF_DATE busiModEffDate, ROW_ID rowId, OLD_ROW_ID oldRowId, OPER_TYPE operType, STATUS_CD statusCd, STATUS_DATE statusDate, CREATE_STAFF createStaff,
+    CREATE_DATE createDate, UPDATE_STAFF updateStaff, UPDATE_DATE updateDate, REMARK remark, VER_NUM verNum, ATTR_CODE attrCode,OFFER_ATTR_ID offerAttrId
+from ord_offer_inst_attr
+ WHERE ARCH_GRP_ID = #{ARCH_GRP_ID,jdbcType=BIGINT}
+     AND  ORDER_ITEM_ID = #{ORDER_ITEM_ID,jdbcType=BIGINT}
+     AND  OFFER_INST_ID = #{offerInstId,jdbcType=BIGINT}
+     order by OPER_TYPE DESC
 </select>
 <select id="selectOrdOfferInstAttr1000" resultType="java.util.Map" parameterType="map"  >
 select 
@@ -346,7 +598,12 @@ select
      AND  ORDER_ITEM_ID = #{ORDER_ITEM_ID,jdbcType=BIGINT} 
      AND OFFER_INST_ID = #{offerInstId,jdbcType=BIGINT} 
 </select>
-
+    <select id="selectOrdOfferObjInstRelForObjectId" resultType="java.util.Map" parameterType="map"  >
+select OBJ_ID objId
+ from ORD_OFFER_OBJ_INST_REL
+ WHERE ARCH_GRP_ID = #{ARCH_GRP_ID,jdbcType=BIGINT}
+     AND OFFER_INST_ID = #{offerInstId,jdbcType=BIGINT}
+</select>
 <select id="selectOrdOfferProdInstRel" resultType="java.util.Map" parameterType="map"  >
 SELECT 
  ARCH_GRP_ID, ORDER_ITEM_ID, OFFER_PROD_INST_REL_ID offerProdInstRelId, OFFER_INST_ID offerInstId, PROD_INST_ID prodInstId, 
@@ -357,7 +614,7 @@ SELECT
 FROM ORD_OFFER_PROD_INST_REL
 WHERE ARCH_GRP_ID = #{ARCH_GRP_ID,jdbcType=BIGINT} 
      AND  ORDER_ITEM_ID = #{ORDER_ITEM_ID,jdbcType=BIGINT} 
-     and prod_use_type=1000
+     <!--and prod_use_type=1000 -->
      and OFFER_INST_ID = #{offerInstId,jdbcType=BIGINT} 
 </select>
 <select id="selectOrdOfferProdInstRel1300" resultType="java.util.Map" parameterType="map"  >
@@ -371,6 +628,12 @@ FROM ORD_OFFER_PROD_INST_REL
 WHERE ARCH_GRP_ID = #{ARCH_GRP_ID,jdbcType=BIGINT} 
      and OPER_TYPE=1300
      and OFFER_INST_ID = #{offerInstId,jdbcType=BIGINT} 
+</select>
+    <select id="selectOrdOfferProdInstRelForProdInst" resultType="java.util.Map" parameterType="map"  >
+SELECT PROD_INST_ID prodInstId
+FROM ORD_OFFER_PROD_INST_REL
+WHERE ARCH_GRP_ID = #{archGrpId,jdbcType=BIGINT}
+     and OFFER_INST_ID = #{offerInstId,jdbcType=BIGINT}
 </select>
 <select id="selectOrdOfferInst" resultType="java.util.Map" parameterType="map"  >
 SELECT 
@@ -387,6 +650,18 @@ WHERE ARCH_GRP_ID = #{ARCH_GRP_ID,jdbcType=BIGINT}
       </if> -->    
  ORDER BY OPER_TYPE, ROW_ID
 </select>
+
+    <select id="selectCntOrdOfferProdInst" resultType="java.lang.Long" parameterType="map"  >
+        SELECT
+        count(1)
+        FROM  ORD_OFFER_INST a, ord_offer_prod_inst_rel b
+        WHERE a.ARCH_GRP_ID = #{ARCH_GRP_ID,jdbcType=BIGINT}
+        AND  a.ORDER_ITEM_ID = #{ORDER_ITEM_ID,jdbcType=BIGINT}
+        and a.offer_inst_id = #{offerInstId,jdbcType=BIGINT }
+        and a.offer_inst_id = b.offer_inst_id
+       and a.ARCH_GRP_ID = b.ARCH_GRP_ID
+       and a.ORDER_ITEM_ID = b.ORDER_ITEM_ID
+    </select>
 <!-- add by wangbaoqiang -->
 <select id="selectOrdOfferInstFromRowId" resultType="java.util.Map" parameterType="map"  >
 SELECT 
@@ -399,7 +674,6 @@ FROM  ORD_OFFER_INST
 WHERE ARCH_GRP_ID = #{ARCH_GRP_ID,jdbcType=BIGINT}     
         AND ROW_ID=#{rowId,jdbcType=BIGINT} 
 </select>
-<!-- add end -->
 <select id="selectOrdProdInstAcctRel" resultType="java.util.Map" parameterType="map"  >
 SELECT 
 ARCH_GRP_ID, ORDER_ITEM_ID, PROD_INST_ACCT_REL_ID prodInstAcctRelId, ACCT_ID acctId, ACCT_ITEM_GROUP_ID acctItemGroupId, PROD_INST_ID prodInstId, 
@@ -448,7 +722,15 @@ WHERE ARCH_GRP_ID = #{ARCH_GRP_ID,jdbcType=BIGINT}
 
 
 </select>
-
+    <select id="selectOrdProdInstRelFromRowId" resultType="java.util.Map" parameterType="map"  >
+SELECT
+ ARCH_GRP_ID, ORDER_ITEM_ID, PROD_INST_REL_ID prodInstRelId, A_PROD_INST_ID aProdInstId, Z_PROD_INST_ID zProdInstId, REL_TYPE relType,
+    ROLE_ID roleId, ROW_ID rowId, OLD_ROW_ID oldRowId, OPER_TYPE operType, STATUS_CD statusCd, STATUS_DATE statusDate, CREATE_STAFF createStaff, CREATE_DATE createDate,
+    UPDATE_STAFF updateStaff, UPDATE_DATE updateDate, REMARK remark, VER_NUM verNum, EFF_DATE effDate, EXP_DATE expDate
+FROM  ORD_PROD_INST_REL
+WHERE ARCH_GRP_ID = #{ARCH_GRP_ID,jdbcType=BIGINT}
+     AND  ROW_ID = #{rowId,jdbcType=BIGINT}
+</select>
 <!-- add end -->
 <select id="selectOrdProdInstRelFrom1000" resultType="java.util.Map" parameterType="map"  >
 SELECT 
@@ -477,9 +759,19 @@ ARCH_GRP_ID, ORDER_ITEM_ID, PROD_INST_ATTR_ID prodInstAttrId, PAR_PROD_INST_ATTR
     VER_NUM verNum, ATTR_CODE attrCode
 FROM ORD_PROD_INST_ATTR
 WHERE ARCH_GRP_ID = #{ARCH_GRP_ID,jdbcType=BIGINT} 
-     AND  ORDER_ITEM_ID = #{ORDER_ITEM_ID,jdbcType=BIGINT} 
+     AND  ORDER_ITEM_ID = #{ORDER_ITEM_ID,jdbcType=BIGINT}
     order by ROW_ID
+</select>
 
+    <select id="selectOrdProdInstAttrFromRowId" resultType="java.util.Map" parameterType="map"  >
+SELECT
+ARCH_GRP_ID, ORDER_ITEM_ID, PROD_INST_ATTR_ID prodInstAttrId, PAR_PROD_INST_ATTR_ID  parProdInstAttrId, PROD_INST_ID prodInstId,
+    ATTR_ID attrId, ATTR_VALUE_ID attrValueId, ATTR_VALUE attrValue, BUSI_MOD_DATE busiModDate, ROW_ID rowId, OLD_ROW_ID oldRowId, OPER_TYPE operType,
+    STATUS_CD statusCd, STATUS_DATE statusDate, CREATE_STAFF createStaff, CREATE_DATE createDate, UPDATE_STAFF updateStaff, UPDATE_DATE updateDate, REMARK remark,
+    VER_NUM verNum, ATTR_CODE attrCode
+FROM ORD_PROD_INST_ATTR
+WHERE ARCH_GRP_ID = #{ARCH_GRP_ID,jdbcType=BIGINT}
+     AND  ROW_ID = #{rowId,jdbcType=BIGINT}
 </select>
 <!-- add by wangbaoqiang 中继类型判断 -->
 <select id="selectOrdProdInstAttrForTrunk" resultType="java.util.Map" parameterType="map"  >
@@ -590,7 +882,7 @@ select
      AND  ORDER_ITEM_ID = #{ORDER_ITEM_ID,jdbcType=BIGINT} 
      AND PROD_USE_TYPE = 2000
      and OPER_TYPE = 1300
-     order by ORDER_ITEM_ID  
+     <!--order by ORDER_ITEM_ID -->
 </select>
 <!--  add by wangbaoqiang end-->
 
@@ -738,8 +1030,9 @@ select
     ARCH_GRP_ID, SEQ_NO, ORDER_ITEM_ID, SERVICE_OFFER_ID, OBJ_ID, TABLE_NAME, CREATE_DATE, 
     SERVICE_OFFER_NAME, OBJ_SPEC, OBJ_SPEC_NAME
     from ord_bill_obj
-     WHERE TABLE_NAME IN ('ORD_PARTY', 'ORD_CUSTOMER','ORD_TAX_PAYER', 'ORD_ACCOUNT', 'ORD_PROD_INST', 'ORD_PROD_INST_ACCT_REL','ORD_OFFER_INST','ORD_OFFER_PROD_INST_REL','ORD_OFFER_INST_ATTR')
+     WHERE TABLE_NAME IN ('ORD_PARTY', 'ORD_CUSTOMER','ORD_TAX_PAYER', 'ORD_ACCOUNT', 'ORD_PROD_INST', 'ORD_PROD_INST_ACCT_REL','ORD_OFFER_INST')
      AND ARCH_GRP_ID = #{archGrpId,jdbcType=BIGINT}
+     /*AND STATUS_CD = 'N'*/
      ORDER BY SEQ_NO
   </select>
 
@@ -754,17 +1047,33 @@ select
 			PROC_FLAG = #{proc_flag}
 		</when>
 		<otherwise>
-			PROC_FLAG = '0' 
+            PROC_FLAG = '0'
 		</otherwise>
 	</choose>
     <if test="mod != null and  mod !='' " >       
         and MOD(CUST_ID, #{mod}) = #{modValue}
     </if>
-    <if test="regionId != null and regionId !='' " >       
-        and REGION_ID = #{regionId}
-    </if>
-	<!-- and ARCH_GRP_ID in (310000091841) -->
-    ORDER BY FINISH_DATE, ARCH_GRP_ID limit 0, 200
+      <choose>
+          <when test="regionFlag=='in'">
+              and SUBSTR(REGION_ID,1,5) in (${regionId})
+          </when>
+          <when test="regionFlag =='notin'">
+              and SUBSTR(REGION_ID,1,5) not in (${regionId})
+          </when>
+          <when test="regionId != null and regionId !='' ">
+              and SUBSTR(REGION_ID,1,5) = #{regionId}
+          </when>
+      </choose>
+      <!--and ARCH_GRP_ID = '12571614' -->
+      <choose>
+          <when test="proc_flag =='2'.toString()">
+              and IFNULL(PROC_CNT,0) &lt; 200 ORDER BY FINISH_DATE, ARCH_GRP_ID  limit 0, 5000
+          </when>
+          <otherwise>
+              and IFNULL(PROC_CNT,0) &lt; 200 ORDER BY FINISH_DATE, ARCH_GRP_ID limit 0, 1000
+          </otherwise>
+      </choose>
+
   </select>
   <select id="selectOrdBillCustId" resultType="java.util.Map" parameterType="java.lang.Long" >
     select
@@ -1059,12 +1368,14 @@ VER_NUM verNum,ATTR_VALUE_ID attrValueId
 </select>
 
 <select id="getOrdProdInstAcctRelAttr" resultType="java.util.Map" parameterType="map"  >
-      select *
+      select
+      ROW_ID , ARCH_GRP_ID, ORDER_ITEM_ID, PROD_INST_ACCT_REL_ATTR_ID, PROD_INST_ACCT_REL_ID,
+    ATTR_ID, ATTR_VALUE_ID, ATTR_VALUE, ATTR_NAME, OLD_ROW_ID, OPER_TYPE, EFF_DATE, EXP_DATE,
+    STATUS_CD, STATUS_DATE, CREATE_STAFF, CREATE_DATE, UPDATE_STAFF, UPDATE_DATE, VER_NUM
       from ORD_PROD_INST_ACCT_REL_ATTR
       where OPER_TYPE = #{operType}
       and ARCH_GRP_ID=#{ARCH_GRP_ID}
       and ORDER_ITEM_ID=#{ORDER_ITEM_ID}
-      and ATTR_ID!="109000002"
 </select>
 
 <select id="getOperFlag" resultType="java.lang.Long" parameterType="map"  >
@@ -1076,7 +1387,12 @@ VER_NUM verNum,ATTR_VALUE_ID attrValueId
       and PROD_ID = #{prodId}
       and ORDER_ITEM_ID=#{ORDER_ITEM_ID}
 </select>
-
+    <select id="getCntOrdBillObj" resultType="java.lang.Long" parameterType="map"  >
+      select count(1)
+      from ord_bill_obj
+      where  ARCH_GRP_ID=#{ARCH_GRP_ID}
+      and STATUS_CD='N'
+</select>
   <select id="getAccount" resultType="java.util.Map" parameterType="map" >
   	 select 
  	ARCH_GRP_ID, ORDER_ITEM_ID, ACCT_ID acctId, ACCT_NAME acctName, ACCT_CD acctCd, CUST_ID custId, ACCT_LOGIN_NAME acctLoginName, 
@@ -1151,7 +1467,7 @@ VER_NUM verNum,ATTR_VALUE_ID attrValueId
   </select>
   <select id="selectTifOrgContrast" resultType="java.util.Map" parameterType="map" >
   	 select 
- 	common_region_id commonRegionId, area_code areaCode, bureau_no_97, bureau_name_97, org_id_bill, org_name_bill, 
+ 	common_region_id commonRegionId, area_code areaCode, bureau_no_97, bureau_name_97, org_id_bill orgIdBill, org_name_bill,
     description, trunk_id_bill trunkIdBill
     From tif_bureau_org_contrast
      WHERE  COMMON_REGION_ID=#{regionId,jdbcType=BIGINT}
@@ -1172,8 +1488,8 @@ VER_NUM verNum,ATTR_VALUE_ID attrValueId
     where PROD_ID_97 = #{prodId,jdbcType=VARCHAR}
   </select>
 	<!-- add end -->
-      <select id="getOrdBillAndOrdBillProdInst" resultType="java.util.Map" parameterType="map">
-        select  A.*, B.*
+    <select id="getOrdBillAndOrdBillProdInst" resultType="java.util.HashMap"  parameterType="map">
+        select  A.ARCH_GRP_ID
         from ORD_BILL A ,ORD_BILL_PROD_INST B
         WHERE A.ARCH_GRP_ID = B.ARCH_GRP_ID
         AND B.PROD_INST_ID = #{prodInstId}
@@ -1188,10 +1504,10 @@ VER_NUM verNum,ATTR_VALUE_ID attrValueId
         from ord_bill
         where ARCH_GRP_ID = ${ARCH_GRP_ID}
     </select>
-        <select id="getOrdBillProdInst" resultType="java.util.Map" parameterType="map" >
-  	 select *
+    <select id="getOrdBillProdInst" resultType="java.util.HashMap" parameterType="map" >
+  	 select PROD_INST_ID
   	 FROM ORD_BILL_PROD_INST
-  	 where ARCH_GRP_ID = ${ARCH_GRP_ID}
+  	 where ARCH_GRP_ID = #{ARCH_GRP_ID}
   	 ORDER BY PROD_INST_ID
   </select>
 <select id="selectCntOrdProdInstState" resultType="java.lang.Long" parameterType="map" >
@@ -1249,8 +1565,10 @@ WHERE ARCH_GRP_ID = #{ARCH_GRP_ID,jdbcType=BIGINT}
             STATE state, STATUS_CD statusCd
         FROM crm_rent
         WHERE ARCH_GRP_ID = #{archGrpId}
-        AND ORDER_ITEM_ID = #{orderItmeId}
+        AND ORDER_ITEM_ID = #{orderItemId}
+        <if test="offerInstId != 0" >
         AND OFFER_INST_ID = #{offerInstId}
+        </if>
     </select>
     <select id="selectOneItemResult" resultType="java.util.Map">
         SELECT
@@ -1262,16 +1580,41 @@ WHERE ARCH_GRP_ID = #{ARCH_GRP_ID,jdbcType=BIGINT}
     BUSI_NAME, EXT_ACCT_ITEM_ID, PROD_ID, STAFF_ID, ORG_ID, PROC_FLAG, REMARKS
  FROM ONE_ITEM_RESULT
  where ARCH_GRP_ID = #{archGrpId}
- AND ORDER_ITEM_ID = #{orderItmeId}
+ AND ORDER_ITEM_ID = #{orderItemId}
     </select>
     <select id="getOneItemResultFromArchGrpId" resultType="java.util.Map">
-       SELECT ARCH_GRP_ID, ONE_ACCT_ITEM_ID, CUST_ORDER_ID, ORDER_ITEM_ID, SOURCE_TYPE, BILL_ID,
-    PAYMENT_ID, ACCT_ITEM_TYPE_ID, BILL_ACCT_ITEM_TYPE_ID, BALANCE_TYPE_ID, BILLING_CYCLE_ID,
-    ITEM_SOURCE_ID, ACCT_ID, PROD_INST_ID, OFFER_INST_ID, OFFER_ID, REAL_AMOUNT, TAX_RATE_CONFIG_ID,
-    TAX_RATE, TAX, PRICE, RESULT_ITEM_TYPE, CREATE_DATE, CHARGE_METHOD, STATUS_CD, STATUS_DATE,
-    ORI_ACCT_ITEM_ID, LAN_ID, IF_CHARGE_OFF, MERGE_ACCT_DEAL_TIME, PAID_IN_AMOUNT, RECEIPT_ID,
-    BUSI_NAME, EXT_ACCT_ITEM_ID, PROD_ID, STAFF_ID, ORG_ID, PROC_FLAG, REMARKS
+       SELECT ARCH_GRP_ID archGrpId, ONE_ACCT_ITEM_ID oneAcctItemId, CUST_ORDER_ID custOrderId, ORDER_ITEM_ID orderItemId, SOURCE_TYPE sourceType, BILL_ID billId,
+    PAYMENT_ID paymentId, ACCT_ITEM_TYPE_ID acctItemTypeId, BILL_ACCT_ITEM_TYPE_ID billAcctItemTypeId, BALANCE_TYPE_ID balanceTypeId, BILLING_CYCLE_ID billingCycleId,
+    ITEM_SOURCE_ID itemSourceId, ACCT_ID acctId, PROD_INST_ID prodInstId, OFFER_INST_ID offerInstId, OFFER_ID offerId, REAL_AMOUNT realAmount, TAX_RATE_CONFIG_ID taxRateConfigId,
+    TAX_RATE taxRate, TAX tax, PRICE price, RESULT_ITEM_TYPE resultItemType, CREATE_DATE createDate, CHARGE_METHOD chargeMethod, STATUS_CD statusCd, STATUS_DATE statusDate,
+    ORI_ACCT_ITEM_ID oriAcctItemId, LAN_ID lanId, IF_CHARGE_OFF ifChargeOff, MERGE_ACCT_DEAL_TIME mergeAcctDealTime, PAID_IN_AMOUNT paidInAmount, RECEIPT_ID receiptId,
+    BUSI_NAME busiName, EXT_ACCT_ITEM_ID extAcctItemId, PROD_ID prodId, STAFF_ID staffId, ORG_ID orgId, PROC_FLAG procFlag, REMARKS remarks
  FROM ONE_ITEM_RESULT
  WHERE ARCH_GRP_ID = #{archGrpId}
+ and ORDER_ITEM_ID = #{orderItemId}
+    </select>
+    <select id="getOneItemResultHisFromArchGrpId" resultType="java.util.Map">
+       SELECT ARCH_GRP_ID archGrpId, ONE_ACCT_ITEM_ID oneAcctItemId, CUST_ORDER_ID custOrderId, ORDER_ITEM_ID orderItemId, SOURCE_TYPE sourceType, BILL_ID billId,
+    PAYMENT_ID paymentId, ACCT_ITEM_TYPE_ID acctItemTypeId, BILL_ACCT_ITEM_TYPE_ID billAcctItemTypeId, BALANCE_TYPE_ID balanceTypeId, BILLING_CYCLE_ID billingCycleId,
+    ITEM_SOURCE_ID itemSourceId, ACCT_ID acctId, PROD_INST_ID prodInstId, OFFER_INST_ID offerInstId, OFFER_ID offerId, REAL_AMOUNT realAmount, TAX_RATE_CONFIG_ID taxRateConfigId,
+    TAX_RATE taxRate, TAX tax, PRICE price, RESULT_ITEM_TYPE resultItemType, CREATE_DATE createDate, CHARGE_METHOD chargeMethod, STATUS_CD statusCd, STATUS_DATE statusDate,
+    ORI_ACCT_ITEM_ID oriAcctItemId, LAN_ID lanId, IF_CHARGE_OFF ifChargeOff, MERGE_ACCT_DEAL_TIME mergeAcctDealTime, PAID_IN_AMOUNT paidInAmount, RECEIPT_ID receiptId,
+    BUSI_NAME busiName, EXT_ACCT_ITEM_ID extAcctItemId, PROD_ID prodId, STAFF_ID staffId, ORG_ID orgId, PROC_FLAG procFlag, REMARKS remarks
+ FROM one_item_result_his
+ WHERE ARCH_GRP_ID = #{archGrpId}
+ and ORDER_ITEM_ID = #{orderItemId}
+    </select>
+    <select id="selectTifObjectId" resultType="java.util.Map">
+        select  DISCT_ID_97, DISCT_OBJECT_ID_97, DISCT_OBJECT_NAME_97, DISCT_OBJECT_ID_BILL, DISCT_OBJECT_NAME_BILL,
+    DESCRIPTION
+        from tif_disct_object_id_contrast
+        where DISCT_ID_97 = #{offerId,jdbcType=BIGINT}
+        and DISCT_OBJECT_ID_97 = #{roleId,jdbcType=VARCHAR}
+    </select>
+    <select id="selectServiceOfferContrast" resultType="java.util.Map">
+        select
+        SERVCIE_OFFER_ID servcieOfferId, SERVICE_OFFER_NAME serviceOfferName, STOP_TYPE  stopType, STATUS_CD statusCd, BILL_STATUS_CD billStatusCd, REMARK remark
+        from service_offer_contrast
+        where SERVCIE_OFFER_ID = #{servcieOfferId,jdbcType=VARCHAR}
     </select>
 </mapper>

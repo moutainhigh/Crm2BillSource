@@ -11,7 +11,6 @@
 	FROM ORD_ACCOUNT
 	WHERE  ARCH_GRP_ID = #{ARCH_GRP_ID,jdbcType=BIGINT}
       AND  ORDER_ITEM_ID = #{ORDER_ITEM_ID,jdbcType=BIGINT}
-      AND EXT_ACCT_ID = #{extAcctId,jdbcType=BIGINT}
 
 </select>
 

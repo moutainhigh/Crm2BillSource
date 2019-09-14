@@ -12,8 +12,8 @@ import java.util.Map;
  * @Software: IntelliJ IDEA 2019.3.15
  */
 public interface IHisService {
-     int selectProdInst(Map itemMap, Map userMap, Message msg);
-     int insertProdInst(Map itemMap, Map userMap, Message msg);
+     int backupProdInst(Map itemMap, Map userMap, Message msg);
+//     int insertProdInst(Map itemMap, Map userMap, Message msg);
 	public int insertCustomerHis(Map map) throws Exception;
 	public int insertCustContactInfoRelHis(Map map) throws Exception;
 	public int insertAccountHis(Map map);//账户域

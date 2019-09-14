@@ -1,9 +1,9 @@
 package com.al.nppm.common.utils;
 
 
-import java.util.Properties;
-
 import org.springframework.beans.factory.FactoryBean;
+
+import java.util.Properties;
 
 
 
@@ -37,8 +37,8 @@ public class PropertiesEncryptFactoryBean implements FactoryBean {
     
     public static void main(String[] args) throws Exception {
 //    	System.out.println(PasswordUtil.encrypt("12131111111", "12131111111"));
-    	System.out.println(PasswordUtil.encrypt("2019@Intf", "bss@2018"));
-    	System.out.println(PasswordUtil.decrypt("85686bc53085b99b3986013345e577e6", "bss@2018"));
+    	System.out.println(PasswordUtil.encrypt("123456", "bss@2018"));
+    	System.out.println(PasswordUtil.decrypt("ea59338cea8de265019685f346b6833b", "bss@2018"));
     	
 //    	String str=new String(Base64.decodeBase64("VGNzXzIZNDUK".getBytes()));
 //    	System.out.println(new BASE64Encoder().encode(originalPassword.getBytes()));

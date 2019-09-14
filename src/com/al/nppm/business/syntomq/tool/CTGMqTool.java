@@ -1,9 +1,6 @@
 package com.al.nppm.business.syntomq.tool;
 
-import java.util.Properties;
-
-import org.apache.log4j.Logger;
-
+import com.al.nppm.common.utils.PasswordUtil;
 import com.al.nppm.common.utils.PropertiesUtil;
 import com.ctg.mq.api.CTGMQFactory;
 import com.ctg.mq.api.IMQProducer;
@@ -12,6 +9,9 @@ import com.ctg.mq.api.bean.MQMessage;
 import com.ctg.mq.api.bean.MQSendResult;
 import com.ctg.mq.api.bean.MQSendStatus;
 import com.ctg.mq.api.exception.MQException;
+import org.apache.log4j.Logger;
+
+import java.util.Properties;
 
 
 public class CTGMqTool {
@@ -34,16 +34,19 @@ public class CTGMqTool {
         properties.setProperty(PropertyKeyConst.NamesrvAuthID, "admin");
         properties.setProperty(PropertyKeyConst.NamesrvAuthPwd, "123456");
         */
-		properties.setProperty(PropertyKeyConst.ProducerGroupName, propertiesUtil.readProperty("mq.ProducerGroupName"));
-        properties.setProperty(PropertyKeyConst.NamesrvAddr, propertiesUtil.readProperty("mq.NamesrvAddr"));
-        properties.setProperty(PropertyKeyConst.NamesrvAuthID, propertiesUtil.readProperty("mq.NamesrvAuthID"));
-        properties.setProperty(PropertyKeyConst.NamesrvAuthPwd, propertiesUtil.readProperty("mq.NamesrvAuthPwd"));
-        
-        producer = CTGMQFactory.createProducer(properties);
-        try {
-        	connect =producer.connect();
+		try {
+			properties.setProperty(PropertyKeyConst.ProducerGroupName, propertiesUtil.readProperty("mq.ProducerGroupName"));
+			properties.setProperty(PropertyKeyConst.NamesrvAddr, propertiesUtil.readProperty("mq.NamesrvAddr"));
+			properties.setProperty(PropertyKeyConst.NamesrvAuthID, propertiesUtil.readProperty("mq.NamesrvAuthID"));
+
+			properties.setProperty(PropertyKeyConst.NamesrvAuthPwd, PasswordUtil.decrypt(propertiesUtil.readProperty("mq.NamesrvAuthPwd"),"bss@2018"));
+			properties.setProperty(PropertyKeyConst.MaxMessageSize,propertiesUtil.readProperty("mq.MaxMessageSize"));
+			producer = CTGMQFactory.createProducer(properties);
+			connect =producer.connect();
 		} catch (MQException e) {
 			
+			e.printStackTrace();
+		}catch (Exception e){
 			e.printStackTrace();
 		}
 	}
@@ -62,7 +65,7 @@ public class CTGMqTool {
 	              return STATUS.CONNECTERR;
 	        }
         	long startTime=System.currentTimeMillis();
-            MQMessage message = new MQMessage(topic,messageId,messageType,msg.getBytes());
+            MQMessage message = new MQMessage(topic,messageId,messageType,msg.getBytes("UTF-8"));
             MQSendResult sendResult = producer.send(message);
             logger.debug("发送消息耗时："+(System.currentTimeMillis()-startTime)+"毫秒");
             if (sendResult.getSendStatus()==MQSendStatus.SEND_OK) {

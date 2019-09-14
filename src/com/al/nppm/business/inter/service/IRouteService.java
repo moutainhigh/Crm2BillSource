@@ -18,7 +18,7 @@ public interface IRouteService {
     * @return java.lang.Long
      * @throws Exception 
     **/
-    Long getRouteIdForTaxPayer(Long archGrpId, Long orderItemId, Long taxPayerId, Message msg) throws Exception;
+    Long getRouteIdForTaxPayer(Long archGrpId, Long orderItemId, Long taxPayerId, Message msg);
     /**
     * @Author maozp3
     * @Description: 取ord_ACCOUNT表的acct_id字段，作为EXT_ACCT表的route_id值
@@ -27,9 +27,10 @@ public interface IRouteService {
     * @return java.lang.Long
      * @throws Exception 
     **/
-    Long getRouteIdForExtAcct(Long archGrpId, Long orderItemId, Long extAcctId, Message msg) throws Exception;
-    Long getRouteIdForProdInst(Long archGrpId,Long orderItemId,Long prodInstId,Message msg) throws Exception;
-    Long getRouteIdForOfferInst(Long archGrpId,Long orderItemId,Long offerInstId,Message msg) throws Exception;
-    Long getRouteIdForContactsInfoAttr(Long archGrpId,Long orderItemId,Long contactId,Message msg) throws Exception;
+    Long getRouteIdForExtAcct(Long archGrpId, Long orderItemId, Long extAcctId, Message msg);
+    Long getRouteIdForProdInst(Long archGrpId,Long orderItemId,Long prodInstId,Message msg);
+    Long getRouteIdForOfferInst(Long archGrpId,Long orderItemId,Long offerInstId,Message msg);
+    Long getRouteIdForContactsInfoAttr(Long archGrpId,Long orderItemId,Long contactId,Message msg);
+    public Long getProdInstRoute(Long prodInstId,Message msg) ;
 
 }

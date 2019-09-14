@@ -25,6 +25,7 @@ public interface IProdInstMapper {
 	
 	
 	public int updateProdInst(Map map);
+	public int updateProdInstForDisassembe(Map map);
 	public int updateProdInstState(Map map);
 	public int updateProdInstStateExt(Map map);
 	public int updateProdInstPaymode(Map map);
@@ -46,6 +47,8 @@ public interface IProdInstMapper {
 	
 	public List<Map<String,Object>> getProdInstAcctId(Map map);
     public List<Map<String,Object>> getProdInstAcctIdForNull(Map map);
+    public long getProdInstAcctCnt(Map map);
+	public long getProdInstAcctInvalidCnt(Map map);
     public List<Map<String,Object>> getProdInstFromAcctId(Map map); //add by wangbaoqiang
 	public List<Map<String,Object>> getProdInstOBJ(Map map); 
 	public List<Map<String,Object>> getProdInstRegion(Map map);
@@ -65,6 +68,9 @@ public interface IProdInstMapper {
 	public Map<String,Object> getProdInstIdFromAcctRel(Map map); //add by wangbaoqiang
 	public List<Map<String,Object>> getProdInstAcctRelIdFromRelId(Map map); // add by wangbaoqiang
 	public List<Map<String,Object>> getProdInstRelId(Map map);
+
+	public List<Map<String, Object>> getProdInstRelIdFromInstId(Map map);
+
 	public List<Map<String,Object>> getProdInstAcctRelId(Map map);
 
 	public List<Map<String,Object>> getProductType(Map map);
@@ -87,6 +93,9 @@ public interface IProdInstMapper {
 	public long getForCountByProdInstId(Map map);
 	public long getMinProdInstIdFromAcctRel(Map map);
 	public long getForAccNumCount(Map map);
+
+	public long getForProdInst2hx(Map map);
+
 	public long getForCdmaImsiCount(Map map);
 	public long getForGsmImsiCount2(Map map);
 	public long getForLteImsiCount2(Map map);
@@ -98,7 +107,11 @@ public interface IProdInstMapper {
 
 	public long getForProdInstAttrCount(Map map);
 	public long getForProdInstAttrId(Map map);
-	
+
+	public List<Map<String, Object>> getProdInstAttrIdFromAttrId(Map map);
+
+	public List<Map<String, Object>> getForNetWorkId(Map map);
+
 	public long getCntProdInstIdFromAcctRel(Map map); //add by wangbaoqiang
 
 	public int insertProdInstStateExt2(Map map);
@@ -106,7 +119,19 @@ public interface IProdInstMapper {
 
 	
 	public int updateProdInstServ(Map map);
+
 	public int updateProdInstOwnerCust(Map map);
+
+	public int updateProdInstBeginRentDate(Map map);
+
+	public int updateProdInstUserCust(Map map);
+
+	public int updateProdInstNumber(@Param("accNum") String accNum ,
+									@Param("prodInstId") long prodInstId,
+									@Param("routeId") long routeId);
+
+	public int updateProdInstAddress(Map map);
+
 	public int updateProdInstAccNum2(Map map);
 	public int updateProdInstStateExt2(Map map);
 	public int updateAccount(Map map);
@@ -148,5 +173,10 @@ public interface IProdInstMapper {
 	public int insertPayToPlan(Map map);
     public List<Map<String, Object>> getOneItemInstId(Map map);
     public List<Map<String, Object>> getOneItemAcctId(Map map);
+	public int inserCustChange(Map map);
 
+	public List<Map<String, Object>> selectPayToPlan(@Param("offerInstId") long offerInstId,
+													 @Param("offerId") long offerId);
+
+	public void udalStart();
 }

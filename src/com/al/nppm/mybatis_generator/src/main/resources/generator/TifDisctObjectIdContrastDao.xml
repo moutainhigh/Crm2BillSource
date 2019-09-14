@@ -1,0 +1,237 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="generator.TifDisctObjectIdContrastDao">
+  <resultMap id="BaseResultMap" type="generator.TifDisctObjectIdContrast">
+    <id column="DISCT_ID_97" jdbcType="BIGINT" property="disctId97" />
+    <id column="DISCT_OBJECT_ID_97" jdbcType="VARCHAR" property="disctObjectId97" />
+    <result column="DISCT_OBJECT_NAME_97" jdbcType="VARCHAR" property="disctObjectName97" />
+    <result column="DISCT_OBJECT_ID_BILL" jdbcType="BIGINT" property="disctObjectIdBill" />
+    <result column="DISCT_OBJECT_NAME_BILL" jdbcType="VARCHAR" property="disctObjectNameBill" />
+    <result column="DESCRIPTION" jdbcType="VARCHAR" property="description" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    DISCT_ID_97 , DISCT_OBJECT_ID_97, DISCT_OBJECT_NAME_97, DISCT_OBJECT_ID_BILL, DISCT_OBJECT_NAME_BILL,
+    DESCRIPTION
+  </sql>
+  <select id="selectByExample" parameterType="generator.TifDisctObjectIdContrastExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from tif_disct_object_id_contrast
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+    <if test="limit != null">
+      <if test="offset != null">
+        limit ${offset}, ${limit}
+      </if>
+      <if test="offset == null">
+        limit ${limit}
+      </if>
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" parameterType="generator.TifDisctObjectIdContrastKey" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from tif_disct_object_id_contrast
+    where DISCT_ID_97 = #{disctId97,jdbcType=BIGINT}
+      and DISCT_OBJECT_ID_97 = #{disctObjectId97,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="generator.TifDisctObjectIdContrastKey">
+    delete from tif_disct_object_id_contrast
+    where DISCT_ID_97 = #{disctId97,jdbcType=BIGINT}
+      and DISCT_OBJECT_ID_97 = #{disctObjectId97,jdbcType=VARCHAR}
+  </delete>
+  <delete id="deleteByExample" parameterType="generator.TifDisctObjectIdContrastExample">
+    delete from tif_disct_object_id_contrast
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="generator.TifDisctObjectIdContrast">
+    insert into tif_disct_object_id_contrast (DISCT_ID_97, DISCT_OBJECT_ID_97, DISCT_OBJECT_NAME_97, 
+      DISCT_OBJECT_ID_BILL, DISCT_OBJECT_NAME_BILL, 
+      DESCRIPTION)
+    values (#{disctId97,jdbcType=BIGINT}, #{disctObjectId97,jdbcType=VARCHAR}, #{disctObjectName97,jdbcType=VARCHAR}, 
+      #{disctObjectIdBill,jdbcType=BIGINT}, #{disctObjectNameBill,jdbcType=VARCHAR}, 
+      #{description,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="generator.TifDisctObjectIdContrast">
+    insert into tif_disct_object_id_contrast
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="disctId97 != null">
+        DISCT_ID_97,
+      </if>
+      <if test="disctObjectId97 != null">
+        DISCT_OBJECT_ID_97,
+      </if>
+      <if test="disctObjectName97 != null">
+        DISCT_OBJECT_NAME_97,
+      </if>
+      <if test="disctObjectIdBill != null">
+        DISCT_OBJECT_ID_BILL,
+      </if>
+      <if test="disctObjectNameBill != null">
+        DISCT_OBJECT_NAME_BILL,
+      </if>
+      <if test="description != null">
+        DESCRIPTION,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="disctId97 != null">
+        #{disctId97,jdbcType=BIGINT},
+      </if>
+      <if test="disctObjectId97 != null">
+        #{disctObjectId97,jdbcType=VARCHAR},
+      </if>
+      <if test="disctObjectName97 != null">
+        #{disctObjectName97,jdbcType=VARCHAR},
+      </if>
+      <if test="disctObjectIdBill != null">
+        #{disctObjectIdBill,jdbcType=BIGINT},
+      </if>
+      <if test="disctObjectNameBill != null">
+        #{disctObjectNameBill,jdbcType=VARCHAR},
+      </if>
+      <if test="description != null">
+        #{description,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="generator.TifDisctObjectIdContrastExample" resultType="java.lang.Long">
+    select count(*) from tif_disct_object_id_contrast
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map">
+    update tif_disct_object_id_contrast
+    <set>
+      <if test="record.disctId97 != null">
+        DISCT_ID_97 = #{record.disctId97,jdbcType=BIGINT},
+      </if>
+      <if test="record.disctObjectId97 != null">
+        DISCT_OBJECT_ID_97 = #{record.disctObjectId97,jdbcType=VARCHAR},
+      </if>
+      <if test="record.disctObjectName97 != null">
+        DISCT_OBJECT_NAME_97 = #{record.disctObjectName97,jdbcType=VARCHAR},
+      </if>
+      <if test="record.disctObjectIdBill != null">
+        DISCT_OBJECT_ID_BILL = #{record.disctObjectIdBill,jdbcType=BIGINT},
+      </if>
+      <if test="record.disctObjectNameBill != null">
+        DISCT_OBJECT_NAME_BILL = #{record.disctObjectNameBill,jdbcType=VARCHAR},
+      </if>
+      <if test="record.description != null">
+        DESCRIPTION = #{record.description,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update tif_disct_object_id_contrast
+    set DISCT_ID_97 = #{record.disctId97,jdbcType=BIGINT},
+      DISCT_OBJECT_ID_97 = #{record.disctObjectId97,jdbcType=VARCHAR},
+      DISCT_OBJECT_NAME_97 = #{record.disctObjectName97,jdbcType=VARCHAR},
+      DISCT_OBJECT_ID_BILL = #{record.disctObjectIdBill,jdbcType=BIGINT},
+      DISCT_OBJECT_NAME_BILL = #{record.disctObjectNameBill,jdbcType=VARCHAR},
+      DESCRIPTION = #{record.description,jdbcType=VARCHAR}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="generator.TifDisctObjectIdContrast">
+    update tif_disct_object_id_contrast
+    <set>
+      <if test="disctObjectName97 != null">
+        DISCT_OBJECT_NAME_97 = #{disctObjectName97,jdbcType=VARCHAR},
+      </if>
+      <if test="disctObjectIdBill != null">
+        DISCT_OBJECT_ID_BILL = #{disctObjectIdBill,jdbcType=BIGINT},
+      </if>
+      <if test="disctObjectNameBill != null">
+        DISCT_OBJECT_NAME_BILL = #{disctObjectNameBill,jdbcType=VARCHAR},
+      </if>
+      <if test="description != null">
+        DESCRIPTION = #{description,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where DISCT_ID_97 = #{disctId97,jdbcType=BIGINT}
+      and DISCT_OBJECT_ID_97 = #{disctObjectId97,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="generator.TifDisctObjectIdContrast">
+    update tif_disct_object_id_contrast
+    set DISCT_OBJECT_NAME_97 = #{disctObjectName97,jdbcType=VARCHAR},
+      DISCT_OBJECT_ID_BILL = #{disctObjectIdBill,jdbcType=BIGINT},
+      DISCT_OBJECT_NAME_BILL = #{disctObjectNameBill,jdbcType=VARCHAR},
+      DESCRIPTION = #{description,jdbcType=VARCHAR}
+    where DISCT_ID_97 = #{disctId97,jdbcType=BIGINT}
+      and DISCT_OBJECT_ID_97 = #{disctObjectId97,jdbcType=VARCHAR}
+  </update>
+</mapper>

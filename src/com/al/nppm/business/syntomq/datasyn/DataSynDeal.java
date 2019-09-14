@@ -1,13 +1,5 @@
 package com.al.nppm.business.syntomq.datasyn;
 
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import com.al.nppm.business.syntomq.tool.CTGMqTool;
 import com.al.nppm.business.syntomq.tool.STATUS;
 import com.al.nppm.common.utils.DateUtils;
@@ -15,10 +7,18 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 
+import java.text.SimpleDateFormat;
+import java.util.*;
+
 public class DataSynDeal {
 	private static SimpleDateFormat df = new SimpleDateFormat( "yyyyMMddHHmmss" );
 	private static SimpleDateFormat df1= new SimpleDateFormat( "yyyy-MM-dd" );
 	private static SimpleDateFormat df2= new SimpleDateFormat( "yyyy-MM-dd HH:mm:ss" );
+	public static Map<Integer, String> actionMap=new HashMap<Integer, String>(){{
+			put(1, "INSERT");
+			put(2, "UPDATE");
+			put(3, "DELETE");
+		}};
 	public static Map<String, Object> buildParam(){
 		Map<String, Object> param= new HashMap<String, Object>();
 		String time = DateUtils.dateString( new Date(), DateUtils.yyyyMMddTIME );
@@ -95,9 +95,14 @@ public class DataSynDeal {
 							resultMap.put( vString, df.format( d ) );
 						}
 					}
-				}else if (key.equals( "executetime" )) {
-					//Date d = (Date)map.get( key );
-					resultMap.put( "update_date",map.get( key ));
+				}
+				//送给密集计算框架的需要包含executetime字段
+//				else if (key.equals( "executetime" )) {
+//					//Date d = (Date)map.get( key );
+//					resultMap.put( "update_date",map.get( key ));
+//				}
+				else if(key.equals( "action" )){
+					resultMap.put( vString, actionMap.get(map.get( key )) );
 				}
 				else {
 					resultMap.put( vString, map.get( key ) );
@@ -194,7 +199,13 @@ public class DataSynDeal {
 		Map<String, String> map = new HashMap<String, String>();
 		for(String key : keys){
 			if (key.equals( "action" )) {
+				map.put( key, "action" );
+			}else if (key.equals( "act_id" )) {
 				map.put( key, "act_id" );
+			}else if(key.equals( "route_cust_id" )){
+                map.put( key, "route_cust_id" );
+            }else if(key.equals( "executetime" )){
+			map.put( key, "executetime" );
 			}else if (key.equals( "ARCH_GRP_ID" ) || key.equals( "ORDER_ITEM_ID" )) {//去除这两个
 
 			}else {

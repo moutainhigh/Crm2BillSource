@@ -1,32 +1,23 @@
 package com.al.nppm.business.inter.service.impl;
 
-import java.net.InetAddress;
-import java.net.NetworkInterface;
-import java.net.SocketException;
-import java.util.Arrays;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
+import com.al.nppm.business.account.service.impl.TifTaskCfgService;
+import com.al.nppm.business.common.SpringContextHolder;
+import com.al.nppm.business.inter.service.ITaskService;
+import com.al.nppm.common.utils.PropertiesUtil;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.quartz.JobDetail;
 import org.quartz.SchedulerException;
 import org.quartz.impl.StdScheduler;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.Trigger;
 import org.springframework.scheduling.quartz.CronTriggerBean;
 import org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean;
 import org.springframework.stereotype.Service;
 
-import com.al.nppm.business.account.service.impl.TifTaskCfgService;
-import com.al.nppm.business.common.SpringContextHolder;
-import com.al.nppm.business.inter.service.ITaskService;
-import com.al.nppm.common.utils.PropertiesUtil;
-import com.ctg.mq.api.IMQProducer;
+import java.net.InetAddress;
+import java.net.NetworkInterface;
+import java.net.SocketException;
+import java.util.*;
 
 @Service("taskService")
 public class TaskService implements ITaskService{
@@ -79,7 +70,6 @@ public class TaskService implements ITaskService{
 				}
 			}
 		} catch (SchedulerException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
@@ -129,7 +119,11 @@ public class TaskService implements ITaskService{
 //		    	t.getCronExpression();
 		    	
 //		    	f1.getArguments().
-		    	String[] agrs1=(String[]) f1.getArguments()[0];
+
+				String[] agrs1=new String[]{};
+				if(f1.getArguments().length>0){
+					 agrs1=(String[]) f1.getArguments()[0];
+				}
 		    	
 		    	
 		    	if(!Arrays.equals(args, agrs1)||!t.getCronExpression().equals(cronExpression)){
@@ -169,7 +163,6 @@ public class TaskService implements ITaskService{
 			schedulerFactory.pauseTrigger(jobName+"_Trigger", groupName);
 			
 		} catch (SchedulerException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 			logger.error(e.getMessage());
 		}

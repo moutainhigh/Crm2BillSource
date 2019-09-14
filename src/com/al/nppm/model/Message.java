@@ -6,7 +6,6 @@ public class Message {
 	public String resultCode;
 	public String resultMsg;
 	public int serviceId; 
-	
 	public String getResultCode() {
 		return resultCode;
 	}

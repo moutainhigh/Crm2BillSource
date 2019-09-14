@@ -28,7 +28,7 @@
     from tif_vpn_mem
     where vpn_code = #{vpnCode,jdbcType=VARCHAR}
     and mem_number = #{memNumber,jdbcType=VARCHAR}
-    and exp_date > #{memNumber,jdbcType=VARCHAR}
+    and exp_date > now()
   </select>
   <insert id="insertTifVpnGroup" parameterType="map" >
     insert into tif_vpn_group
@@ -139,5 +139,11 @@
     set 
       exp_date = #{expDate,jdbcType=DATE}
     where vpn_mem_id = #{vpnMemId,jdbcType=BIGINT}
+  </update>
+  <update id="updateTifVpnGroup" parameterType="java.util.HashMap" >
+    update tif_vpn_group
+    set
+      exp_date = #{expDate,jdbcType=DATE}
+    where vpn_code = #{vpn_code,jdbcType=VARCHAR}
   </update>
 </mapper>

@@ -19,7 +19,7 @@ public interface IRouteMapper {
 
     int insertProdInstRoute(Map map);
     int insertOfferInstRoute(Map map);
-    int updateProdInstRoute(Map map);
+
     Long getAccountByObjId(Long objId);
 
 

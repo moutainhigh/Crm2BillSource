@@ -40,11 +40,18 @@ public interface OrdBillHisMapper {
 	@SelectProvider(type=OrdBillHisProvider.class,method="selectOrdTable")
 	public List<Map<String,Object>> selectOrdTable(Map map);
 	
-	@InsertProvider(type=OrdBillHisProvider.class,method="insertOrdTableHis")
-	public void insertOrdTableHis(Map ordMap);
+//	@InsertProvider(type=OrdBillHisProvider.class,method="insertOrdTableHis")
+//	public void insertOrdTableHis(Map ordMap);
 
 	@DeleteProvider(type=OrdBillHisProvider.class,method="deleteOrdTable")
 	public void deleteOrdTable(Map ordMap);
+
+
+	@SelectProvider(type=OrdBillHisProvider.class,method="selectOneItemResult")
+	public List<Map<String,Object>> selectOneItemResult(Map map);
+
+	@SelectProvider(type=OrdBillHisProvider.class,method="selectOrdOfferInst")
+	public List<Map<String,Object>> selectOrdOfferInst(Map map);
 	
 	
 	

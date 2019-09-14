@@ -52,9 +52,13 @@ public interface OrdBillMapper {
 	// add end;
 	public List<Map<String, Object>> selectOrdProdInstAttr(Map map);
 
+	public List<Map<String, Object>> selectOrdProdInstAttrFromRowId(Map map);
+
 	public List<Map<String, Object>> selectOrdProdInstAttrForTrunk(Map map); // add by wangbaoqiang增加中继判断
 
 	public List<Map<String, Object>> selectOrdProdInstRel(Map map);
+
+	public List<Map<String, Object>> selectOrdProdInstRelFromRowId(Map map);
 
 	public Map<String, Object> selectOrdProdInstRelFrom1000(Map map); // add by wangbaoqiang
 
@@ -76,13 +80,21 @@ public interface OrdBillMapper {
 
 	public List<Map<String, Object>> selectOrdOfferProdInstRel(Map map);
 
+	/*public List<Map<String, Object>> CheckOfferChangIsExists(Map map);*/
 	public List<Map<String, Object>> selectOrdOfferProdInstRel1300(Map map);
+
+	public List<Map<String, Object>> selectOrdOfferProdInstRelForProdInst(@Param("archGrpId") long archGrpId,
+													 @Param("offerInstId") long offerInstId);
 
 	public List<Map<String, Object>> selectOrdOfferProdInstRelForRole(Map map);
 
 	public List<Map<String, Object>> selectOrdOfferObjInstRel(Map map);
 
+	public List<Map<String, Object>> selectOrdOfferObjInstRelForObjectId(@Param("archGrpId") long archGrpId,
+																		 @Param("offerInstId") long offerInstId);
 	public List<Map<String, Object>> selectOrdOfferInstAttr(Map map);
+
+	public List<Map<String, Object>> selectOrdOfferInstAttrDec(Map map);
 
 	public List<Map<String, Object>> selectOrdOfferInstAttr1000(Map map);
 
@@ -90,6 +102,9 @@ public interface OrdBillMapper {
 
 
 	public Long getOrdAccountById(Map map);
+	//判断接口成员表是否有数据
+	public Long selectCntOrdOfferProdInst(Map map);
+
 
 	public List<Map<String, Object>> getOfferInstAcctId(Map map);
 
@@ -100,11 +115,17 @@ public interface OrdBillMapper {
 	//一次性费用处理
 	public List<Map<String, Object>> getOneItemResult();
 
-	public List<Map<String, Object>> getOneItemResultFromArchGrpId(@Param("archGrpId") long archGrpId);
+	public List<Map<String, Object>> getOneItemResultFromArchGrpId(@Param("archGrpId") long archGrpId,
+																   @Param("orderItemId") long orderItemId);
+
+	public List<Map<String, Object>> getOneItemResultHisFromArchGrpId(@Param("archGrpId") long archGrpId,
+																   @Param("orderItemId") long orderItemId);
 
 	public int insertPayToPlan(Map map);
 
 	public int updateOneItemResult(Map m);
+
+	public int insertOneItemResultHis(Map map);
 
 	public int getPOfferPayPlan(Map m);
 
@@ -193,6 +214,8 @@ public interface OrdBillMapper {
 
 	public List<Map<String, Object>> getOrdBillAndOrdBillProdInst(Map map);
 
+	public Long getCntOrdBillObj(Map map);
+
 	//-------------------增加停机轨迹判断--------------------------
 	public Long selectCntOrdProdInstState(Map map);
 
@@ -204,12 +227,17 @@ public interface OrdBillMapper {
 
 	//--------------------CRM预存----------------------------------
 	public List<Map<String, Object>> selectCrmRent(@Param("archGrpId") long archGrpId,
-												   @Param("orderItmeId") long orderItmeId,
+												   @Param("orderItemId") long orderItemId,
 												   @Param("offerInstId") long offerInstId);
 
-	public Map<String, Object> selectOneItemResult(@Param("archGrpId") long archGrpId,
-														 @Param("orderItmeId") long orderItmeId);
+	public List<Map<String, Object>> selectOneItemResult(@Param("archGrpId") long archGrpId,
+														 @Param("orderItemId") long orderItemId);
 
+    public List<Map<String, Object>> selectTifObjectId(@Param("offerId") long offerId,
+                                                 @Param("roleId") String roleId);
+
+
+	public List<Map<String,Object>> selectServiceOfferContrast(String servcieOfferId);
 
 
 }

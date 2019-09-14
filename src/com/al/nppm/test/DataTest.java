@@ -1,17 +1,9 @@
 package com.al.nppm.test;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
+
+import java.sql.*;
 
 public class DataTest {
 
@@ -56,8 +48,6 @@ public class DataTest {
             String name = null;
             
             StringBuffer sb=new StringBuffer();
-         
-            
             while(rs.next()){
                 //获取stuname这列数据
                 name = rs.getString("column_name");
@@ -75,7 +65,6 @@ public class DataTest {
             //数据库连接失败异常处理
             e.printStackTrace();  
             }catch (Exception e) {
-            // TODO: handle exception
             e.printStackTrace();
         }finally{
 //            System.out.println("数据库数据成功获取！！");
@@ -83,7 +72,8 @@ public class DataTest {
     }
     
     public static String change(String name){
-    	String[] s=name.split("_");
+
+        String[] s=name.split("_");
         StringBuffer tmp=new StringBuffer();
         for(int i=0;i<s.length;i++){
         	
@@ -93,7 +83,7 @@ public class DataTest {
         		tmp.append(toUpperCaseFirstOne(s[i].toLowerCase()));
         	}
         }
-        return  tmp.toString();
+        return tmp.toString();
   	}
     
     public static String toUpperCaseFirstOne(String s){

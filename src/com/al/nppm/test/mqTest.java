@@ -1,10 +1,8 @@
 package com.al.nppm.test;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
 import com.al.nppm.common.utils.StringUtil;
+
+import java.text.ParseException;
 
 public class mqTest {
 
@@ -13,7 +11,6 @@ public class mqTest {
 	 * @throws ParseException 
 	 */
 	public static void main(String[] args) throws ParseException {
-		// TODO Auto-generated method stub
 /*		//SimpleDateFormat df = new SimpleDateFormat("YYYYMMDDHHmmss");
 		SimpleDateFormat d = new SimpleDateFormat("yyyyMMddHHmmss");
 		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -25,7 +22,7 @@ public class mqTest {
 		*/
 		String str ="18661263";
 		System.out.print(getOFferObjRelIdForNine(str));
-		
+
 	}
 	
 	

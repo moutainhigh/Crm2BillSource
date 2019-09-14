@@ -54,7 +54,10 @@
 </select>
 
 <select id="getExtAcctID" resultType="map" parameterType="map"  >
-    select EXT_ACCT_ID extAcctId ,ROUTE_ID routeId from ext_acct
+    select EXT_ACCT_ID extAcctId, CUST_ID custId, PAY_CHANNEL payChannel, PAY_ACCT_CODE payAcctCode, PAY_ACCT_NAME payAcctName, ACCT_OWNER_ORG acctOwnerOrg,
+    ACCT_OWNER_ORG_BRANCH acctOwnerOrgBranch, EFF_DATE effDate, EXP_DATE expDate, IF_CONTRACT_QUICK_PAY ifContractQuickPay, STATUS_CD statusCd, STATUS_DATE statusDate,
+    CREATE_STAFF createStaff, CREATE_DATE createDate, UPDATE_STAFF updateStaff, UPDATE_DATE updateDate, commision_agreement_id commisionAgreementId, ROUTE_ID routeId
+     from ext_acct
      where EXT_ACCT_ID = #{extAcctId,jdbcType=BIGINT}
      and route_id = #{routeId,jdbcType=BIGINT}
 </select>
@@ -62,11 +65,29 @@
  <update id="updateExtAcct" parameterType="map" >
     update ext_acct
     <set >
-       <if test="expDate != null" >
-        EXP_DATE = #{expDate,jdbcType=TIMESTAMP},
+      <if test="payChannel != null" >
+        PAY_CHANNEL = #{payChannel,jdbcType=VARCHAR},
       </if>
-       <if test="statusCd != null" >
-        STATUS_CD = #{statusCd,jdbcType=VARCHAR}
+      <if test="payAcctCode != null" >
+        PAY_ACCT_CODE = #{payAcctCode,jdbcType=VARCHAR},
+      </if>
+      <if test="payAcctName != null" >
+        PAY_ACCT_NAME = #{payAcctName,jdbcType=VARCHAR},
+      </if>
+      <if test="acctOwnerOrg != null" >
+        ACCT_OWNER_ORG = #{acctOwnerOrg,jdbcType=VARCHAR},
+      </if>
+      <if test="acctOwnerOrgBranch != null" >
+        ACCT_OWNER_ORG_BRANCH = #{acctOwnerOrgBranch,jdbcType=VARCHAR},
+      </if>
+      <if test="ifContractQuickPay != null" >
+        IF_CONTRACT_QUICK_PAY = #{ifContractQuickPay,jdbcType=VARCHAR},
+      </if>
+      <if test="custId != null" >
+        CUST_ID = #{custId,jdbcType=VARCHAR},
+      </if>
+      <if test="statusDate != null" >
+        STATUS_DATE = #{statusDate,jdbcType=DATE}
       </if>
      </set>
  			where EXT_ACCT_ID = #{extAcctId,jdbcType=BIGINT}
@@ -327,9 +348,9 @@
       <if test="acctName != null" >
         ACCT_NAME = #{acctName,jdbcType=VARCHAR},
       </if>
-      <if test="acctCd != null" >
+      <!--<if test="acctCd != null" >
         ACCT_CD = #{acctCd,jdbcType=VARCHAR},
-      </if>
+      </if>-->
       <if test="custId != null" >
         CUST_ID = #{custId,jdbcType=BIGINT},
       </if>
@@ -339,9 +360,9 @@
       <if test="prodInstId != null" >
         PROD_INST_ID = #{prodInstId,jdbcType=BIGINT},
       </if> 
-      <if test="statusDate != null" >
+      <!--<if test="statusDate != null" >
         STATUS_DATE = #{statusDate,jdbcType=DATE},
-      </if>
+      </if>-->
       <if test="extAcctId != null" >
         EXT_ACCT_ID = #{extAcctId,jdbcType=VARCHAR}
       </if>   
@@ -1815,9 +1836,9 @@ select seq_bill_service_log_id.nextval
       <if test="partyType != null" >
         PARTY_TYPE = #{partyType,jdbcType=VARCHAR},
       </if>
-      <if test="statusCd != null" >
+      <!--<if test="statusCd != null" >
         STATUS_CD = #{statusCd,jdbcType=VARCHAR},
-      </if>
+      </if>-->
       <if test="statusDate != null" >
         STATUS_DATE = #{statusDate,jdbcType=DATE},
       </if>
@@ -1827,7 +1848,7 @@ select seq_bill_service_log_id.nextval
       <if test="remark != null" >
         REMARK = #{remark,jdbcType=VARCHAR},
       </if>
-      <if test="extPartyId != null" >
+      <!--<if test="extPartyId != null" >
         EXT_PARTY_ID = #{extPartyId,jdbcType=VARCHAR},
       </if>
        <if test="idExpDate != null" >
@@ -1841,7 +1862,7 @@ select seq_bill_service_log_id.nextval
       </if>
       <if test="partyNbr != null" >
         PARTY_NBR = #{partyNbr,jdbcType=VARCHAR},
-      </if>
+      </if>-->
      </set>
  			where PARTY_ID = #{partyId,jdbcType=BIGINT}
  			and route_id = #{routeId,jdbcType=BIGINT}
@@ -1983,7 +2004,7 @@ select seq_bill_service_log_id.nextval
    <update id="updatePartyInd" parameterType="map" >
     update party_ind
     <set >
-      <if test="individualId != null" >
+      <!--<if test="individualId != null" >
         INDIVIDUAL_ID = #{individualId,jdbcType=BIGINT},
       </if>
       <if test="partyId != null" >
@@ -2024,16 +2045,16 @@ select seq_bill_service_log_id.nextval
       </if>
       <if test="statusCd != null" >
         STATUS_CD = #{statusCd,jdbcType=VARCHAR},
-      </if>
+      </if>-->
       <if test="statusDate != null" >
         STATUS_DATE = #{statusDate,jdbcType=DATE},
       </if>
-      <if test="createStaff != null" >
+      <!--<if test="createStaff != null" >
         CREATE_STAFF = #{createStaff,jdbcType=BIGINT},
       </if>
       <if test="createDate != null" >
         CREATE_DATE = #{createDate,jdbcType=DATE},
-      </if>
+      </if>-->
       <if test="updateStaff != null" >
         UPDATE_STAFF = #{updateStaff,jdbcType=BIGINT},
       </if>
@@ -2063,18 +2084,6 @@ select seq_bill_service_log_id.nextval
       <if test="roleType != null" >
         ROLE_TYPE,
       </if>
-      <if test="rowId != null" >
-        ROW_ID,
-      </if>
-      <if test="orderItemId != null" >
-        ORDER_ITEM_ID,
-      </if>
-      <if test="oldRowId != null" >
-        OLD_ROW_ID,
-      </if>
-      <if test="operType != null" >
-        OPER_TYPE,
-      </if>
       <if test="statusCd != null" >
         STATUS_CD,
       </if>
@@ -2096,8 +2105,8 @@ select seq_bill_service_log_id.nextval
       <if test="remark != null" >
         REMARK,
       </if>
-      <if test="verNum != null" >
-        VER_NUM,
+      <if test="partyRoleType != null" >
+        PARTY_ROLE_TYPE
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
@@ -2112,18 +2121,6 @@ select seq_bill_service_log_id.nextval
       </if>
       <if test="roleType != null" >
         #{roleType,jdbcType=VARCHAR},
-      </if>
-      <if test="rowId != null" >
-        #{rowId,jdbcType=BIGINT},
-      </if>
-      <if test="orderItemId != null" >
-        #{orderItemId,jdbcType=BIGINT},
-      </if>
-      <if test="oldRowId != null" >
-        #{oldRowId,jdbcType=BIGINT},
-      </if>
-      <if test="operType != null" >
-        #{operType,jdbcType=VARCHAR},
       </if>
       <if test="statusCd != null" >
         #{statusCd,jdbcType=VARCHAR},
@@ -2146,15 +2143,15 @@ select seq_bill_service_log_id.nextval
       <if test="remark != null" >
         #{remark,jdbcType=VARCHAR},
       </if>
-      <if test="verNum != null" >
-        #{verNum,jdbcType=BIGINT},
+      <if test="partyRoleType != null" >
+        #{partyRoleType,jdbcType=VARCHAR}
       </if>
     </trim>
   </insert>
   <update id="updatePartyRole" parameterType="map" >
     update party_role
     <set >
-      <if test="archGrpId != null" >
+      <!--<if test="archGrpId != null" >
         ARCH_GRP_ID = #{archGrpId,jdbcType=BIGINT},
       </if>
       <if test="partyRoleId != null" >
@@ -2166,30 +2163,18 @@ select seq_bill_service_log_id.nextval
       <if test="roleType != null" >
         ROLE_TYPE = #{roleType,jdbcType=VARCHAR},
       </if>
-      <if test="rowId != null" >
-        ROW_ID = #{rowId,jdbcType=BIGINT},
-      </if>
-      <if test="orderItemId != null" >
-        ORDER_ITEM_ID = #{orderItemId,jdbcType=BIGINT},
-      </if>
-      <if test="oldRowId != null" >
-        OLD_ROW_ID = #{oldRowId,jdbcType=BIGINT},
-      </if>
-      <if test="operType != null" >
-        OPER_TYPE = #{operType,jdbcType=VARCHAR},
-      </if>
       <if test="statusCd != null" >
         STATUS_CD = #{statusCd,jdbcType=VARCHAR},
-      </if>
+      </if>-->
       <if test="statusDate != null" >
         STATUS_DATE = #{statusDate,jdbcType=DATE},
       </if>
-      <if test="createStaff != null" >
+      <!--<if test="createStaff != null" >
         CREATE_STAFF = #{createStaff,jdbcType=BIGINT},
       </if>
       <if test="createDate != null" >
         CREATE_DATE = #{createDate,jdbcType=DATE},
-      </if>
+      </if>-->
       <if test="updateStaff != null" >
         UPDATE_STAFF = #{updateStaff,jdbcType=BIGINT},
       </if>
@@ -2197,10 +2182,7 @@ select seq_bill_service_log_id.nextval
         UPDATE_DATE = #{updateDate,jdbcType=DATE},
       </if>
       <if test="remark != null" >
-        REMARK = #{remark,jdbcType=VARCHAR},
-      </if>
-      <if test="verNum != null" >
-        VER_NUM = #{verNum,jdbcType=BIGINT},
+        REMARK = #{remark,jdbcType=VARCHAR}
       </if>
     </set>
      where PARTY_ROLE_ID = #{partyRoleId,jdbcType=BIGINT} 
@@ -2292,7 +2274,7 @@ select seq_bill_service_log_id.nextval
   <update id="updatePartyAttr" parameterType="map" >
     update party_attr
     <set >
-      <if test="partyAttrId != null" >
+      <!--<if test="partyAttrId != null" >
         PARTY_ATTR_ID = #{partyAttrId,jdbcType=BIGINT},
       </if>
       <if test="partyId != null" >
@@ -2306,16 +2288,16 @@ select seq_bill_service_log_id.nextval
       </if>
       <if test="statusCd != null" >
         STATUS_CD = #{statusCd,jdbcType=VARCHAR},
-      </if>
+      </if>-->
       <if test="statusDate != null" >
         STATUS_DATE = #{statusDate,jdbcType=DATE},
       </if>
-      <if test="createStaff != null" >
+      <!--<if test="createStaff != null" >
         CREATE_STAFF = #{createStaff,jdbcType=BIGINT},
       </if>
       <if test="createDate != null" >
         CREATE_DATE = #{createDate,jdbcType=DATE},
-      </if>
+      </if>-->
       <if test="updateStaff != null" >
         UPDATE_STAFF = #{updateStaff,jdbcType=BIGINT},
       </if>
@@ -2325,9 +2307,9 @@ select seq_bill_service_log_id.nextval
       <if test="remark != null" >
         REMARK = #{remark,jdbcType=VARCHAR},
       </if>
-      <if test="attrValueId != null" >
+      <!--<if test="attrValueId != null" >
         ATTR_VALUE_ID = #{attrValueId,jdbcType=BIGINT},
-      </if>
+      </if>-->
     </set>
      where PARTY_ATTR_ID = #{partyAttrId,jdbcType=BIGINT}    
      and route_id = #{routeId,jdbcType=BIGINT}
@@ -2517,12 +2499,12 @@ select seq_bill_service_log_id.nextval
   <update id="updateContactsInfo" parameterType="map" >
     update contacts_info
     <set >
-      <if test="contactId != null" >
+      <!--<if test="contactId != null" >
         CONTACT_ID = #{contactId,jdbcType=BIGINT},
       </if>
       <if test="partyId != null" >
         PARTY_ID = #{partyId,jdbcType=BIGINT},
-      </if>
+      </if>-->
       <if test="contactType != null" >
         CONTACT_TYPE = #{contactType,jdbcType=VARCHAR},
       </if>
@@ -2562,18 +2544,18 @@ select seq_bill_service_log_id.nextval
       <if test="fax != null" >
         FAX = #{fax,jdbcType=VARCHAR},
       </if>
-      <if test="statusCd != null" >
+      <!--<if test="statusCd != null" >
         STATUS_CD = #{statusCd,jdbcType=VARCHAR},
-      </if>
+      </if>-->
       <if test="statusDate != null" >
         STATUS_DATE = #{statusDate,jdbcType=DATE},
       </if>
-      <if test="createStaff != null" >
+      <!--<if test="createStaff != null" >
         CREATE_STAFF = #{createStaff,jdbcType=BIGINT},
       </if>
       <if test="createDate != null" >
         CREATE_DATE = #{createDate,jdbcType=DATE},
-      </if>
+      </if>-->
       <if test="updateStaff != null" >
         UPDATE_STAFF = #{updateStaff,jdbcType=BIGINT},
       </if>
@@ -2583,7 +2565,7 @@ select seq_bill_service_log_id.nextval
       <if test="remark != null" >
         REMARK = #{remark,jdbcType=VARCHAR},
       </if>
-      <if test="qqCode != null" >
+      <!--<if test="qqCode != null" >
         QQ_CODE = #{qqCode,jdbcType=VARCHAR},
       </if>
       <if test="wxCode != null" >
@@ -2594,7 +2576,7 @@ select seq_bill_service_log_id.nextval
       </if>
       <if test="unsuitableContactTime != null" >
         UNSUITABLE_CONTACT_TIME = #{unsuitableContactTime,jdbcType=VARCHAR},
-      </if>
+      </if>-->
     </set>
      where CONTACT_ID = #{contactId,jdbcType=BIGINT}
      and route_id = #{routeId,jdbcType=BIGINT}
@@ -2682,7 +2664,7 @@ select seq_bill_service_log_id.nextval
   <update id="updateContactsInfoAttr" parameterType="map" >
     update contacts_info_attr
     <set >
-      <if test="connectAttrId != null" >
+      <!--<if test="connectAttrId != null" >
         CONNECT_ATTR_ID = #{connectAttrId,jdbcType=BIGINT},
       </if>
       <if test="contactId != null" >
@@ -2696,16 +2678,16 @@ select seq_bill_service_log_id.nextval
       </if>
       <if test="statusCd != null" >
         STATUS_CD = #{statusCd,jdbcType=VARCHAR},
-      </if>
+      </if>-->
       <if test="statusDate != null" >
         STATUS_DATE = #{statusDate,jdbcType=DATE},
       </if>
-      <if test="createStaff != null" >
+      <!--<if test="createStaff != null" >
         CREATE_STAFF = #{createStaff,jdbcType=BIGINT},
       </if>
       <if test="createDate != null" >
         CREATE_DATE = #{createDate,jdbcType=DATE},
-      </if>
+      </if>-->
       <if test="updateStaff != null" >
         UPDATE_STAFF = #{updateStaff,jdbcType=BIGINT},
       </if>
@@ -2715,9 +2697,9 @@ select seq_bill_service_log_id.nextval
       <if test="remark != null" >
         REMARK = #{remark,jdbcType=VARCHAR},
       </if>
-      <if test="attrValueId != null" >
+      <!--<if test="attrValueId != null" >
         ATTR_VALUE_ID = #{attrValueId,jdbcType=BIGINT},
-      </if>
+      </if>-->
     </set>
     where CONNECT_ATTR_ID = #{connectAttrId,jdbcType=BIGINT}
     and route_id = #{routeId,jdbcType=BIGINT}
@@ -3345,8 +3327,8 @@ and route_id = #{routeId,jdbcType=BIGINT}
 <select id="getCountTaxPayer" resultType="java.lang.Long" parameterType="map"  >
 SELECT COUNT(1)
         FROM TAX_PAYER
-	WHERE STATUS_CD=#{status_cd,jdbcType=BIGINT}
-	AND TAX_PAYER_ID=#{tax_payer_id,jdbcType=BIGINT}
+	WHERE STATUS_CD=1000
+	AND TAX_PAYER_ID=#{taxPayerId,jdbcType=BIGINT}
 	and route_id = #{routeId,jdbcType=BIGINT}
 </select>
 <select id="getTaxPayerInfo" resultType="map" parameterType="map"  >
@@ -3538,7 +3520,7 @@ SELECT GENERAL_TAXPAYER_FLAG generalTaxplayerFlag
     <update id="updateTaxPayerAttr1" parameterType="map" >
     update tax_payer_attr
     <set >
-      <if test="taxPayerAttrId != null" >
+      <!--<if test="taxPayerAttrId != null" >
         TAX_PAYER_ATTR_ID = #{taxPayerAttrId,jdbcType=BIGINT},
       </if>
       <if test="taxPayerId != null" >
@@ -3546,22 +3528,22 @@ SELECT GENERAL_TAXPAYER_FLAG generalTaxplayerFlag
       </if>
       <if test="attrId != null" >
         ATTR_ID = #{attrId,jdbcType=BIGINT},
-      </if>
+      </if>-->
       <if test="attrValue != null" >
         ATTR_VALUE = #{attrValue,jdbcType=VARCHAR},
       </if>
-      <if test="statusCd != null" >
+      <!--<if test="statusCd != null" >
         STATUS_CD = #{statusCd,jdbcType=VARCHAR},
-      </if>
+      </if>-->
       <if test="statusDate != null" >
         STATUS_DATE = #{statusDate,jdbcType=TIMESTAMP},
       </if>
-      <if test="createStaff != null" >
+      <!--<if test="createStaff != null" >
         CREATE_STAFF = #{createStaff,jdbcType=BIGINT},
       </if>
       <if test="createDate != null" >
         CREATE_DATE = #{createDate,jdbcType=TIMESTAMP},
-      </if>
+      </if>-->
       <if test="updateStaff != null" >
         UPDATE_STAFF = #{updateStaff,jdbcType=BIGINT},
       </if>
@@ -3571,12 +3553,9 @@ SELECT GENERAL_TAXPAYER_FLAG generalTaxplayerFlag
       <if test="remark != null" >
         REMARK = #{remark,jdbcType=VARCHAR},
       </if>
-      <if test="attrValueId != null" >
+      <!--<if test="attrValueId != null" >
         ATTR_VALUE_ID = #{attrValueId,jdbcType=BIGINT},
-      </if>
-      <if test="routeId != null" >
-        ROUTE_ID = #{routeId,jdbcType=BIGINT},
-      </if>
+      </if>-->
     </set>
 	where TAX_PAYER_ATTR_ID = #{taxPayerAttrId,jdbcType=BIGINT} 
 	and route_id = #{routeId,jdbcType=BIGINT}

@@ -19,10 +19,17 @@
   
   
 <select id="getOfferInstAttrId" resultType="java.util.HashMap" parameterType="map"  >
-SELECT  offer_inst_Attr_id,route_id
+SELECT  offer_inst_Attr_id offerInstAttrId,route_id
 FROM OFFER_inst_attr
 WHERE OFFER_inst_attr_id = #{offerInstAttrId,jdbcType=BIGINT}
 and route_id = #{routeId,jdbcType=BIGINT}
+</select>
+  <select id="selectOfferInstAttrIdFromInstId" resultType="java.util.HashMap" >
+SELECT  offer_inst_Attr_id offerInstAttrId,route_id routeId
+FROM OFFER_inst_attr
+WHERE OFFER_INST_ID = #{offerInstId,jdbcType=BIGINT}
+and route_id = #{routeId,jdbcType=BIGINT}
+AND EXP_DATE > #{expDate,jdbcType=VARCHAR}
 </select>
 <!-- add by wangbaoqiang 通过参数id来取 主键 -->
 <select id="getOfferInstAttrIdFromAttrId" resultType="java.util.HashMap" parameterType="map"  >
@@ -34,23 +41,51 @@ SELECT  OFFER_INST_ATTR_ID offerInstAttrId, OFFER_INST_ID offerInstId, PAR_OFFER
 FROM OFFER_inst_attr
 WHERE ATTR_ID = #{attrId,jdbcType=BIGINT}
       AND OFFER_INST_ID = #{offerInstId,jdbcType=BIGINT}
-      AND EXP_DATE > #{effDate,jdbcType=BIGINT}
+      AND EXP_DATE > #{expDate,jdbcType=DATE}
       and route_id = #{routeId,jdbcType=BIGINT}
 </select>
 <!-- add end -->
   <select id="getOfferInstId" resultType="java.util.HashMap" parameterType="map"  >
-SELECT  offer_inst_id,route_id 
+SELECT  OFFER_INST_ID offerInstId, OFFER_ID offerId, OFFER_TYPE offerType, OWNER_CUST_ID ownerCustId, EFF_DATE effDate, EXP_DATE expDate, OFFER_AGREE_ID offerAgreeId,
+    CREATE_ORG_ID createOrgId, EXP_PROC_METHOD expProcMethod, LAN_ID lanId, REGION_ID regionId, STATUS_CD statusCd, CREATE_STAFF createStaff, UPDATE_STAFF updateStaff,
+    CREATE_DATE createDate, STATUS_DATE statusDate, UPDATE_DATE updateDate, BUSI_MOD_DATE busiModDate, LAST_ORDER_ITEM_ID lastOrderItemId, REMARK remark,
+    EXT_OFFER_INST_ID extOfferInstId, ROUTE_ID routeId
 FROM OFFER_inst
 WHERE OFFER_inst_id = #{offerInstId,jdbcType=BIGINT}
 and route_id = #{routeId,jdbcType=BIGINT}
 </select>
 
+  <select id="getOfferInstIdFromExpDate" resultType="java.util.HashMap" parameterType="map"  >
+SELECT  OFFER_INST_ID offerInstId, OFFER_ID offerId, OFFER_TYPE offerType, OWNER_CUST_ID ownerCustId, EFF_DATE effDate, EXP_DATE expDate, OFFER_AGREE_ID offerAgreeId,
+    CREATE_ORG_ID createOrgId, EXP_PROC_METHOD expProcMethod, LAN_ID lanId, REGION_ID regionId, STATUS_CD statusCd, CREATE_STAFF createStaff, UPDATE_STAFF updateStaff,
+    CREATE_DATE createDate, STATUS_DATE statusDate, UPDATE_DATE updateDate, BUSI_MOD_DATE busiModDate, LAST_ORDER_ITEM_ID lastOrderItemId, REMARK remark,
+    EXT_OFFER_INST_ID extOfferInstId, ROUTE_ID routeId
+FROM OFFER_inst
+WHERE OFFER_inst_id = #{offerInstId,jdbcType=BIGINT}
+and route_id = #{routeId,jdbcType=BIGINT}
+and exp_date > #{expDate,jdbcType=VARCHAR}
+</select>
+
   <select id="getOfferObjInstId" resultType="java.util.HashMap" parameterType="map"  >
-SELECT  OFFER_OBJ_inst_REL_ID,ROUTE_ID
+SELECT  OFFER_OBJ_INST_REL_ID offerObjInstRelId, OFFER_INST_ID offerInstId, OBJ_TYPE objType, OBJ_ID objId, OFFER_OBJ_REL_ID offerObjRelId, ROLE_ID roleId,
+    EFF_DATE effDate, EXP_DATE expDate, STATUS_CD statusCd, CREATE_STAFF createStaff, UPDATE_STAFF updateStaff, CREATE_DATE createDate, STATUS_DATE statusDate,
+    UPDATE_DATE updateDate, LAST_ORDER_ITEM_ID lastOrderItemId, REMARK remark, ROUTE_ID routeId
 FROM OFFER_OBJ_inst_REL
 WHERE OFFER_OBJ_inst_REL_ID = #{offerObjInstRelId,jdbcType=BIGINT}
+AND OFFER_INST_ID = #{offerInstId,jdbcType=BIGINT}
+and route_id = #{routeId,jdbcType=BIGINT}
 </select>
-  
+  <select id="getOfferObjInstIdForObjectId" resultType="java.util.HashMap" parameterType="map"  >
+SELECT  OFFER_OBJ_INST_REL_ID offerObjInstRelId, OFFER_INST_ID offerInstId, OBJ_TYPE ObjType, OBJ_ID objId, OFFER_OBJ_REL_ID offerObjRelId, ROLE_ID roleId,
+    EFF_DATE effDate, EXP_DATE expDate, STATUS_CD statusCd, CREATE_STAFF createStaff, UPDATE_STAFF updateStaff, CREATE_DATE createDate, STATUS_DATE statusDate,
+    UPDATE_DATE updateDate, LAST_ORDER_ITEM_ID lastOrderItemId, REMARK remark, ROUTE_ID routeId
+FROM OFFER_OBJ_inst_REL
+WHERE OBJ_ID = #{objId,jdbcType=BIGINT}
+AND OFFER_INST_ID = #{offerInstId,jdbcType=BIGINT}
+and route_id = #{routeId,jdbcType=BIGINT}
+and EXP_DATE > #{expDate,jdbcType=VARCHAR}
+and OFFER_OBJ_REL_ID = #{offerObjRelId,jdbcType=VARCHAR}
+</select>
    <update id="updateOfferInstAttr" parameterType="map" >
     update offer_inst_attr
     <set >
@@ -63,14 +98,15 @@ WHERE OFFER_OBJ_inst_REL_ID = #{offerObjInstRelId,jdbcType=BIGINT}
       <if test="statusDate != null" >
         STATUS_DATE = #{statusDate,jdbcType=DATE},
       </if>
+      <if test="remark != null" >
+        remark = #{remark},
+      </if>
       <if test="updateDate != null" >
         UPDATE_DATE = #{updateDate,jdbcType=DATE}
       </if>
     </set>
     where OFFER_INST_ATTR_ID = #{offerInstAttrId,jdbcType=BIGINT}
-	 <if test="routeId != null and  routeId !='' " >     
 	    and ROUTE_ID = #{routeId,jdbcType=BIGINT}
-	 </if>
   </update>
   
   <insert id="insertOfferInstAttr" parameterType="map" >
@@ -137,8 +173,11 @@ WHERE OFFER_OBJ_inst_REL_ID = #{offerObjInstRelId,jdbcType=BIGINT}
         REMARK,
       </if>
        <if test="routeId != null" >
-        route_id
+        route_id,
       </if>
+<!--      <if test="offerAttrId != null" >
+        OFFER_ATTR_ID
+      </if>-->
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="offerInstAttrId != null" >
@@ -202,8 +241,11 @@ WHERE OFFER_OBJ_inst_REL_ID = #{offerObjInstRelId,jdbcType=BIGINT}
         #{remark,jdbcType=VARCHAR},
       </if>
        <if test="routeId != null" >
-       #{routeId,jdbcType=BIGINT}
+       #{routeId,jdbcType=BIGINT},
        </if>
+<!--      <if test="offerAttrId != null" >
+        #{offerAttrId,jdbcType=BIGINT}
+      </if>-->
     </trim>
   </insert>
   
@@ -220,7 +262,10 @@ WHERE OFFER_OBJ_inst_REL_ID = #{offerObjInstRelId,jdbcType=BIGINT}
         STATUS_DATE = #{statusDate,jdbcType=DATE},
       </if>
       <if test="updateDate != null" >
-        UPDATE_DATE = #{updateDate,jdbcType=DATE}
+        UPDATE_DATE = #{updateDate,jdbcType=DATE},
+      </if>
+      <if test="remark != null" >
+        REMARK = #{remark,jdbcType=VARCHAR}
       </if>
     </set>
 	   where OFFER_OBJ_INST_REL_ID = #{offerObjInstRelId,jdbcType=BIGINT}
@@ -490,6 +535,9 @@ WHERE OFFER_OBJ_inst_REL_ID = #{offerObjInstRelId,jdbcType=BIGINT}
       <if test="statusDate != null" >
         STATUS_DATE = #{statusDate,jdbcType=DATE},
       </if>
+      <if test="remark != null" >
+        remark = #{remark},
+      </if>
       <if test="updateDate != null" >
         UPDATE_DATE = #{updateDate,jdbcType=DATE}
       </if>
@@ -552,5 +600,57 @@ WHERE OFFER_OBJ_inst_REL_ID = #{offerObjInstRelId,jdbcType=BIGINT}
 	</if> 
 	and route_id = #{routeId,jdbcType=BIGINT}
 	limit 1       
-</select>  
+</select>
+  <select id="selectOfferRoleId" resultType="java.util.Map">
+    SELECT  OFFER_OBJ_REL_ID, OFFER_ID, OBJ_TYPE, OBJ_ID, ROLE_ID, EFF_DATE, EXP_DATE, APPLY_REGION_ID,
+    STATUS_CD, CREATE_STAFF, UPDATE_STAFF, CREATE_DATE, STATUS_DATE, UPDATE_DATE, REMARK
+  FROM  OFFER_OBJ_REL
+  WHERE OFFER_ID=#{offerId}
+   and ROLE_ID=#{roleId}
+  </select>
+    <select id="selectOfferId" resultType="java.util.Map">
+      select OFFER_ID offerId,OFFER_NAME offerName
+      from offer
+      where OFFER_ID = #{offerId}
+    </select>
+
+  <select id="getOfferObjInstIdFromObj" resultType="java.util.HashMap" parameterType="map"  >
+  SELECT  OFFER_OBJ_INST_REL_ID offerObjInstRelId, OFFER_INST_ID offerInstId, OBJ_TYPE ObjType, OBJ_ID objId, OFFER_OBJ_REL_ID offerObjRelId, ROLE_ID roleId,
+  EFF_DATE effDate, EXP_DATE expDate, STATUS_CD statusCd, CREATE_STAFF createStaff, UPDATE_STAFF updateStaff, CREATE_DATE createDate, STATUS_DATE statusDate,
+  UPDATE_DATE updateDate, LAST_ORDER_ITEM_ID lastOrderItemId, REMARK remark, ROUTE_ID routeId
+  FROM OFFER_OBJ_inst_REL
+  WHERE OBJ_ID = #{objId,jdbcType=VARCHAR}
+  and offer_obj_rel_id = #{offerObjRelId,jdbcType=BIGINT}
+  and route_id = #{routeId,jdbcType=BIGINT}
+  and EXP_DATE > #{expDate,jdbcType=VARCHAR}
+    and EFF_DATE >= #{effDate}
+    and ((EFF_DATE &lt;= #{expDate}
+    and #{expDate} > #{effDate}
+    and EXP_DATE > #{effDate})
+    or
+    (#{expDate} = #{effDate}
+    and EFF_DATE &lt;= #{effDate}
+    and EXP_DATE > #{effDate}
+    )
+    or
+    (#{expDate} &lt; #{effDate}
+    and EFF_DATE = #{effDate}
+    and #{effDate} > now()
+    ))
+  </select>
+  <select id="getOfferObjfromObjId" resultType="java.util.HashMap" parameterType="map"  >
+  SELECT  OFFER_OBJ_INST_REL_ID offerObjInstRelId, OFFER_INST_ID offerInstId, OBJ_TYPE ObjType, OBJ_ID objId, OFFER_OBJ_REL_ID offerObjRelId, ROLE_ID roleId,
+  EFF_DATE effDate, EXP_DATE expDate, STATUS_CD statusCd, CREATE_STAFF createStaff, UPDATE_STAFF updateStaff, CREATE_DATE createDate, STATUS_DATE statusDate,
+  UPDATE_DATE updateDate, LAST_ORDER_ITEM_ID lastOrderItemId, REMARK remark, ROUTE_ID routeId
+  FROM OFFER_OBJ_inst_REL
+  WHERE OBJ_ID = #{objId,jdbcType=VARCHAR}
+  and route_id = #{routeId,jdbcType=BIGINT}
+  and EXP_DATE > now()
+  </select>
+  <select id="selectOfferInstFromObjInstid" resultType="java.util.HashMap" parameterType="map"  >
+SELECT  offer_inst_id offerInstId,route_id routeId, OFFER_ID offerId, EFF_DATE effDate, EXP_DATE expDate
+FROM OFFER_inst
+WHERE OFFER_inst_id = #{offerInstId,jdbcType=BIGINT}
+and route_id = #{routeId,jdbcType=BIGINT}
+</select>
 </mapper>

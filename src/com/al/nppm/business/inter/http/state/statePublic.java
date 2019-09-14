@@ -1,7 +1,8 @@
 package com.al.nppm.business.inter.http.state;
 
-import java.util.Date;
 import com.al.nppm.common.utils.StringUtil;
+
+import java.util.Date;
 public class statePublic {
 	
 	public static String SUCESS ="SUCESS";

@@ -85,7 +85,7 @@
 		<init-param>
 			<!-- 访问IP白名单 -->
 			<param-name>allow</param-name>
-			<param-value>127.0.0.1</param-value>
+			<param-value>136.160.45.55,127.0.0.1,136.160.153.42</param-value>
 		</init-param>
 		<init-param>
 			<!-- 访问IP黑名单 -->

@@ -11,97 +11,97 @@
             <if test="routeId != null" >
                 ROUTE_ID,
             </if>
-            <if test="PROD_INST_ID != null" >
+            <if test="prodInstId != null" >
                 PROD_INST_ID,
             </if>
-            <if test="PROD_ID != null" >
+            <if test="prodId != null" >
                 PROD_ID,
             </if>
-            <if test="ACC_PROD_INST_ID != null" >
+            <if test="accProdInstId != null" >
                 ACC_PROD_INST_ID,
             </if>
-            <if test="PROD_USE_TYPE != null" >
+            <if test="prodUseType != null" >
                 PROD_USE_TYPE,
             </if>
-            <if test="ACC_NUM != null" >
+            <if test="accNum != null" >
                 ACC_NUM,
             </if>
-            <if test="ACCOUNT != null" >
+            <if test="account != null" >
                 ACCOUNT,
             </if>
-            <if test="PAYMENT_MODE_CD != null" >
+            <if test="paymentModeCd != null" >
                 PAYMENT_MODE_CD,
             </if>
-            <if test="ADDRESS_DESC != null" >
+            <if test="addressDesc != null" >
                 ADDRESS_DESC,
             </if>
-            <if test="OWNER_CUST_ID != null" >
+            <if test="ownerCustId != null" >
                 OWNER_CUST_ID,
             </if>
-            <if test="PROD_INST_PWD != null" >
+            <if test="prodInstPwd != null" >
                 PROD_INST_PWD,
             </if>
-            <if test="EXCH_ID != null" >
+            <if test="exchId != null" >
                 EXCH_ID,
             </if>
-            <if test="ADDRESS_ID != null" >
+            <if test="addressId != null" >
                 ADDRESS_ID,
             </if>
-            <if test="REGION_ID != null" >
+            <if test="regionId != null" >
                 REGION_ID,
             </if>
-            <if test="LAN_ID != null" >
+            <if test="lanId != null" >
                 LAN_ID,
             </if>
-            <if test="ACT_DATE != null" >
+            <if test="actDate != null" >
                 ACT_DATE,
             </if>
-            <if test="BEGIN_RENT_DATE != null" >
+            <if test="beginRentDate != null" >
                 BEGIN_RENT_DATE,
             </if>
-            <if test="STOP_RENT_DATE != null" >
+            <if test="stopRentDate != null" >
                 STOP_RENT_DATE,
             </if>
-            <if test="STATUS_CD != null" >
+            <if test="statusCd != null" >
                 STATUS_CD,
             </if>
-            <if test="CREATE_ORG_ID != null" >
+            <if test="createOrgId != null" >
                 CREATE_ORG_ID,
             </if>
-            <if test="CREATE_STAFF != null" >
+            <if test="createStaff != null" >
                 CREATE_STAFF,
             </if>
-            <if test="UPDATE_STAFF != null" >
+            <if test="updateStaff != null" >
                 UPDATE_STAFF,
             </if>
-            <if test="CREATE_DATE != null" >
+            <if test="createDate != null" >
                 CREATE_DATE,
             </if>
-            <if test="STATUS_DATE != null" >
+            <if test="statusDate != null" >
                 STATUS_DATE,
             </if>
-            <if test="UPDATE_DATE != null" >
+            <if test="updateDate != null" >
                 UPDATE_DATE,
             </if>
-            <if test="FIRST_FINISH_DATE != null" >
+            <if test="firstFinishDate != null" >
                 FIRST_FINISH_DATE,
             </if>
-            <if test="BUSI_MOD_DATE != null" >
+            <if test="busiModDate != null" >
                 BUSI_MOD_DATE,
             </if>
-            <if test="USE_CUST_ID != null" >
+            <if test="useCustId != null" >
                 USE_CUST_ID,
             </if>
-            <if test="LAST_ORDER_ITEM_ID != null" >
+            <if test="lastOrderItemId != null" >
                 LAST_ORDER_ITEM_ID,
             </if>
-            <if test="REMARK != null" >
+            <if test="remark != null" >
                 REMARK,
             </if>
-            <if test="POINT_OWNER_ID != null" >
+            <if test="pointOwnerId != null" >
                 POINT_OWNER_ID,
             </if>
-            <if test="EXT_PROD_INST_ID != null" >
+            <if test="extProdInstId != null" >
                 EXT_PROD_INST_ID,
             </if>
             <if test="prodInstSeq != null" >
@@ -119,98 +119,98 @@
             <if test="routeId != null" >
                 #{routeId,jdbcType=BIGINT},
             </if>
-            <if test="PROD_INST_ID != null" >
-                #{PROD_INST_ID,jdbcType=BIGINT},
+            <if test="prodInstId != null" >
+                #{prodInstId,jdbcType=BIGINT},
             </if>
-            <if test="PROD_ID != null" >
-                #{PROD_ID,jdbcType=BIGINT},
+            <if test="prodId != null" >
+                #{prodId,jdbcType=BIGINT},
             </if>
-            <if test="ACC_PROD_INST_ID != null" >
-                #{ACC_PROD_INST_ID,jdbcType=BIGINT},
+            <if test="accProdInstId != null" >
+                #{accProdInstId,jdbcType=BIGINT},
             </if>
-            <if test="PROD_USE_TYPE != null" >
-                #{PROD_USE_TYPE,jdbcType=VARCHAR},
+            <if test="prodUseType != null" >
+                #{prodUseType,jdbcType=VARCHAR},
             </if>
-            <if test="ACC_NUM != null" >
-                #{ACC_NUM,jdbcType=VARCHAR},
+            <if test="accNum != null" >
+                #{accNum,jdbcType=VARCHAR},
             </if>
-            <if test="ACCOUNT != null" >
-                #{ACCOUNT,jdbcType=VARCHAR},
+            <if test="account != null" >
+                #{account,jdbcType=VARCHAR},
             </if>
-            <if test="PAYMENT_MODE_CD != null" >
-                #{PAYMENT_MODE_CD,jdbcType=VARCHAR},
+            <if test="paymentModeCd != null" >
+                #{paymentModeCd,jdbcType=VARCHAR},
             </if>
-            <if test="ADDRESS_DESC != null" >
-                #{ADDRESS_DESC,jdbcType=VARCHAR},
+            <if test="addressDesc != null" >
+                #{addressDesc,jdbcType=VARCHAR},
             </if>
-            <if test="OWNER_CUST_ID != null" >
-                #{OWNER_CUST_ID,jdbcType=BIGINT},
+            <if test="ownerCustId != null" >
+                #{ownerCustId,jdbcType=BIGINT},
             </if>
-            <if test="PROD_INST_PWD != null" >
-                #{PROD_INST_PWD,jdbcType=VARCHAR},
+            <if test="prodInstPwd != null" >
+                #{prodInstPwd,jdbcType=VARCHAR},
             </if>
-            <if test="EXCH_ID != null" >
-                #{EXCH_ID,jdbcType=BIGINT},
+            <if test="exchId != null" >
+                #{exchId,jdbcType=BIGINT},
             </if>
-            <if test="ADDRESS_ID != null" >
-                #{ADDRESS_ID,jdbcType=BIGINT},
+            <if test="addressId != null" >
+                #{addressId,jdbcType=BIGINT},
             </if>
-            <if test="REGION_ID != null" >
-                #{REGION_ID,jdbcType=BIGINT},
+            <if test="regionId != null" >
+                #{regionId,jdbcType=BIGINT},
             </if>
-            <if test="LAN_ID != null" >
-                #{LAN_ID,jdbcType=BIGINT},
+            <if test="lanId != null" >
+                #{lanId,jdbcType=BIGINT},
             </if>
-            <if test="ACT_DATE != null" >
-                #{ACT_DATE,jdbcType=TIMESTAMP},
+            <if test="actDate != null" >
+                #{actDate,jdbcType=TIMESTAMP},
             </if>
-            <if test="BEGIN_RENT_DATE != null" >
-                #{BEGIN_RENT_DATE,jdbcType=TIMESTAMP},
+            <if test="beginRentDate != null" >
+                #{beginRentDate,jdbcType=TIMESTAMP},
             </if>
-            <if test="STOP_RENT_DATE != null" >
-                #{STOP_RENT_DATE,jdbcType=TIMESTAMP},
+            <if test="stopRentDate != null" >
+                #{stopRentDate,jdbcType=TIMESTAMP},
             </if>
-            <if test="STATUS_CD != null" >
-                #{STATUS_CD,jdbcType=VARCHAR},
+            <if test="statusCd != null" >
+                #{statusCd,jdbcType=VARCHAR},
             </if>
-            <if test="CREATE_ORG_ID != null" >
-                #{CREATE_ORG_ID,jdbcType=BIGINT},
+            <if test="createOrgId != null" >
+                #{createOrgId,jdbcType=BIGINT},
             </if>
-            <if test="CREATE_STAFF != null" >
-                #{CREATE_STAFF,jdbcType=BIGINT},
+            <if test="createStaff != null" >
+                #{createStaff,jdbcType=BIGINT},
             </if>
-            <if test="UPDATE_STAFF != null" >
-                #{UPDATE_STAFF,jdbcType=BIGINT},
+            <if test="updateStaff != null" >
+                #{updateStaff,jdbcType=BIGINT},
             </if>
-            <if test="CREATE_DATE != null" >
-                #{CREATE_DATE,jdbcType=TIMESTAMP},
+            <if test="createDate != null" >
+                #{createDate,jdbcType=TIMESTAMP},
             </if>
-            <if test="STATUS_DATE != null" >
-                #{STATUS_DATE,jdbcType=TIMESTAMP},
+            <if test="statusDate != null" >
+                #{statusDate,jdbcType=TIMESTAMP},
             </if>
-            <if test="UPDATE_DATE != null" >
-                #{UPDATE_DATE,jdbcType=TIMESTAMP},
+            <if test="updateDate != null" >
+                #{updateDate,jdbcType=TIMESTAMP},
             </if>
-            <if test="FIRST_FINISH_DATE != null" >
-                #{FIRST_FINISH_DATE,jdbcType=TIMESTAMP},
+            <if test="firstFinishDate != null" >
+                #{firstFinishDate,jdbcType=TIMESTAMP},
             </if>
-            <if test="BUSI_MOD_DATE != null" >
-                #{BUSI_MOD_DATE,jdbcType=TIMESTAMP},
+            <if test="busiModDate != null" >
+                #{busiModDate,jdbcType=TIMESTAMP},
             </if>
-            <if test="USE_CUST_ID != null" >
-                #{USE_CUST_ID,jdbcType=BIGINT},
+            <if test="useCustId != null" >
+                #{useCustId,jdbcType=BIGINT},
             </if>
-            <if test="LAST_ORDER_ITEM_ID != null" >
-                #{LAST_ORDER_ITEM_ID,jdbcType=BIGINT},
+            <if test="lastOrderItemId != null" >
+                #{lastOrderItemId,jdbcType=BIGINT},
             </if>
-            <if test="REMARK != null" >
-                #{REMARK,jdbcType=VARCHAR},
+            <if test="remark != null" >
+                #{remark,jdbcType=VARCHAR},
             </if>
-            <if test="POINT_OWNER_ID != null" >
+            <if test="pointOwnerId != null" >
                 #{POINT_OWNER_ID,jdbcType=BIGINT},
             </if>
-            <if test="EXT_PROD_INST_ID != null" >
-                #{EXT_PROD_INST_ID,jdbcType=BIGINT},
+            <if test="extProdInstId != null" >
+                #{extProdInstId,jdbcType=BIGINT},
             </if>
             <if test="prodInstSeq != null" >
                 #{prodInstSeq},
@@ -379,7 +379,7 @@
   </insert>
   <!-- 插入外部支付账户 -->
   <insert id="insertExtAcctHis" parameterType="map" >
-    insert into ext_acct
+    insert into ext_acct_his
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="extAcctId != null" >
         EXT_ACCT_ID,

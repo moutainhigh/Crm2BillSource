@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.al.nppm.business.account.dao.CtgMqMapper" >
+
+  <select id="getCustomer" resultType="java.util.HashMap" parameterType="java.util.HashMap"  >
+    SELECT CUST_ID custId,PARTY_ID partyId,TAX_PAYER_ID taxPayerId,CUST_NAME custName,CUST_NUMBER custNumber,CUST_ADDR custAddr,REGION_ID regionId,CUST_TYPE custType,CUST_SUB_TYPE custSubType,CUST_SOURCE_ID custSourceId,CUST_AREA_GRADE custAreaGrade,ENTER_DATE enterDate,INDUSTRY_TYPE_ID industryTypeId,EXT_CUST_ID extCustId,DISTRIBUTOR_ID distributorId,SECRECY_LEVEL secrecyLevel,CUST_ORDER_ID custOrderId,CUST_CONTROL_LEVEL custControlLevel,IS_INSTEAD isInstead,IS_REALNAME isRealname,STATUS_CD statusCd,STATUS_DATE statusDate,CREATE_STAFF createStaff,CREATE_DATE createDate,UPDATE_STAFF updateStaff,UPDATE_DATE updateDate,LAST_ORDER_ITEM_ID lastOrderItemId,REMARK remark,EXT1_CUST_ID ext1CustId,EXT2_CUST_ID ext2CustId,EXT3_CUST_ID ext3CustId,GROUP_CUST_ID groupCustId,CREDIT_ID creditId,CREDIT_LIMIT_ID creditLimitId,COMMON_REGION_ID commonRegionId,SERVICE_GRADE_ID serviceGradeId,TAX_TAX_PAYER_ID taxTaxPayerId,ROUTE_ID routeId
+
+    FROM CUSTOMER
+    WHERE CUST_ID = #{custId,jdbcType=BIGINT} and ROUTE_ID = #{routeId,jdbcType=BIGINT}
+</select>
+  <select id="getAccount" resultType="java.util.HashMap" parameterType="java.util.HashMap">
+    SELECT ACCT_ID acctId,ACCT_NAME acctName,ACCT_CD acctCd,CUST_ID custId,ACCT_LOGIN_NAME acctLoginName,LOGIN_PASSWORD loginPassword,ACCT_BILLING_TYPE acctBillingType,PROD_INST_ID prodInstId,EFF_DATE effDate,EXP_DATE expDate,STATUS_CD statusCd,STATUS_DATE statusDate,CREATE_STAFF createStaff,CREATE_DATE createDate,UPDATE_STAFF updateStaff,UPDATE_DATE updateDate,REMARK remark,EXT_ACCT_ID extAcctId,EXT1_ACCT_ID ext1AcctId,EXT2_ACCT_ID ext2AcctId,EXT3_ACCT_ID ext3AcctId,GROUP_ACCT_ID groupAcctId,REGION_ID regionId,ROUTE_ID routeId
+
+    FROM ACCOUNT
+    WHERE ACCT_ID = #{acctId,jdbcType=BIGINT} and ROUTE_ID = #{routeId,jdbcType=BIGINT}
+</select>
+  <select id="getProdInst" resultType="java.util.HashMap" parameterType="java.util.HashMap"  >
+    SELECT PROD_INST_ID prodInstId,PROD_ID prodId,ACC_PROD_INST_ID accProdInstId,PROD_USE_TYPE prodUseType,ACC_NUM accNum,ACCOUNT account,PAYMENT_MODE_CD paymentModeCd,ADDRESS_DESC addressDesc,OWNER_CUST_ID ownerCustId,PROD_INST_PWD prodInstPwd,EXCH_ID exchId,ADDRESS_ID addressId,REGION_ID regionId,LAN_ID lanId,ACT_DATE actDate,BEGIN_RENT_DATE beginRentDate,STOP_RENT_DATE stopRentDate,STATUS_CD statusCd,CREATE_ORG_ID createOrgId,CREATE_STAFF createStaff,UPDATE_STAFF updateStaff,CREATE_DATE createDate,STATUS_DATE statusDate,UPDATE_DATE updateDate,FIRST_FINISH_DATE firstFinishDate,BUSI_MOD_DATE busiModDate,USE_CUST_ID useCustId,LAST_ORDER_ITEM_ID lastOrderItemId,REMARK remark,POINT_OWNER_ID pointOwnerId,EXT_PROD_INST_ID extProdInstId,GRP_PROD_NBR grpProdNbr,ROUTE_ID routeId
+
+    FROM PROD_INST
+    WHERE PROD_INST_ID = #{prodInstId,jdbcType=BIGINT} and ROUTE_ID = #{routeId,jdbcType=BIGINT}
+</select>
+
+  <select id="getProdInstAttr" resultType="java.util.HashMap" parameterType="java.util.HashMap"  >
+    SELECT PROD_INST_ATTR_ID prodInstAttrId,PAR_PROD_INST_ATTR_ID parProdInstAttrId,PROD_INST_ID prodInstId,ATTR_ID attrId,ATTR_VALUE_ID attrValueId,ATTR_VALUE attrValue,BUSI_MOD_DATE busiModDate,EFF_DATE effDate,EXP_DATE expDate,STATUS_CD statusCd,CREATE_STAFF createStaff,UPDATE_STAFF updateStaff,CREATE_DATE createDate,STATUS_DATE statusDate,UPDATE_DATE updateDate,LAST_ORDER_ITEM_ID lastOrderItemId,REMARK remark,GRP_ATTR_NBR grpAttrNbr,GRP_ATTR_VALUE_NBR grpAttrValueNbr,ROUTE_ID routeId
+
+    FROM PROD_INST_ATTR
+    WHERE PROD_INST_ATTR_ID = #{prodInstAttrId,jdbcType=BIGINT} and ROUTE_ID = #{routeId,jdbcType=BIGINT}
+</select>
+
+  <select id="getProdInstSub" resultType="java.util.HashMap" parameterType="java.util.HashMap"  >
+    SELECT PROD_INST_ID prodInstId,PROD_ID prodId,ACC_PROD_INST_ID accProdInstId,PROD_USE_TYPE prodUseType,ACC_NUM accNum,ACCOUNT account,PAYMENT_MODE_CD paymentModeCd,ADDRESS_DESC addressDesc,OWNER_CUST_ID ownerCustId,PROD_INST_PWD prodInstPwd,EXCH_ID exchId,ADDRESS_ID addressId,REGION_ID regionId,LAN_ID lanId,ACT_DATE actDate,BEGIN_RENT_DATE beginRentDate,STOP_RENT_DATE stopRentDate,STATUS_CD statusCd,CREATE_ORG_ID createOrgId,CREATE_STAFF createStaff,UPDATE_STAFF updateStaff,CREATE_DATE createDate,STATUS_DATE statusDate,UPDATE_DATE updateDate,FIRST_FINISH_DATE firstFinishDate,BUSI_MOD_DATE busiModDate,USE_CUST_ID useCustId,LAST_ORDER_ITEM_ID lastOrderItemId,REMARK remark,POINT_OWNER_ID pointOwnerId,EXT_PROD_INST_ID extProdInstId,ROUTE_ID routeId
+
+    FROM PROD_INST_SUB
+    WHERE PROD_INST_ID = #{prodInstId,jdbcType=BIGINT} and ROUTE_ID = #{routeId,jdbcType=BIGINT}
+</select>
+
+  <select id="getProdInstAcctRel" resultType="java.util.HashMap" parameterType="java.util.HashMap"  >
+    SELECT PROD_INST_ACCT_REL_ID prodInstAcctRelId,ACCT_ID acctId,PROD_INST_ID prodInstId,ACCT_ITEM_GROUP_ID acctItemGroupId,PRIORITY priority,PAYMENT_LIMIT_TYPE paymentLimitType,PAYMENT_LIMIT paymentLimit,UPPER_AMOUNT upperAmount,EFF_DATE effDate,EXP_DATE expDate,IF_DEFAULT_ACCT_ID ifDefaultAcctId,STATUS_CD statusCd,LAST_ORDER_ITEM_ID lastOrderItemId,STATUS_DATE statusDate,AGREE_ID agreeId,CREATE_STAFF createStaff,CREATE_DATE createDate,UPDATE_STAFF updateStaff,UPDATE_DATE updateDate,ROUTE_ID routeId
+
+    FROM PROD_INST_ACCT_REL
+    WHERE PROD_INST_ACCT_REL_ID = #{prodInstAcctRelId,jdbcType=BIGINT} and ROUTE_ID = #{routeId,jdbcType=BIGINT}
+</select>
+
+  <select id="getOfferInst" resultType="java.util.HashMap" parameterType="java.util.HashMap"  >
+    SELECT OFFER_INST_ID offerInstId,OFFER_ID offerId,OFFER_TYPE offerType,OWNER_CUST_ID ownerCustId,EFF_DATE effDate,EXP_DATE expDate,OFFER_AGREE_ID offerAgreeId,CREATE_ORG_ID createOrgId,EXP_PROC_METHOD expProcMethod,LAN_ID lanId,REGION_ID regionId,STATUS_CD statusCd,CREATE_STAFF createStaff,UPDATE_STAFF updateStaff,CREATE_DATE createDate,STATUS_DATE statusDate,UPDATE_DATE updateDate,BUSI_MOD_DATE busiModDate,LAST_ORDER_ITEM_ID lastOrderItemId,REMARK remark,EXT_OFFER_INST_ID extOfferInstId,ROUTE_ID routeId
+
+    FROM OFFER_INST
+    WHERE OFFER_INST_ID = #{offerInstId,jdbcType=BIGINT} and ROUTE_ID = #{routeId,jdbcType=BIGINT}
+</select>
+
+  <select id="getOfferObjInstRel" resultType="java.util.HashMap" parameterType="java.util.HashMap"  >
+    SELECT OFFER_OBJ_INST_REL_ID offerObjInstRelId,OFFER_INST_ID offerInstId,OBJ_TYPE objType,OBJ_ID objId,ROLE_ID roleId,EFF_DATE effDate,EXP_DATE expDate,STATUS_CD statusCd,CREATE_STAFF createStaff,UPDATE_STAFF updateStaff,CREATE_DATE createDate,STATUS_DATE statusDate,UPDATE_DATE updateDate,LAST_ORDER_ITEM_ID lastOrderItemId,REMARK remark,OFFER_OBJ_REL_ID offerObjRelId,ROUTE_ID routeId
+
+    FROM OFFER_OBJ_INST_REL
+    WHERE OFFER_OBJ_INST_REL_ID = #{offerObjInstRelId,jdbcType=BIGINT} and ROUTE_ID = #{routeId,jdbcType=BIGINT}
+</select>
+
+  <select id="getOfferInstAttr" resultType="java.util.HashMap" parameterType="java.util.HashMap"  >
+    SELECT OFFER_INST_ATTR_ID offerInstAttrId,OFFER_INST_ID offerInstId,PAR_OFFER_INST_ATTR_ID parOfferInstAttrId,OBJ_TYPE objType,OBJ_ID objId,ATTR_ID attrId,ATTR_VALUE_ID attrValueId,ATTR_VALUE attrValue,EFF_DATE effDate,EXP_DATE expDate,APPLY_REGION_ID applyRegionId,STATUS_CD statusCd,CREATE_STAFF createStaff,UPDATE_STAFF updateStaff,CREATE_DATE createDate,STATUS_DATE statusDate,UPDATE_DATE updateDate,BUSI_MOD_EFF_DATE busiModEffDate,LAST_ORDER_ITEM_ID lastOrderItemId,REMARK remark,ROUTE_ID routeId
+
+    FROM OFFER_INST_ATTR
+    WHERE OFFER_INST_ATTR_ID = #{offerInstAttrId,jdbcType=BIGINT} and ROUTE_ID = #{routeId,jdbcType=BIGINT}
+</select>
+
+  <select id="getProdInstRegion" resultType="java.util.HashMap" parameterType="java.util.HashMap"  >
+    SELECT PROD_INST_REGION_ID prodInstRegionId,PROD_INST_ID prodInstId,REGION_ID regionId,EFF_DATE effDate,EXP_DATE expDate,STATUS_CD statusCd,CREATE_STAFF createStaff,UPDATE_STAFF updateStaff,CREATE_DATE createDate,STATUS_DATE statusDate,UPDATE_DATE updateDate,LAST_ORDER_ITEM_ID lastOrderItemId,REMARK remark,ROUTE_ID routeId
+
+    FROM PROD_INST_REGION
+    WHERE PROD_INST_REGION_ID = #{prodInstRegionId,jdbcType=BIGINT} and ROUTE_ID = #{routeId,jdbcType=BIGINT}
+</select>
+
+  <select id="getProdInstAccNum" resultType="java.util.HashMap" parameterType="java.util.HashMap"  >
+    SELECT PROD_INST_ACC_NUM_ID prodInstAccNumId,PROD_INST_ID prodInstId,ACC_NUM_TYPE accNumType,ACC_NUM accNum,PLAT_ID platId,PASSWORD password,APPLY_REGION_ID applyRegionId,STATUS_CD statusCd,CREATE_STAFF createStaff,UPDATE_STAFF updateStaff,CREATE_DATE createDate,UPDATE_DATE updateDate,STATUS_DATE statusDate,LAST_ORDER_ITEM_ID lastOrderItemId,REMARK remark,EFF_DATE effDate,EXP_DATE expDate,ROUTE_ID routeId
+
+    FROM PROD_INST_ACC_NUM
+    WHERE PROD_INST_ACC_NUM_ID = #{prodInstAccNumId,jdbcType=BIGINT} and ROUTE_ID = #{routeId,jdbcType=BIGINT}
+</select>
+  <select id="getProdInstStateExt" resultType="java.util.HashMap" parameterType="java.util.HashMap"  >
+    SELECT PROD_INST_STATE_ID prodInstStateId,PROD_INST_ID prodInstId,STOP_TYPE stopType,EFF_DATE effDate,EXP_DATE expDate,STOP_DIRECTION stopDirection,STOP_REASON stopReason,EVENT_DATE eventDate,STATUS_CD statusCd,CREATE_STAFF createStaff,UPDATE_STAFF updateStaff,CREATE_DATE createDate,STATUS_DATE statusDate,UPDATE_DATE updateDate,LAST_ORDER_ITEM_ID lastOrderItemId,REMARK remark,STATE state,ROUTE_ID routeId
+
+    FROM PROD_INST_STATE_EXT
+    WHERE PROD_INST_STATE_ID = #{prodInstStateId,jdbcType=BIGINT} and ROUTE_ID = #{routeId,jdbcType=BIGINT}
+</select>
+  <select id="getProdInstPaymode" resultType="java.util.HashMap" parameterType="java.util.HashMap"  >
+    SELECT PAYMODE_ID paymodeId,PROD_INST_ID prodInstId,PAYMENT_MODE_CD paymentModeCd,EFF_DATE effDate,EXP_DATE expDate,STATUS_CD statusCd,CREATE_STAFF createStaff,UPDATE_STAFF updateStaff,CREATE_DATE createDate,STATUS_DATE statusDate,UPDATE_DATE updateDate,LAST_ORDER_ITEM_ID lastOrderItemId,REMARK remark,ROUTE_ID routeId
+
+    FROM PROD_INST_PAYMODE
+    WHERE PAYMODE_ID = #{paymodeId,jdbcType=BIGINT} and ROUTE_ID = #{routeId,jdbcType=BIGINT}
+</select>
+  <select id="getProdInstAttrSub" resultType="java.util.HashMap" parameterType="java.util.HashMap"  >
+    SELECT PROD_INST_ATTR_ID prodInstAttrId,PAR_PROD_INST_ATTR_ID parProdInstAttrId,PROD_INST_ID prodInstId,ATTR_ID attrId,ATTR_VALUE_ID attrValueId,ATTR_VALUE attrValue,BUSI_MOD_DATE busiModDate,EFF_DATE effDate,EXP_DATE expDate,STATUS_CD statusCd,CREATE_STAFF createStaff,UPDATE_STAFF updateStaff,CREATE_DATE createDate,STATUS_DATE statusDate,UPDATE_DATE updateDate,LAST_ORDER_ITEM_ID lastOrderItemId,REMARK remark,ROUTE_ID routeId
+
+    FROM PROD_INST_ATTR_SUB
+    WHERE PROD_INST_ATTR_ID = #{prodInstAttrId,jdbcType=BIGINT} and ROUTE_ID = #{routeId,jdbcType=BIGINT}
+</select>
+
+
+
+
+
+
+</mapper>

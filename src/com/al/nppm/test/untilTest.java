@@ -1,17 +1,15 @@
 package com.al.nppm.test;
 
+import com.al.nppm.common.utils.StringUtil;
+import net.sf.json.JSONObject;
+import org.apache.commons.beanutils.ConvertUtils;
+
 import java.lang.reflect.Field;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Map;
-
-import net.sf.json.JSONObject;
-
-import org.apache.commons.beanutils.ConvertUtils;
-
-import com.al.nppm.common.utils.StringUtil;
 
 public class untilTest {
 
@@ -20,7 +18,6 @@ public class untilTest {
 	 * @throws ParseException
 	 */
 	public static void main(String[] args) throws ParseException {
-		// TODO Auto-generated method stub
 		/*
 		 * SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		 * Date date = new Date();

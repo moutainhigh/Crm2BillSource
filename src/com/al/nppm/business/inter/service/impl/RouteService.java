@@ -7,6 +7,7 @@ package com.al.nppm.business.inter.service.impl;/**
  */
 
 import com.al.nppm.business.account.dao.IRouteMapper;
+import com.al.nppm.business.core.SynMapContextHolder;
 import com.al.nppm.business.inter.service.IRouteService;
 import com.al.nppm.common.utils.StringUtil;
 import com.al.nppm.model.Message;
@@ -42,7 +43,16 @@ public class RouteService implements IRouteService {
      * @throws Exception 
     **/
     @Override
-    public Long getRouteIdForTaxPayer(Long archGrpId, Long orderItemId, Long taxPayerId, Message msg) throws Exception {
+    public Long getRouteIdForTaxPayer(Long archGrpId, Long orderItemId, Long taxPayerId, Message msg) {
+        if(SynMapContextHolder.get("TaxPayerRoute")==null) {
+            SynMapContextHolder.put("TaxPayerRoute", new HashMap<Long, Long>());
+        }else{
+            HashMap<Long, Long> map=(HashMap<Long, Long>)SynMapContextHolder.get("TaxPayerRoute");
+            if(map.get(taxPayerId)!=null) {
+                return map.get(taxPayerId);
+            }
+        }
+
         Map<String,Object> taxPayerMap = new HashMap<String, Object>();
         Long routeId;
         taxPayerMap.put("ARCH_GRP_ID", archGrpId);
@@ -54,6 +64,7 @@ public class RouteService implements IRouteService {
             if(ordCustomerList.size() > 0){
                 Map ordCustomerMap = ordCustomerList.get(0);
                 routeId =  Long.valueOf(String.valueOf(ordCustomerMap.get("custId")));
+                ((HashMap<Long, Long>)SynMapContextHolder.get("TaxPayerRoute")).put(taxPayerId, routeId);
             }else{
                 msg.setMessage("tax_payer关联ord_customer表取routeId(cust_id)字段失败。TAX_PAYER_ID="+taxPayerId);
                 return -1L;
@@ -61,7 +72,7 @@ public class RouteService implements IRouteService {
         } catch (Exception e) {
             msg.setMessage("tax_payer关联ord_customer表取routeId(cust_id)字段失败。TAX_PAYER_ID="+taxPayerId);
             e.printStackTrace();
-            throw e;
+            return -1L;
         }
         return routeId;
     }
@@ -75,7 +86,16 @@ public class RouteService implements IRouteService {
      * @throws Exception 
     **/
     @Override
-    public Long getRouteIdForExtAcct(Long archGrpId, Long orderItemId, Long extAcctId,Message msg) throws Exception {
+    public Long getRouteIdForExtAcct(Long archGrpId, Long orderItemId, Long extAcctId,Message msg) {
+        if(SynMapContextHolder.get("ExtAcctRoute")==null) {
+            SynMapContextHolder.put("ExtAcctRoute", new HashMap<Long, Long>());
+        }else{
+            HashMap<Long, Long> map=(HashMap<Long, Long>)SynMapContextHolder.get("ExtAcctRoute");
+            if(map.get(extAcctId)!=null) {
+                return map.get(extAcctId);
+            }
+        }
+
         Map<String,Object> extAcctMap = new HashMap<String, Object>();
         Long routeId;
         extAcctMap.put("ARCH_GRP_ID", archGrpId);
@@ -87,6 +107,7 @@ public class RouteService implements IRouteService {
             if(ordAccountList.size() > 0){
                 Map ordAccountMap =ordAccountList.get(0);
                 routeId =  Long.valueOf(String.valueOf(ordAccountMap.get("acctId")));
+                ((HashMap<Long, Long>)SynMapContextHolder.get("ExtAcctRoute")).put(extAcctId, routeId);
             }else {
                 msg.setMessage("ext_acct关联ord_account表取routeId(acct_id)字段失败。EXT_ACCT_ID="+extAcctId);
                 return -1L;
@@ -94,7 +115,7 @@ public class RouteService implements IRouteService {
         } catch (Exception e) {
             msg.setMessage("ext_acct关联ord_account表取routeId(acct_id)字段失败。EXT_ACCT_ID="+extAcctId);
             e.printStackTrace();
-            throw e;
+            return -1L;
         }
         return routeId;
     }
@@ -108,7 +129,16 @@ public class RouteService implements IRouteService {
      * @throws Exception 
     **/
     @Override
-    public Long getRouteIdForProdInst(Long archGrpId, Long orderItemId, Long prodInstId,Message msg) throws Exception {
+    public Long getRouteIdForProdInst(Long archGrpId, Long orderItemId, Long prodInstId,Message msg) {
+        if(SynMapContextHolder.get("ProdInstRoute")==null) {
+            SynMapContextHolder.put("ProdInstRoute", new HashMap<Long, Long>());
+        }else{
+            HashMap<Long, Long> map=(HashMap<Long, Long>)SynMapContextHolder.get("ProdInstRoute");
+            if(map.get(prodInstId)!=null) {
+                return map.get(prodInstId);
+            }
+        }
+
         Long routeId;
         try {
             routeId = routeDao.getProdInstRoute(prodInstId);
@@ -125,6 +155,7 @@ public class RouteService implements IRouteService {
                     prodInstMap.put("routeId", routeId);
                     //把新的prodInstId和routeId写入路由表PROD_INST_ROUTE中
                     routeDao.insertProdInstRoute(prodInstMap);
+                    ((HashMap<Long, Long>)SynMapContextHolder.get("ProdInstRoute")).put(prodInstId, routeId);
                     return routeId;
                 }else{
                     msg.setMessage("ORD_PROD_INST_ACCT_REL取routeId(acct_id)失败。prodInstId="+prodInstId);
@@ -134,7 +165,31 @@ public class RouteService implements IRouteService {
         } catch (Exception e) {
             msg.setMessage("prodInst取routeId失败。prodInstId="+prodInstId);
             e.printStackTrace();
-            throw e;
+            return -1L;
+        }
+        return routeId;
+    }
+
+    /**
+     * 根据prodInstId去路由表取routeId
+     * @param prodInstId
+     * @param msg
+     * @return
+     */
+    @Override
+    public Long getProdInstRoute(Long prodInstId,Message msg) {
+        Long routeId;
+        try {
+            routeId = routeDao.getProdInstRoute(prodInstId);
+            //如果PROD_INST_ROUTE表中没有找到routeId，则去ORD_PROD_INST_ACCT_REL中去acct_id
+            if(StringUtil.isEmpty(String.valueOf(routeId))){
+                msg.setMessage("prodInst取routeId失败。prodInstId="+prodInstId);
+                return -1L;
+            }
+        } catch (Exception e) {
+            msg.setMessage("prodInst取routeId失败。prodInstId="+prodInstId);
+            e.printStackTrace();
+            return -1L;
         }
         return routeId;
     }
@@ -149,7 +204,15 @@ public class RouteService implements IRouteService {
      * @throws Exception 
      **/
     @Override
-    public Long getRouteIdForOfferInst(Long archGrpId, Long orderItemId, Long offerInstId,Message msg) throws Exception{
+    public Long getRouteIdForOfferInst(Long archGrpId, Long orderItemId, Long offerInstId,Message msg){
+        if(SynMapContextHolder.get("OfferInstRoute")==null) {
+            SynMapContextHolder.put("OfferInstRoute", new HashMap<Long, Long>());
+        }else{
+            HashMap<Long, Long> map=(HashMap<Long, Long>)SynMapContextHolder.get("OfferInstRoute");
+            if(map.get(offerInstId)!=null) {
+                return map.get(offerInstId);
+            }
+        }
         Long routeId;
         try {
             routeId = routeDao.getOfferInstRoute(offerInstId);
@@ -160,42 +223,47 @@ public class RouteService implements IRouteService {
                 offerInstMap.put("ORDER_ITEM_ID", orderItemId);
                 offerInstMap.put("offerInstId", offerInstId);
                 List<Map<String,Object>> ordOfferProdInstRelList = ordRouteDao.getOrdOfferProdInstRelByOfferInstId(offerInstMap);
-                if(ordOfferProdInstRelList.size() > 0){
-                    Map<String,Object> ordOfferProdInstRelMap = ordOfferProdInstRelList.get(0);
+                if (ordOfferProdInstRelList.size() > 0) {
+                    Map<String, Object> ordOfferProdInstRelMap = ordOfferProdInstRelList.get(0);
                     Long prodInstId = Long.valueOf(String.valueOf(ordOfferProdInstRelMap.get("prodInstId")));
                     routeId = routeDao.getProdInstRoute(prodInstId);
-                    //如果prod_inst_route取出来的routeId不存在。则去ORD_OFFER_OBJ_INST_REL表取obj_id,再去account表取acct_id
-                    if(StringUtil.isEmpty(String.valueOf(routeId))){
-                        List<Map<String,Object>> ordOfferObjInstRelList = ordRouteDao.getOrdOfferObjInstRelByOfferInstId(offerInstMap);
-                        if(ordOfferObjInstRelList.size() > 0){
-                            Map<String,Object> ordOfferObjInstRelMap = ordOfferObjInstRelList.get(0);
-                            Long objId = Long.valueOf(String.valueOf(ordOfferObjInstRelMap.get("objId")));
-                            routeId = routeDao.getAccountByObjId(objId);
-                            if(!StringUtil.isEmpty(String.valueOf(routeId))){  //account表中取出的acct_id不为空
-                                offerInstMap.put("routeId", routeId);
-                                //将新的offerInstId和routeId(account表的acct_id字段)写入路由表OFFER_INST_ROUTE中
-                                routeDao.insertOfferInstRoute(offerInstMap);
-                                return routeId;
-                            }else{
-                                msg.setMessage("从Account表中取acct_id失败。offerInstId="+offerInstId);
-                                return -1L;
-                            }
-                        }else{
-                            msg.setMessage("从ORD_OFFER_OBJ_INST_REL取obj_Id失败。offerInstId="+offerInstId);
-                            return -1L;
-                        }
-                    }else{
+                    if(!StringUtil.isEmpty(String.valueOf(routeId))){
                         //把新的offerInstId和routeId(Prod_inst_route表中的routeId)写入路由表OFFER_INST_ROUTE中
                         offerInstMap.put("routeId", routeId);
                         routeDao.insertOfferInstRoute(offerInstMap);
+                        ((HashMap<Long, Long>)SynMapContextHolder.get("OfferInstRoute")).put(offerInstId, routeId);
                         return routeId;
+                    }else{
+                        msg.setMessage("取routeId失败。原因从ORD_OFFER_PROD_INST_REL取prodInstId,然后获取prod_Inst_Route的routeId失败。offerInstId="+offerInstId);
+                        return -1L;
+                    }
+                }else{
+                    //如果ORD_OFFER_PROD_INST_REL无记录。则去ORD_OFFER_OBJ_INST_REL表取obj_id,再去account表取acct_id
+                    List<Map<String,Object>> ordOfferObjInstRelList = ordRouteDao.getOrdOfferObjInstRelByOfferInstId(offerInstMap);
+                    if(ordOfferObjInstRelList.size() > 0){
+                        Map<String,Object> ordOfferObjInstRelMap = ordOfferObjInstRelList.get(0);
+                        Long objId = Long.valueOf(String.valueOf(ordOfferObjInstRelMap.get("objId")));
+                        routeId = routeDao.getAccountByObjId(objId);
+                        if(!StringUtil.isEmpty(String.valueOf(routeId))){  //account表中取出的acct_id不为空
+                            offerInstMap.put("routeId", routeId);
+                            //将新的offerInstId和routeId(account表的acct_id字段)写入路由表OFFER_INST_ROUTE中
+                            routeDao.insertOfferInstRoute(offerInstMap);
+                            ((HashMap<Long, Long>)SynMapContextHolder.get("OfferInstRoute")).put(offerInstId, routeId);
+                            return routeId;
+                        }else{
+                            msg.setMessage("从Account表中取acct_id失败。offerInstId="+offerInstId);
+                            return -1L;
+                        }
+                    }else{
+                        msg.setMessage("从ORD_OFFER_OBJ_INST_REL取obj_Id失败。offerInstId="+offerInstId);
+                        return -1L;
                     }
                 }
             }
         } catch (Exception e) {
             msg.setMessage("offerInst取routeId失败。offerInstId="+offerInstId);
             e.printStackTrace();
-            throw e;
+            return -1L;
         }
         return routeId;
     }
@@ -210,7 +278,16 @@ public class RouteService implements IRouteService {
      * @throws Exception 
     **/
     @Override
-    public Long getRouteIdForContactsInfoAttr(Long archGrpId, Long orderItemId, Long contactId,Message msg) throws Exception {
+    public Long getRouteIdForContactsInfoAttr(Long archGrpId, Long orderItemId, Long contactId,Message msg) {
+        if(SynMapContextHolder.get("ContactsInfoAttrRoute")==null) {
+            SynMapContextHolder.put("ContactsInfoAttrRoute", new HashMap<Long, Long>());
+        }else{
+            HashMap<Long, Long> map=(HashMap<Long, Long>)SynMapContextHolder.get("ContactsInfoAttrRoute");
+            if(map.get(contactId)!=null) {
+                return map.get(contactId);
+            }
+        }
+
         Map<String,Object> contactsInfoMap = new HashMap<String, Object>();
         Long routeId;
         contactsInfoMap.put("ARCH_GRP_ID", archGrpId);
@@ -221,6 +298,7 @@ public class RouteService implements IRouteService {
             if(ordContactsInfoList.size() > 0){
                 Map ordContactsInfoMap = ordContactsInfoList.get(0);
                 routeId = Long.valueOf(String.valueOf(ordContactsInfoMap.get("partyId")));
+                ((HashMap<Long, Long>)SynMapContextHolder.get("ContactsInfoAttrRoute")).put(contactId, routeId);
             }else{
                 msg.setMessage("ord_contacts_info_attr关联ord_contacts_info表取routeId(party_id)字段失败。CONTACT_ID="+contactId);
                 return -1L;
@@ -228,7 +306,7 @@ public class RouteService implements IRouteService {
         } catch (Exception e) {
             msg.setMessage("ord_contacts_info_attr关联ord_contacts_info表取routeId(party_id)字段失败。CONTACT_ID="+contactId);
             e.printStackTrace();
-            throw e;
+            return -1L;
         }
         return routeId;
     }

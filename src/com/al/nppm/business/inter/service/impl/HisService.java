@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -31,7 +30,6 @@ public class HisService implements IHisService {
 	 * */
 	@Override
 	public int insertCustomerHis(Map map) throws Exception {
-		// TODO Auto-generated method stub
 		long seqId= prodinstDao.getSeq("SEQ_CUSTOMER_HIS_ID");
 		SimpleDateFormat d = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		map.put("customerSeq", seqId);
@@ -50,7 +48,6 @@ public class HisService implements IHisService {
 	 * */
 	@Override
 	public int insertCustContactInfoRelHis(Map map) throws Exception {
-		// TODO Auto-generated method stub
 		long seqId= prodinstDao.getSeq("SEQ_CUST_CONTACT_INFO_REL_HIS_ID");
 		SimpleDateFormat d = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		map.put("custContactInfoRelSeq", seqId);
@@ -88,7 +85,6 @@ public class HisService implements IHisService {
 	 */
 	@Override
 	public int insertExtAcctHis(Map map) {
-		// TODO Auto-generated method stub
 		try{
 			hisDao.insertExtAcctHis(map);
 		}catch(Exception e){
@@ -107,15 +103,15 @@ public class HisService implements IHisService {
 	 * @return
 	 */
     @Override
-    public int selectProdInst(Map itemMap, Map userMap, Message msg) {
-        Map prodInstMap = new HashMap();
+    public int backupProdInst(Map itemMap, Map userMap, Message msg) {
+        /*Map prodInstMap = new HashMap();
         prodInstMap = hisDao.selectProdInstHis(itemMap);
         if (prodInstMap == null ||prodInstMap.isEmpty()) {
             msg.setMessage("获取产品实例失败，prodInstId：" + itemMap.get("prodInstId"));
             return -1;
-        }
+        }*/
         //备份原有prodInst数据
-        if(insertProdInst(prodInstMap,userMap,msg)<=0){
+        if(insertProdInstHis(itemMap,userMap,msg)<=0){
             return -1;
         }
         return 1;
@@ -129,8 +125,7 @@ public class HisService implements IHisService {
 	 * @param msg
 	 * @return
 	 */
-    @Override
-    public int insertProdInst(Map itemMap, Map userMap, Message msg) {
+    public int insertProdInstHis(Map itemMap, Map userMap, Message msg) {
         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         SimpleDateFormat d = new SimpleDateFormat("yyyyMMddHHmmss");
         //更新日期

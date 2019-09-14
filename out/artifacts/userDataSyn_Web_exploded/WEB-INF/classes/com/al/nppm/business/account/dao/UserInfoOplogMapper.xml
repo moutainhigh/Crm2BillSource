@@ -1,0 +1,944 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.al.nppm.business.account.dao.UserInfoOplogMapper" >
+
+    <insert id="insertUserInfoOplog001" parameterType="map" >
+        insert into user_info_oplog_001
+        <trim prefix="(" suffix=")" suffixOverrides="," >
+            <if test="opSeq != null" >
+                OP_SEQ,
+            </if>
+            <if test="dbopDate != null" >
+                DBOP_DATE,
+            </if>
+            <if test="memopDate != null" >
+                MEMOP_DATE,
+            </if>
+            <if test="opType != null" >
+                OP_TYPE,
+            </if>
+            <if test="tableName != null" >
+                TABLE_NAME,
+            </if>
+            <if test="tableColumn1 != null" >
+                TABLE_COLUMN_1,
+            </if>
+            <if test="tableColumn2 != null" >
+                TABLE_COLUMN_2,
+            </if>
+            <if test="tableColumn3 != null" >
+                TABLE_COLUMN_3,
+            </if>
+            <if test="tableColumn4 != null" >
+                TABLE_COLUMN_4,
+            </if>
+            <if test="tableColumn5 != null" >
+                TABLE_COLUMN_5,
+            </if>
+            <if test="tableColumn6 != null" >
+                TABLE_COLUMN_6,
+            </if>
+            <if test="notes != null" >
+                NOTES,
+            </if>
+            <if test="effDate97 != null" >
+                EFF_DATE_97,
+            </if>
+            <if test="analyzeDate != null" >
+                ANALYZE_DATE,
+            </if>
+            <if test="creditMemopDate != null" >
+                CREDIT_MEMOP_DATE,
+            </if>
+            <if test="analyseDateA != null" >
+                ANALYSE_DATE_A,
+            </if>
+            <if test="analyseDateB != null" >
+                ANALYSE_DATE_B,
+            </if>
+            <if test="modifyAcctFlag != null" >
+                MODIFY_ACCT_FLAG,
+            </if>
+            <if test="partitionId != null" >
+                PARTITION_ID,
+            </if>
+            <if test="archGrpId != null" >
+                ARCH_GRP_ID,
+            </if>
+            <if test="routeId != null" >
+                ROUTE_ID,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides="," >
+            <if test="opSeq != null" >
+                #{opSeq,jdbcType=BIGINT},
+            </if>
+            <if test="dbopDate != null" >
+                #{dbopDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="memopDate != null" >
+                #{memopDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="opType != null" >
+                #{opType,jdbcType=INTEGER},
+            </if>
+            <if test="tableName != null" >
+                #{tableName,jdbcType=VARCHAR},
+            </if>
+            <if test="tableColumn1 != null" >
+                #{tableColumn1,jdbcType=BIGINT},
+            </if>
+            <if test="tableColumn2 != null" >
+                #{tableColumn2,jdbcType=BIGINT},
+            </if>
+            <if test="tableColumn3 != null" >
+                #{tableColumn3,jdbcType=BIGINT},
+            </if>
+            <if test="tableColumn4 != null" >
+                #{tableColumn4,jdbcType=VARCHAR},
+            </if>
+            <if test="tableColumn5 != null" >
+                #{tableColumn5,jdbcType=VARCHAR},
+            </if>
+            <if test="tableColumn6 != null" >
+                #{tableColumn6,jdbcType=VARCHAR},
+            </if>
+            <if test="notes != null" >
+                #{notes,jdbcType=VARCHAR},
+            </if>
+            <if test="effDate97 != null" >
+                #{effDate97,jdbcType=TIMESTAMP},
+            </if>
+            <if test="analyzeDate != null" >
+                #{analyzeDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="creditMemopDate != null" >
+                #{creditMemopDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="analyseDateA != null" >
+                #{analyseDateA,jdbcType=TIMESTAMP},
+            </if>
+            <if test="analyseDateB != null" >
+                #{analyseDateB,jdbcType=TIMESTAMP},
+            </if>
+            <if test="modifyAcctFlag != null" >
+                #{modifyAcctFlag,jdbcType=INTEGER},
+            </if>
+            <if test="partitionId != null" >
+                #{partitionId,jdbcType=INTEGER},
+            </if>
+            <if test="archGrpId != null" >
+                #{archGrpId,jdbcType=BIGINT},
+            </if>
+            <if test="routeId != null" >
+                #{routeId,jdbcType=BIGINT},
+            </if>
+        </trim>
+    </insert>
+
+    <insert id="insertUserInfoOplog002" parameterType="map" >
+        insert into user_info_oplog_002
+        <trim prefix="(" suffix=")" suffixOverrides="," >
+            <if test="opSeq != null" >
+                OP_SEQ,
+            </if>
+            <if test="dbopDate != null" >
+                DBOP_DATE,
+            </if>
+            <if test="memopDate != null" >
+                MEMOP_DATE,
+            </if>
+            <if test="opType != null" >
+                OP_TYPE,
+            </if>
+            <if test="tableName != null" >
+                TABLE_NAME,
+            </if>
+            <if test="tableColumn1 != null" >
+                TABLE_COLUMN_1,
+            </if>
+            <if test="tableColumn2 != null" >
+                TABLE_COLUMN_2,
+            </if>
+            <if test="tableColumn3 != null" >
+                TABLE_COLUMN_3,
+            </if>
+            <if test="tableColumn4 != null" >
+                TABLE_COLUMN_4,
+            </if>
+            <if test="tableColumn5 != null" >
+                TABLE_COLUMN_5,
+            </if>
+            <if test="tableColumn6 != null" >
+                TABLE_COLUMN_6,
+            </if>
+            <if test="notes != null" >
+                NOTES,
+            </if>
+            <if test="effDate97 != null" >
+                EFF_DATE_97,
+            </if>
+            <if test="analyzeDate != null" >
+                ANALYZE_DATE,
+            </if>
+            <if test="creditMemopDate != null" >
+                CREDIT_MEMOP_DATE,
+            </if>
+            <if test="analyseDateA != null" >
+                ANALYSE_DATE_A,
+            </if>
+            <if test="analyseDateB != null" >
+                ANALYSE_DATE_B,
+            </if>
+            <if test="modifyAcctFlag != null" >
+                MODIFY_ACCT_FLAG,
+            </if>
+            <if test="partitionId != null" >
+                PARTITION_ID,
+            </if>
+            <if test="archGrpId != null" >
+                ARCH_GRP_ID,
+            </if>
+            <if test="routeId != null" >
+                ROUTE_ID,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides="," >
+            <if test="opSeq != null" >
+                #{opSeq,jdbcType=BIGINT},
+            </if>
+            <if test="dbopDate != null" >
+                #{dbopDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="memopDate != null" >
+                #{memopDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="opType != null" >
+                #{opType,jdbcType=INTEGER},
+            </if>
+            <if test="tableName != null" >
+                #{tableName,jdbcType=VARCHAR},
+            </if>
+            <if test="tableColumn1 != null" >
+                #{tableColumn1,jdbcType=BIGINT},
+            </if>
+            <if test="tableColumn2 != null" >
+                #{tableColumn2,jdbcType=BIGINT},
+            </if>
+            <if test="tableColumn3 != null" >
+                #{tableColumn3,jdbcType=BIGINT},
+            </if>
+            <if test="tableColumn4 != null" >
+                #{tableColumn4,jdbcType=VARCHAR},
+            </if>
+            <if test="tableColumn5 != null" >
+                #{tableColumn5,jdbcType=VARCHAR},
+            </if>
+            <if test="tableColumn6 != null" >
+                #{tableColumn6,jdbcType=VARCHAR},
+            </if>
+            <if test="notes != null" >
+                #{notes,jdbcType=VARCHAR},
+            </if>
+            <if test="effDate97 != null" >
+                #{effDate97,jdbcType=TIMESTAMP},
+            </if>
+            <if test="analyzeDate != null" >
+                #{analyzeDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="creditMemopDate != null" >
+                #{creditMemopDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="analyseDateA != null" >
+                #{analyseDateA,jdbcType=TIMESTAMP},
+            </if>
+            <if test="analyseDateB != null" >
+                #{analyseDateB,jdbcType=TIMESTAMP},
+            </if>
+            <if test="modifyAcctFlag != null" >
+                #{modifyAcctFlag,jdbcType=INTEGER},
+            </if>
+            <if test="partitionId != null" >
+                #{partitionId,jdbcType=INTEGER},
+            </if>
+            <if test="archGrpId != null" >
+                #{archGrpId,jdbcType=BIGINT},
+            </if>
+            <if test="routeId != null" >
+                #{routeId,jdbcType=BIGINT},
+            </if>
+        </trim>
+    </insert>
+
+    <insert id="insertUserInfoOplog003" parameterType="map" >
+        insert into user_info_oplog_003
+        <trim prefix="(" suffix=")" suffixOverrides="," >
+            <if test="opSeq != null" >
+                OP_SEQ,
+            </if>
+            <if test="dbopDate != null" >
+                DBOP_DATE,
+            </if>
+            <if test="memopDate != null" >
+                MEMOP_DATE,
+            </if>
+            <if test="opType != null" >
+                OP_TYPE,
+            </if>
+            <if test="tableName != null" >
+                TABLE_NAME,
+            </if>
+            <if test="tableColumn1 != null" >
+                TABLE_COLUMN_1,
+            </if>
+            <if test="tableColumn2 != null" >
+                TABLE_COLUMN_2,
+            </if>
+            <if test="tableColumn3 != null" >
+                TABLE_COLUMN_3,
+            </if>
+            <if test="tableColumn4 != null" >
+                TABLE_COLUMN_4,
+            </if>
+            <if test="tableColumn5 != null" >
+                TABLE_COLUMN_5,
+            </if>
+            <if test="tableColumn6 != null" >
+                TABLE_COLUMN_6,
+            </if>
+            <if test="notes != null" >
+                NOTES,
+            </if>
+            <if test="effDate97 != null" >
+                EFF_DATE_97,
+            </if>
+            <if test="analyzeDate != null" >
+                ANALYZE_DATE,
+            </if>
+            <if test="creditMemopDate != null" >
+                CREDIT_MEMOP_DATE,
+            </if>
+            <if test="analyseDateA != null" >
+                ANALYSE_DATE_A,
+            </if>
+            <if test="analyseDateB != null" >
+                ANALYSE_DATE_B,
+            </if>
+            <if test="modifyAcctFlag != null" >
+                MODIFY_ACCT_FLAG,
+            </if>
+            <if test="partitionId != null" >
+                PARTITION_ID,
+            </if>
+            <if test="archGrpId != null" >
+                ARCH_GRP_ID,
+            </if>
+            <if test="routeId != null" >
+                ROUTE_ID,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides="," >
+            <if test="opSeq != null" >
+                #{opSeq,jdbcType=BIGINT},
+            </if>
+            <if test="dbopDate != null" >
+                #{dbopDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="memopDate != null" >
+                #{memopDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="opType != null" >
+                #{opType,jdbcType=INTEGER},
+            </if>
+            <if test="tableName != null" >
+                #{tableName,jdbcType=VARCHAR},
+            </if>
+            <if test="tableColumn1 != null" >
+                #{tableColumn1,jdbcType=BIGINT},
+            </if>
+            <if test="tableColumn2 != null" >
+                #{tableColumn2,jdbcType=BIGINT},
+            </if>
+            <if test="tableColumn3 != null" >
+                #{tableColumn3,jdbcType=BIGINT},
+            </if>
+            <if test="tableColumn4 != null" >
+                #{tableColumn4,jdbcType=VARCHAR},
+            </if>
+            <if test="tableColumn5 != null" >
+                #{tableColumn5,jdbcType=VARCHAR},
+            </if>
+            <if test="tableColumn6 != null" >
+                #{tableColumn6,jdbcType=VARCHAR},
+            </if>
+            <if test="notes != null" >
+                #{notes,jdbcType=VARCHAR},
+            </if>
+            <if test="effDate97 != null" >
+                #{effDate97,jdbcType=TIMESTAMP},
+            </if>
+            <if test="analyzeDate != null" >
+                #{analyzeDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="creditMemopDate != null" >
+                #{creditMemopDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="analyseDateA != null" >
+                #{analyseDateA,jdbcType=TIMESTAMP},
+            </if>
+            <if test="analyseDateB != null" >
+                #{analyseDateB,jdbcType=TIMESTAMP},
+            </if>
+            <if test="modifyAcctFlag != null" >
+                #{modifyAcctFlag,jdbcType=INTEGER},
+            </if>
+            <if test="partitionId != null" >
+                #{partitionId,jdbcType=INTEGER},
+            </if>
+            <if test="archGrpId != null" >
+                #{archGrpId,jdbcType=BIGINT},
+            </if>
+            <if test="routeId != null" >
+                #{routeId,jdbcType=BIGINT},
+            </if>
+        </trim>
+    </insert>
+
+    <insert id="insertUserInfoOplog004" parameterType="map" >
+        insert into user_info_oplog_004
+        <trim prefix="(" suffix=")" suffixOverrides="," >
+            <if test="opSeq != null" >
+                OP_SEQ,
+            </if>
+            <if test="dbopDate != null" >
+                DBOP_DATE,
+            </if>
+            <if test="memopDate != null" >
+                MEMOP_DATE,
+            </if>
+            <if test="opType != null" >
+                OP_TYPE,
+            </if>
+            <if test="tableName != null" >
+                TABLE_NAME,
+            </if>
+            <if test="tableColumn1 != null" >
+                TABLE_COLUMN_1,
+            </if>
+            <if test="tableColumn2 != null" >
+                TABLE_COLUMN_2,
+            </if>
+            <if test="tableColumn3 != null" >
+                TABLE_COLUMN_3,
+            </if>
+            <if test="tableColumn4 != null" >
+                TABLE_COLUMN_4,
+            </if>
+            <if test="tableColumn5 != null" >
+                TABLE_COLUMN_5,
+            </if>
+            <if test="tableColumn6 != null" >
+                TABLE_COLUMN_6,
+            </if>
+            <if test="notes != null" >
+                NOTES,
+            </if>
+            <if test="effDate97 != null" >
+                EFF_DATE_97,
+            </if>
+            <if test="analyzeDate != null" >
+                ANALYZE_DATE,
+            </if>
+            <if test="creditMemopDate != null" >
+                CREDIT_MEMOP_DATE,
+            </if>
+            <if test="analyseDateA != null" >
+                ANALYSE_DATE_A,
+            </if>
+            <if test="analyseDateB != null" >
+                ANALYSE_DATE_B,
+            </if>
+            <if test="modifyAcctFlag != null" >
+                MODIFY_ACCT_FLAG,
+            </if>
+            <if test="partitionId != null" >
+                PARTITION_ID,
+            </if>
+            <if test="archGrpId != null" >
+                ARCH_GRP_ID,
+            </if>
+            <if test="routeId != null" >
+                ROUTE_ID,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides="," >
+            <if test="opSeq != null" >
+                #{opSeq,jdbcType=BIGINT},
+            </if>
+            <if test="dbopDate != null" >
+                #{dbopDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="memopDate != null" >
+                #{memopDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="opType != null" >
+                #{opType,jdbcType=INTEGER},
+            </if>
+            <if test="tableName != null" >
+                #{tableName,jdbcType=VARCHAR},
+            </if>
+            <if test="tableColumn1 != null" >
+                #{tableColumn1,jdbcType=BIGINT},
+            </if>
+            <if test="tableColumn2 != null" >
+                #{tableColumn2,jdbcType=BIGINT},
+            </if>
+            <if test="tableColumn3 != null" >
+                #{tableColumn3,jdbcType=BIGINT},
+            </if>
+            <if test="tableColumn4 != null" >
+                #{tableColumn4,jdbcType=VARCHAR},
+            </if>
+            <if test="tableColumn5 != null" >
+                #{tableColumn5,jdbcType=VARCHAR},
+            </if>
+            <if test="tableColumn6 != null" >
+                #{tableColumn6,jdbcType=VARCHAR},
+            </if>
+            <if test="notes != null" >
+                #{notes,jdbcType=VARCHAR},
+            </if>
+            <if test="effDate97 != null" >
+                #{effDate97,jdbcType=TIMESTAMP},
+            </if>
+            <if test="analyzeDate != null" >
+                #{analyzeDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="creditMemopDate != null" >
+                #{creditMemopDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="analyseDateA != null" >
+                #{analyseDateA,jdbcType=TIMESTAMP},
+            </if>
+            <if test="analyseDateB != null" >
+                #{analyseDateB,jdbcType=TIMESTAMP},
+            </if>
+            <if test="modifyAcctFlag != null" >
+                #{modifyAcctFlag,jdbcType=INTEGER},
+            </if>
+            <if test="partitionId != null" >
+                #{partitionId,jdbcType=INTEGER},
+            </if>
+            <if test="archGrpId != null" >
+                #{archGrpId,jdbcType=BIGINT},
+            </if>
+            <if test="routeId != null" >
+                #{routeId,jdbcType=BIGINT},
+            </if>
+        </trim>
+    </insert>
+
+    <insert id="insertUserInfoOplog005" parameterType="map" >
+        insert into user_info_oplog_005
+        <trim prefix="(" suffix=")" suffixOverrides="," >
+            <if test="opSeq != null" >
+                OP_SEQ,
+            </if>
+            <if test="dbopDate != null" >
+                DBOP_DATE,
+            </if>
+            <if test="memopDate != null" >
+                MEMOP_DATE,
+            </if>
+            <if test="opType != null" >
+                OP_TYPE,
+            </if>
+            <if test="tableName != null" >
+                TABLE_NAME,
+            </if>
+            <if test="tableColumn1 != null" >
+                TABLE_COLUMN_1,
+            </if>
+            <if test="tableColumn2 != null" >
+                TABLE_COLUMN_2,
+            </if>
+            <if test="tableColumn3 != null" >
+                TABLE_COLUMN_3,
+            </if>
+            <if test="tableColumn4 != null" >
+                TABLE_COLUMN_4,
+            </if>
+            <if test="tableColumn5 != null" >
+                TABLE_COLUMN_5,
+            </if>
+            <if test="tableColumn6 != null" >
+                TABLE_COLUMN_6,
+            </if>
+            <if test="notes != null" >
+                NOTES,
+            </if>
+            <if test="effDate97 != null" >
+                EFF_DATE_97,
+            </if>
+            <if test="analyzeDate != null" >
+                ANALYZE_DATE,
+            </if>
+            <if test="creditMemopDate != null" >
+                CREDIT_MEMOP_DATE,
+            </if>
+            <if test="analyseDateA != null" >
+                ANALYSE_DATE_A,
+            </if>
+            <if test="analyseDateB != null" >
+                ANALYSE_DATE_B,
+            </if>
+            <if test="modifyAcctFlag != null" >
+                MODIFY_ACCT_FLAG,
+            </if>
+            <if test="partitionId != null" >
+                PARTITION_ID,
+            </if>
+            <if test="archGrpId != null" >
+                ARCH_GRP_ID,
+            </if>
+            <if test="routeId != null" >
+                ROUTE_ID,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides="," >
+            <if test="opSeq != null" >
+                #{opSeq,jdbcType=BIGINT},
+            </if>
+            <if test="dbopDate != null" >
+                #{dbopDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="memopDate != null" >
+                #{memopDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="opType != null" >
+                #{opType,jdbcType=INTEGER},
+            </if>
+            <if test="tableName != null" >
+                #{tableName,jdbcType=VARCHAR},
+            </if>
+            <if test="tableColumn1 != null" >
+                #{tableColumn1,jdbcType=BIGINT},
+            </if>
+            <if test="tableColumn2 != null" >
+                #{tableColumn2,jdbcType=BIGINT},
+            </if>
+            <if test="tableColumn3 != null" >
+                #{tableColumn3,jdbcType=BIGINT},
+            </if>
+            <if test="tableColumn4 != null" >
+                #{tableColumn4,jdbcType=VARCHAR},
+            </if>
+            <if test="tableColumn5 != null" >
+                #{tableColumn5,jdbcType=VARCHAR},
+            </if>
+            <if test="tableColumn6 != null" >
+                #{tableColumn6,jdbcType=VARCHAR},
+            </if>
+            <if test="notes != null" >
+                #{notes,jdbcType=VARCHAR},
+            </if>
+            <if test="effDate97 != null" >
+                #{effDate97,jdbcType=TIMESTAMP},
+            </if>
+            <if test="analyzeDate != null" >
+                #{analyzeDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="creditMemopDate != null" >
+                #{creditMemopDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="analyseDateA != null" >
+                #{analyseDateA,jdbcType=TIMESTAMP},
+            </if>
+            <if test="analyseDateB != null" >
+                #{analyseDateB,jdbcType=TIMESTAMP},
+            </if>
+            <if test="modifyAcctFlag != null" >
+                #{modifyAcctFlag,jdbcType=INTEGER},
+            </if>
+            <if test="partitionId != null" >
+                #{partitionId,jdbcType=INTEGER},
+            </if>
+            <if test="archGrpId != null" >
+                #{archGrpId,jdbcType=BIGINT},
+            </if>
+            <if test="routeId != null" >
+                #{routeId,jdbcType=BIGINT},
+            </if>
+        </trim>
+    </insert>
+
+    <insert id="insertUserInfoOplog006" parameterType="map" >
+        insert into user_info_oplog_006
+        <trim prefix="(" suffix=")" suffixOverrides="," >
+            <if test="opSeq != null" >
+                OP_SEQ,
+            </if>
+            <if test="dbopDate != null" >
+                DBOP_DATE,
+            </if>
+            <if test="memopDate != null" >
+                MEMOP_DATE,
+            </if>
+            <if test="opType != null" >
+                OP_TYPE,
+            </if>
+            <if test="tableName != null" >
+                TABLE_NAME,
+            </if>
+            <if test="tableColumn1 != null" >
+                TABLE_COLUMN_1,
+            </if>
+            <if test="tableColumn2 != null" >
+                TABLE_COLUMN_2,
+            </if>
+            <if test="tableColumn3 != null" >
+                TABLE_COLUMN_3,
+            </if>
+            <if test="tableColumn4 != null" >
+                TABLE_COLUMN_4,
+            </if>
+            <if test="tableColumn5 != null" >
+                TABLE_COLUMN_5,
+            </if>
+            <if test="tableColumn6 != null" >
+                TABLE_COLUMN_6,
+            </if>
+            <if test="notes != null" >
+                NOTES,
+            </if>
+            <if test="effDate97 != null" >
+                EFF_DATE_97,
+            </if>
+            <if test="analyzeDate != null" >
+                ANALYZE_DATE,
+            </if>
+            <if test="creditMemopDate != null" >
+                CREDIT_MEMOP_DATE,
+            </if>
+            <if test="analyseDateA != null" >
+                ANALYSE_DATE_A,
+            </if>
+            <if test="analyseDateB != null" >
+                ANALYSE_DATE_B,
+            </if>
+            <if test="modifyAcctFlag != null" >
+                MODIFY_ACCT_FLAG,
+            </if>
+            <if test="partitionId != null" >
+                PARTITION_ID,
+            </if>
+            <if test="archGrpId != null" >
+                ARCH_GRP_ID,
+            </if>
+            <if test="routeId != null" >
+                ROUTE_ID,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides="," >
+            <if test="opSeq != null" >
+                #{opSeq,jdbcType=BIGINT},
+            </if>
+            <if test="dbopDate != null" >
+                #{dbopDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="memopDate != null" >
+                #{memopDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="opType != null" >
+                #{opType,jdbcType=INTEGER},
+            </if>
+            <if test="tableName != null" >
+                #{tableName,jdbcType=VARCHAR},
+            </if>
+            <if test="tableColumn1 != null" >
+                #{tableColumn1,jdbcType=BIGINT},
+            </if>
+            <if test="tableColumn2 != null" >
+                #{tableColumn2,jdbcType=BIGINT},
+            </if>
+            <if test="tableColumn3 != null" >
+                #{tableColumn3,jdbcType=BIGINT},
+            </if>
+            <if test="tableColumn4 != null" >
+                #{tableColumn4,jdbcType=VARCHAR},
+            </if>
+            <if test="tableColumn5 != null" >
+                #{tableColumn5,jdbcType=VARCHAR},
+            </if>
+            <if test="tableColumn6 != null" >
+                #{tableColumn6,jdbcType=VARCHAR},
+            </if>
+            <if test="notes != null" >
+                #{notes,jdbcType=VARCHAR},
+            </if>
+            <if test="effDate97 != null" >
+                #{effDate97,jdbcType=TIMESTAMP},
+            </if>
+            <if test="analyzeDate != null" >
+                #{analyzeDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="creditMemopDate != null" >
+                #{creditMemopDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="analyseDateA != null" >
+                #{analyseDateA,jdbcType=TIMESTAMP},
+            </if>
+            <if test="analyseDateB != null" >
+                #{analyseDateB,jdbcType=TIMESTAMP},
+            </if>
+            <if test="modifyAcctFlag != null" >
+                #{modifyAcctFlag,jdbcType=INTEGER},
+            </if>
+            <if test="partitionId != null" >
+                #{partitionId,jdbcType=INTEGER},
+            </if>
+            <if test="archGrpId != null" >
+                #{archGrpId,jdbcType=BIGINT},
+            </if>
+            <if test="routeId != null" >
+                #{routeId,jdbcType=BIGINT},
+            </if>
+        </trim>
+    </insert>
+
+    <insert id="insertUserInfoOplog007" parameterType="map" >
+        insert into user_info_oplog_007
+        <trim prefix="(" suffix=")" suffixOverrides="," >
+            <if test="opSeq != null" >
+                OP_SEQ,
+            </if>
+            <if test="dbopDate != null" >
+                DBOP_DATE,
+            </if>
+            <if test="memopDate != null" >
+                MEMOP_DATE,
+            </if>
+            <if test="opType != null" >
+                OP_TYPE,
+            </if>
+            <if test="tableName != null" >
+                TABLE_NAME,
+            </if>
+            <if test="tableColumn1 != null" >
+                TABLE_COLUMN_1,
+            </if>
+            <if test="tableColumn2 != null" >
+                TABLE_COLUMN_2,
+            </if>
+            <if test="tableColumn3 != null" >
+                TABLE_COLUMN_3,
+            </if>
+            <if test="tableColumn4 != null" >
+                TABLE_COLUMN_4,
+            </if>
+            <if test="tableColumn5 != null" >
+                TABLE_COLUMN_5,
+            </if>
+            <if test="tableColumn6 != null" >
+                TABLE_COLUMN_6,
+            </if>
+            <if test="notes != null" >
+                NOTES,
+            </if>
+            <if test="effDate97 != null" >
+                EFF_DATE_97,
+            </if>
+            <if test="analyzeDate != null" >
+                ANALYZE_DATE,
+            </if>
+            <if test="creditMemopDate != null" >
+                CREDIT_MEMOP_DATE,
+            </if>
+            <if test="analyseDateA != null" >
+                ANALYSE_DATE_A,
+            </if>
+            <if test="analyseDateB != null" >
+                ANALYSE_DATE_B,
+            </if>
+            <if test="modifyAcctFlag != null" >
+                MODIFY_ACCT_FLAG,
+            </if>
+            <if test="partitionId != null" >
+                PARTITION_ID,
+            </if>
+            <if test="archGrpId != null" >
+                ARCH_GRP_ID,
+            </if>
+            <if test="routeId != null" >
+                ROUTE_ID,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides="," >
+            <if test="opSeq != null" >
+                #{opSeq,jdbcType=BIGINT},
+            </if>
+            <if test="dbopDate != null" >
+                #{dbopDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="memopDate != null" >
+                #{memopDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="opType != null" >
+                #{opType,jdbcType=INTEGER},
+            </if>
+            <if test="tableName != null" >
+                #{tableName,jdbcType=VARCHAR},
+            </if>
+            <if test="tableColumn1 != null" >
+                #{tableColumn1,jdbcType=BIGINT},
+            </if>
+            <if test="tableColumn2 != null" >
+                #{tableColumn2,jdbcType=BIGINT},
+            </if>
+            <if test="tableColumn3 != null" >
+                #{tableColumn3,jdbcType=BIGINT},
+            </if>
+            <if test="tableColumn4 != null" >
+                #{tableColumn4,jdbcType=VARCHAR},
+            </if>
+            <if test="tableColumn5 != null" >
+                #{tableColumn5,jdbcType=VARCHAR},
+            </if>
+            <if test="tableColumn6 != null" >
+                #{tableColumn6,jdbcType=VARCHAR},
+            </if>
+            <if test="notes != null" >
+                #{notes,jdbcType=VARCHAR},
+            </if>
+            <if test="effDate97 != null" >
+                #{effDate97,jdbcType=TIMESTAMP},
+            </if>
+            <if test="analyzeDate != null" >
+                #{analyzeDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="creditMemopDate != null" >
+                #{creditMemopDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="analyseDateA != null" >
+                #{analyseDateA,jdbcType=TIMESTAMP},
+            </if>
+            <if test="analyseDateB != null" >
+                #{analyseDateB,jdbcType=TIMESTAMP},
+            </if>
+            <if test="modifyAcctFlag != null" >
+                #{modifyAcctFlag,jdbcType=INTEGER},
+            </if>
+            <if test="partitionId != null" >
+                #{partitionId,jdbcType=INTEGER},
+            </if>
+            <if test="archGrpId != null" >
+                #{archGrpId,jdbcType=BIGINT},
+            </if>
+            <if test="routeId != null" >
+                #{routeId,jdbcType=BIGINT},
+            </if>
+        </trim>
+    </insert>
+
+
+</mapper>

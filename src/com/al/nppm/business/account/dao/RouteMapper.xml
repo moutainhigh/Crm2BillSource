@@ -46,13 +46,6 @@
        and ROUTE_ID = #{objId,jdbcType=BIGINT}
 </select>
 
-<update id="updateProdInstRoute" parameterType="map" >
-    update PROD_INST_ROUTE
-    <set >
-		ROUTE_ID = #{newRouteId,jdbcType=BIGINT}
-    </set>
-    where PROD_INST_ID = #{prodInstId,jdbcType=BIGINT}
-    and ROUTE_ID  = #{routeId,jdbcType=BIGINT}
-  </update>
+
 
 </mapper>

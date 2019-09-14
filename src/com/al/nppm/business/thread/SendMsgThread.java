@@ -1,18 +1,20 @@
 package com.al.nppm.business.thread;
 
-import java.util.Map;
-import java.util.concurrent.Callable;
-
 import com.al.nppm.business.common.SpringContextHolder;
 import com.al.nppm.business.inter.service.impl.CrmUserService;
+
+import java.util.Map;
+import java.util.concurrent.Callable;
 
 public class SendMsgThread implements Callable<Boolean>{
 	
 	
 	private Map synMap;
+	private long archGrpId;
 
-		public SendMsgThread(Map synMap){
+		public SendMsgThread(Map synMap, long archGrpId){
 			this.synMap=synMap;
+			this.archGrpId = archGrpId;
 		}
 		
 		/* (non-Javadoc)
@@ -23,7 +25,7 @@ public class SendMsgThread implements Callable<Boolean>{
 			CrmUserService crmUserService = (CrmUserService)SpringContextHolder.getBean("crmUserService"); 
 			int flag =0;
 			int iCount = -1;
-			crmUserService.sendMsg(synMap);
+			crmUserService.sendMsg(synMap, archGrpId);
 			return true;
 		}
 		
