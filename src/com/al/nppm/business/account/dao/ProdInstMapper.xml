@@ -2951,52 +2951,28 @@ and route_id = #{routeId,jdbcType=BIGINT}
     and exp_date >#{sysDate}
     and route_id = #{routeId,jdbcType=BIGINT}
   </select>
-    <select id="selectProdInstAttr1415" resultType="java.util.Map" parameterType="java.util.HashMap">
+    <select id="selectProdInstAttr1015" resultType="java.util.Map" parameterType="java.util.HashMap">
     select 
-    PROD_INST_ATTR_ID, PAR_PROD_INST_ATTR_ID, PROD_INST_ID, ATTR_ID attrID, ATTR_VALUE_ID attrValueId, ATTR_VALUE attrValue, 
-    BUSI_MOD_DATE, EFF_DATE, EXP_DATE expDate, STATUS_CD, CREATE_STAFF, UPDATE_STAFF, CREATE_DATE, 
-    STATUS_DATE, UPDATE_DATE, LAST_ORDER_ITEM_ID, REMARK, ROUTE_ID
+    PROD_INST_ATTR_ID prodInstAttrId, PAR_PROD_INST_ATTR_ID parProdInstAttrId, PROD_INST_ID prodInstId, ATTR_ID attrID, ATTR_VALUE_ID attrValueId, ATTR_VALUE attrValue,
+    BUSI_MOD_DATE busiModDate, EFF_DATE effDate, EXP_DATE expDate, STATUS_CD statusCd, CREATE_STAFF createStaff, UPDATE_STAFF updateStaff, CREATE_DATE createDate,
+    STATUS_DATE statusDate, UPDATE_DATE updateDate, LAST_ORDER_ITEM_ID lastOrderItemId, REMARK remark, ROUTE_ID routeId
     from prod_inst_attr
     where PROD_INST_ID = #{prodInstId,jdbcType=BIGINT}
-    and ATTR_ID = 1415
-    and exp_date >#{sysDate}
+    and ATTR_ID = 1015
+    and exp_date > now()
     and route_id = #{routeId,jdbcType=BIGINT}
   </select>
     <update id="updateProdInstAttrNet" parameterType="java.util.HashMap">
         update prod_inst_attr
         <set>
-            <if test="parProdInstAttrId != null">
-                PAR_PROD_INST_ATTR_ID = #{parProdInstAttrId,jdbcType=BIGINT},
-            </if>
-            <if test="prodInstId != null">
-                PROD_INST_ID = #{prodInstId,jdbcType=BIGINT},
-            </if>
-            <if test="attrId != null">
-                ATTR_ID = #{attrId,jdbcType=BIGINT},
-            </if>
-            <if test="attrValueId != null">
-                ATTR_VALUE_ID = #{attrValueId,jdbcType=BIGINT},
-            </if>
             <if test="attrValue != null">
                 ATTR_VALUE = #{attrValue,jdbcType=VARCHAR},
-            </if>
-            <if test="busiModDate != null">
-                BUSI_MOD_DATE = #{busiModDate,jdbcType=DATE},
-            </if>
-            <if test="effDate != null">
-                EFF_DATE = #{effDate,jdbcType=TIMESTAMP},
             </if>
             <if test="expDate != null">
                 EXP_DATE = #{expDate,jdbcType=TIMESTAMP},
             </if>
             <if test="statusCd != null">
                 STATUS_CD = #{statusCd,jdbcType=VARCHAR},
-            </if>
-            <if test="createStaff != null">
-                CREATE_STAFF = #{createStaff,jdbcType=BIGINT},
-            </if>
-            <if test="updateStaff != null">
-                UPDATE_STAFF = #{updateStaff,jdbcType=BIGINT},
             </if>
             <if test="createDate != null">
                 CREATE_DATE = #{createDate,jdbcType=DATE},
@@ -3007,14 +2983,8 @@ and route_id = #{routeId,jdbcType=BIGINT}
             <if test="updateDate != null">
                 UPDATE_DATE = #{updateDate,jdbcType=DATE},
             </if>
-            <if test="lastOrderItemId != null">
-                LAST_ORDER_ITEM_ID = #{lastOrderItemId,jdbcType=BIGINT},
-            </if>
             <if test="remark != null">
                 REMARK = #{remark,jdbcType=VARCHAR},
-            </if>
-            <if test="routeId != null">
-                ROUTE_ID = #{routeId,jdbcType=BIGINT},
             </if>
         </set>
         where PROD_INST_ATTR_ID = #{prodInstAttrId,jdbcType=BIGINT}

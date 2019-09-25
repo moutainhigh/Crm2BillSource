@@ -41,6 +41,11 @@ public class CTGMqTool {
 
 			properties.setProperty(PropertyKeyConst.NamesrvAuthPwd, PasswordUtil.decrypt(propertiesUtil.readProperty("mq.NamesrvAuthPwd"),"bss@2018"));
 			properties.setProperty(PropertyKeyConst.MaxMessageSize,propertiesUtil.readProperty("mq.MaxMessageSize"));
+
+			properties.setProperty(PropertyKeyConst.ClusterName, propertiesUtil.readProperty("mq.clusterName"));
+			properties.setProperty(PropertyKeyConst.TenantID, propertiesUtil.readProperty("mq.TenantID"));
+			properties.setProperty(PropertyKeyConst.InstanceName, propertiesUtil.readProperty("mq.InstanceName"));
+
 			producer = CTGMQFactory.createProducer(properties);
 			connect =producer.connect();
 		} catch (MQException e) {

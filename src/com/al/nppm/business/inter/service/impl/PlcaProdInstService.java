@@ -173,83 +173,94 @@ public class PlcaProdInstService {
      * @param result
      */
     public void tingfuji(JSONArray array, Result result) throws Exception{
-        SynMapContextHolder.remove();
-        SynMapContextHolder.init();
-        Map<String, List<?>> synMap = new HashMap<String, List<?>>();
-        SynMapContextHolder.initSynMap(synMap);
-        SynMapContextHolder.put("archGrpId","PLCA_"+prodinstDao.getSeq("SEQ_PLCA_ARCH_GRP_ID"));
+        try {
+            SynMapContextHolder.remove();
+            SynMapContextHolder.init();
+            Map<String, List<?>> synMap = new HashMap<String, List<?>>();
+            SynMapContextHolder.initSynMap(synMap);
+            SynMapContextHolder.put("archGrpId",prodinstDao.getSeq("SEQ_PLCA_ARCH_GRP_ID"));
 
-        for(Object obj:array) {
-            JSONObject json = (JSONObject) obj;
-            String stopType = String.valueOf(json.get("stopType"));
-            String bssState = String.valueOf(json.get("bssState"));
-            String prodInstId = String.valueOf(json.get("prodInstId"));
-            String opTime = String.valueOf(json.get("opTime"));
-            String statusDate=sdf.format(new Date());
+            for(Object obj:array) {
+                JSONObject json = (JSONObject) obj;
+                String stopType = String.valueOf(json.get("stopType"));
+                String bssState = String.valueOf(json.get("bssState"));
+                String prodInstId = String.valueOf(json.get("prodInstId"));
+                String opTime = String.valueOf(json.get("opTime"));
+                String statusDate=sdf.format(new Date());
 
-            Map map = new HashMap();
-            Message msg=new Message();
-            long routeId=routeDao.getProdInstRoute(Long.valueOf(prodInstId),msg);
-            if(routeId!=-1l){
-                map.put("routeId", routeId);
-            }else{
-                result.setMessage(msg.getMessage());
-                return;
+                Map map = new HashMap();
+                Message msg=new Message();
+                long routeId=routeDao.getProdInstRoute(Long.valueOf(prodInstId),msg);
+                if(routeId!=-1l){
+                    map.put("routeId", routeId);
+                }else{
+                    result.setMessage(msg.getMessage());
+                    return;
+                }
+                map.put("prodInstId",prodInstId);
+                Map<String, Object> prodInstMap=plcaProdInstMapper.getProdInst(map);
+                if(prodInstMap==null){
+                    result.setMessage("用户不存在，prod_inst_id="+prodInstId);
+                    return;
+                }
+                SynMapContextHolder.put("routeCustId",prodInstMap.get("ownerCustId").toString());
+
+                map.put("prodInstId", prodInstId);
+                /*map.put("beginRentDate", opTime);*/
+                map.put("createDate", opTime);
+                map.put("statusDate", opTime);
+                map.put("statusCd", bssState);
+                //prod_inst_state_ext
+                List<Map<String, Object>> stateList = plcaProdInstMapper.getProdInstStateExt(map);
+                if (stateList.size() != 1) {
+                    result.setMessage("用户有效状态记录不为一条！");
+                    return;
+                }
+                Map<String, Object> stateMap = stateList.get(0);
+                String oldState = stateMap.get("state").toString();
+                String oldStopType = stateMap.get("stopType").toString();
+                if (!oldState.equals("") && !bssState.equals("")
+                        && (!oldState.equals(bssState)
+                        || !stopType.equals(oldStopType))) {
+                    stateMap.put("expDate", opTime);
+                    stateMap.put("routeId",routeId);
+                    stateMap.put("remark", "plca处理");
+                    plcaProdInstMapper.updateProdInstStateExt(stateMap);
+                    stateMap.put("action",2);
+                    stateMap.put("executetime", yyyyMMddHHmmss_sdf.format(sdf.parse(statusDate)));
+                    addMap("prodInstStateobjList1", stateMap,result);
+
+                    stateMap.put("prodInstStateId", prodinstDao.getSeq("SEQ_PROD_INST_STATE_ID"));
+                    stateMap.put("state", bssState);
+                    stateMap.put("stopType", stopType);
+                    stateMap.put("effDate", opTime);
+                    stateMap.put("expDate", statePublic.expDate);
+                    plcaProdInstMapper.insertProdInstStateExt(stateMap);
+                    stateMap.put("action",1);
+                    stateMap.put("executetime",yyyyMMddHHmmss_sdf.format(sdf.parse(statusDate)));
+                    addMap("prodInstStateobjList1", stateMap,result);
+
+                    //更新前先备份prod_inst
+                    if(hisService.backupProdInst(prodInstMap,new HashMap(),msg)<=0){
+                        result.setMessage(msg.getMessage());
+                        return;
+                    }
+                    plcaProdInstMapper.updateProdInst(map);
+                    map.remove("statusCd");
+                    map.put("action",2);
+
+                    map.put("executetime", yyyyMMddHHmmss_sdf.format(sdf.parse(statusDate)));
+                    addMap("prodInstobjList1", map,result);
+                }
             }
-            map.put("prodInstId",prodInstId);
-            Map<String, Object> prodInstMap=plcaProdInstMapper.getProdInst(map);
-            if(prodInstMap==null){
-                result.setMessage("用户不存在，prod_inst_id="+prodInstId);
-                return;
-            }
-            SynMapContextHolder.put("routeCustId",prodInstMap.get("ownerCustId").toString());
-
-            map.put("prodInstId", prodInstId);
-            map.put("beginRentDate", opTime);
-            map.put("createDate", opTime);
-            map.put("statusDate", opTime);
-            map.put("statusCd", bssState);
-
-            //更新前先备份prod_inst
-            if(hisService.backupProdInst(map,new HashMap(),msg)<=0){
-                result.setMessage(msg.getMessage());
-                return;
-            }
-            plcaProdInstMapper.updateProdInst(map);
-            map.remove("statusCd");
-            map.put("action",2);
-
-            map.put("executetime", yyyyMMddHHmmss_sdf.format(sdf.parse(statusDate)));
-            addMap("prodInstobjList1", map,result);
-
-            //prod_inst_state_ext
-            List<Map<String, Object>> stateList = plcaProdInstMapper.getProdInstStateExt(map);
-            if (stateList.size() != 1) {
-                result.setMessage("用户有效状态记录不为一条！");
-                return;
-            }
-            Map<String, Object> stateMap = stateList.get(0);
-//            stateMap.put("state", "140000");
-            stateMap.put("expDate", opTime);
-            stateMap.put("routeId",routeId);
-            plcaProdInstMapper.updateProdInstStateExt(stateMap);
-            stateMap.put("action",2);
-            stateMap.put("executetime", yyyyMMddHHmmss_sdf.format(sdf.parse(statusDate)));
-            addMap("prodInstStateobjList1", stateMap,result);
-
-            stateMap.put("prodInstStateId", prodinstDao.getSeq("SEQ_PROD_INST_STATE_ID"));
-            stateMap.put("state", bssState);
-            stateMap.put("stopType", stopType);
-            stateMap.put("effDate", opTime);
-            stateMap.put("expDate", statePublic.expDate);
-            plcaProdInstMapper.insertProdInstStateExt(stateMap);
-            stateMap.put("action",1);
-            stateMap.put("executetime",yyyyMMddHHmmss_sdf.format(sdf.parse(statusDate)));
-            addMap("prodInstStateobjList1", stateMap,result);
+            addMsg(synMap, result);
+            result.setStatus("0");
+            result.setMessage("处理成功");
+        } catch (Exception e) {
+            result.setStatus("1");
+            result.setMessage(e.getMessage());
         }
-        addMsg(synMap, result);
-        result.setStatus("0");
-        result.setMessage("处理成功");
+
     }
 
     /**

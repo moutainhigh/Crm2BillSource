@@ -65,7 +65,16 @@ WHERE OFFER_inst_id = #{offerInstId,jdbcType=BIGINT}
 and route_id = #{routeId,jdbcType=BIGINT}
 and exp_date > #{expDate,jdbcType=VARCHAR}
 </select>
-
+  <select id="getOfferInstIdFromNowDate" resultType="java.util.HashMap" parameterType="map"  >
+SELECT  OFFER_INST_ID offerInstId, OFFER_ID offerId, OFFER_TYPE offerType, OWNER_CUST_ID ownerCustId, EFF_DATE effDate, EXP_DATE expDate, OFFER_AGREE_ID offerAgreeId,
+    CREATE_ORG_ID createOrgId, EXP_PROC_METHOD expProcMethod, LAN_ID lanId, REGION_ID regionId, STATUS_CD statusCd, CREATE_STAFF createStaff, UPDATE_STAFF updateStaff,
+    CREATE_DATE createDate, STATUS_DATE statusDate, UPDATE_DATE updateDate, BUSI_MOD_DATE busiModDate, LAST_ORDER_ITEM_ID lastOrderItemId, REMARK remark,
+    EXT_OFFER_INST_ID extOfferInstId, ROUTE_ID routeId
+FROM OFFER_inst
+WHERE OFFER_inst_id = #{offerInstId,jdbcType=BIGINT}
+and route_id = #{routeId,jdbcType=BIGINT}
+and exp_date > now()
+</select>
   <select id="getOfferObjInstId" resultType="java.util.HashMap" parameterType="map"  >
 SELECT  OFFER_OBJ_INST_REL_ID offerObjInstRelId, OFFER_INST_ID offerInstId, OBJ_TYPE objType, OBJ_ID objId, OFFER_OBJ_REL_ID offerObjRelId, ROLE_ID roleId,
     EFF_DATE effDate, EXP_DATE expDate, STATUS_CD statusCd, CREATE_STAFF createStaff, UPDATE_STAFF updateStaff, CREATE_DATE createDate, STATUS_DATE statusDate,
@@ -653,4 +662,210 @@ FROM OFFER_inst
 WHERE OFFER_inst_id = #{offerInstId,jdbcType=BIGINT}
 and route_id = #{routeId,jdbcType=BIGINT}
 </select>
+  <select id="getOfferObjInstRel" resultType="java.util.HashMap" parameterType="map"  >
+        SELECT OFFER_OBJ_INST_REL_ID offerObjInstRelId , OFFER_INST_ID offerInstId
+        FROM OFFER_OBJ_INST_REL
+        WHERE OBJ_ID=#{objId}
+        and EXP_DATE>#{statusDate}
+        and ROUTE_ID = #{routeId,jdbcType=BIGINT}
+    </select>
+
+  <update id="updateOfferObjInstRelForActive" parameterType="map">
+    update offer_obj_inst_rel
+    <set>
+      <if test="offerInstId != null">
+        offer_inst_id = #{offerInstId,jdbcType=BIGINT},
+      </if>
+      <if test="objType != null">
+        obj_type = #{objType,jdbcType=VARCHAR},
+      </if>
+      <if test="objId != null">
+        obj_id = #{objId,jdbcType=VARCHAR},
+      </if>
+      <if test="roleId != null">
+        role_id = #{roleId,jdbcType=BIGINT},
+      </if>
+      <if test="effDate != null">
+        eff_date = #{effDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="expDate != null">
+        exp_date = #{expDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="statusCd != null">
+        status_cd = #{statusCd,jdbcType=VARCHAR},
+      </if>
+      <if test="createStaff != null">
+        create_staff = #{createStaff,jdbcType=BIGINT},
+      </if>
+      <if test="updateStaff != null">
+        update_staff = #{updateStaff,jdbcType=BIGINT},
+      </if>
+      <if test="createDate != null">
+        create_date = #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="statusDate != null">
+        status_date = #{statusDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateDate != null">
+        update_date = #{updateDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastOrderItemId != null">
+        last_order_item_id = #{lastOrderItemId,jdbcType=BIGINT},
+      </if>
+      <if test="remark != null">
+        remark = #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="offerObjRelId != null">
+        offer_obj_rel_id = #{offerObjRelId,jdbcType=BIGINT},
+      </if>
+    </set>
+    where  OFFER_OBJ_INST_REL_ID = #{offerObjInstRelId,jdbcType=BIGINT}
+    and ROUTE_ID  = #{routeId,jdbcType=BIGINT}
+  </update>
+  <update id="updateOfferInstForActive" parameterType="map">
+    update offer_inst
+    <set>
+      <if test="offerId != null">
+        offer_id = #{offerId,jdbcType=BIGINT},
+      </if>
+      <if test="offerType != null">
+        offer_type = #{offerType,jdbcType=VARCHAR},
+      </if>
+      <if test="ownerCustId != null">
+        owner_cust_id = #{ownerCustId,jdbcType=BIGINT},
+      </if>
+      <if test="effDate != null">
+        eff_date = #{effDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="expDate != null">
+        exp_date = #{expDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="offerAgreeId != null">
+        offer_agree_id = #{offerAgreeId,jdbcType=BIGINT},
+      </if>
+      <if test="createOrgId != null">
+        create_org_id = #{createOrgId,jdbcType=BIGINT},
+      </if>
+      <if test="expProcMethod != null">
+        exp_proc_method = #{expProcMethod,jdbcType=VARCHAR},
+      </if>
+      <if test="lanId != null">
+        lan_id = #{lanId,jdbcType=BIGINT},
+      </if>
+      <if test="regionId != null">
+        region_id = #{regionId,jdbcType=BIGINT},
+      </if>
+      <if test="statusCd != null">
+        status_cd = #{statusCd,jdbcType=VARCHAR},
+      </if>
+      <if test="createStaff != null">
+        create_staff = #{createStaff,jdbcType=BIGINT},
+      </if>
+      <if test="updateStaff != null">
+        update_staff = #{updateStaff,jdbcType=BIGINT},
+      </if>
+      <if test="createDate != null">
+        create_date = #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="statusDate != null">
+        status_date = #{statusDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateDate != null">
+        update_date = #{updateDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="busiModDate != null">
+        busi_mod_date = #{busiModDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastOrderItemId != null">
+        last_order_item_id = #{lastOrderItemId,jdbcType=BIGINT},
+      </if>
+      <if test="remark != null">
+        remark = #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="extOfferInstId != null">
+        ext_offer_inst_id = #{extOfferInstId,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where  OFFER_INST_ID = #{offerInstId,jdbcType=BIGINT}
+    and ROUTE_ID  = #{routeId,jdbcType=BIGINT}
+  </update>
+  <select id="getOfferInstAttr" resultType="java.util.HashMap" parameterType="map"  >
+        SELECT  OFFER_INST_ATTR_ID offerInstAttrId,OFFER_INST_ID offerInstId,PAR_OFFER_INST_ATTR_ID parOfferInstAttrId,
+        OBJ_TYPE objType,OBJ_ID objId,ATTR_ID attrId,ATTR_VALUE_ID attrValueId,ATTR_VALUE attrValue,EFF_DATE effDate,
+        EXP_DATE expDate,APPLY_REGION_ID applyRegionId,STATUS_CD statusCd,CREATE_STAFF createStaff,UPDATE_STAFF updateStaff,
+        CREATE_DATE createDate,STATUS_DATE statusDate,UPDATE_DATE updateDate,BUSI_MOD_EFF_DATE busiModEffDate,
+        LAST_ORDER_ITEM_ID lastOrderItemId,REMARK remark,ROUTE_ID routeId
+        FROM OFFER_inst_attr
+        WHERE OFFER_INST_ID = #{offerInstId,jdbcType=BIGINT}
+            and EXP_DATE>#{statusDate}
+            and ROUTE_ID = #{routeId,jdbcType=BIGINT}
+    </select>
+
+  <update id="updateOfferInstAttrForActive" parameterType="map">
+    update offer_inst_attr
+    <set>
+      <if test="offerInstAttrId != null">
+        offer_inst_attr_id = #{offerInstAttrId,jdbcType=BIGINT},
+      </if>
+      <if test="offerInstId != null">
+        offer_inst_id = #{offerInstId,jdbcType=BIGINT},
+      </if>
+      <if test="parOfferInstAttrId != null">
+        par_offer_inst_attr_id = #{parOfferInstAttrId,jdbcType=BIGINT},
+      </if>
+      <if test="objType != null">
+        obj_type = #{objType,jdbcType=VARCHAR},
+      </if>
+      <if test="objId != null">
+        obj_id = #{objId,jdbcType=BIGINT},
+      </if>
+      <if test="attrId != null">
+        attr_id = #{attrId,jdbcType=BIGINT},
+      </if>
+      <if test="attrValueId != null">
+        attr_value_id = #{attrValueId,jdbcType=BIGINT},
+      </if>
+      <if test="attrValue != null">
+        attr_value = #{attrValue,jdbcType=VARCHAR},
+      </if>
+      <if test="effDate != null">
+        eff_date = #{effDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="expDate != null">
+        exp_date = #{expDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="applyRegionId != null">
+        apply_region_id = #{applyRegionId,jdbcType=BIGINT},
+      </if>
+      <if test="statusCd != null">
+        status_cd = #{statusCd,jdbcType=VARCHAR},
+      </if>
+      <if test="createStaff != null">
+        create_staff = #{createStaff,jdbcType=BIGINT},
+      </if>
+      <if test="updateStaff != null">
+        update_staff = #{updateStaff,jdbcType=BIGINT},
+      </if>
+      <if test="createDate != null">
+        create_date = #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="statusDate != null">
+        status_date = #{statusDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateDate != null">
+        update_date = #{updateDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="busiModEffDate != null">
+        busi_mod_eff_date = #{busiModEffDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastOrderItemId != null">
+        last_order_item_id = #{lastOrderItemId,jdbcType=BIGINT},
+      </if>
+      <if test="remark != null">
+        remark = #{remark,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where  OFFER_INST_ATTR_ID = #{offerInstAttrId,jdbcType=BIGINT}
+    and ROUTE_ID  = #{routeId,jdbcType=BIGINT}
+  </update>
 </mapper>

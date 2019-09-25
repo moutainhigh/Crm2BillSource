@@ -5,6 +5,9 @@
   <insert id="insertTifChangeAcct" parameterType="map" >
     insert into tif_change_acct
     <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="tifChangeAcctId != null" >
+        TIF_CHANGE_ACCT_ID,
+      </if>
       <if test="areaCode != null" >
         AREA_CODE,
       </if>
@@ -34,6 +37,9 @@
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="tifChangeAcctId != null" >
+        #{tifChangeAcctId,jdbcType=BIGINT},
+      </if>
       <if test="areaCode != null" >
         #{areaCode,jdbcType=VARCHAR},
       </if>
@@ -66,6 +72,9 @@
  <insert id="insertTifOcsChangeAcct" parameterType="map" >
     insert into tif_ocs_change_acct
     <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="tifChangeAcctId != null" >
+        TIF_CHANGE_ACCT_ID,
+      </if>
       <if test="areaCode != null" >
         AREA_CODE,
       </if>
@@ -95,6 +104,9 @@
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="tifChangeAcctId != null" >
+        #{tifChangeAcctId,jdbcType=BIGINT},
+      </if>
       <if test="areaCode != null" >
         #{areaCode,jdbcType=VARCHAR},
       </if>

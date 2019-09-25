@@ -3416,9 +3416,9 @@ SELECT GENERAL_TAXPAYER_FLAG generalTaxplayerFlag
       <if test="remark != null" >
         REMARK = #{remark,jdbcType=VARCHAR},
       </if>
-      <if test="routeId != null" >
+   <!--   <if test="routeId != null" >
         ROUTE_ID = #{routeId,jdbcType=BIGINT},
-      </if>
+      </if>-->
     </set>
 	WHERE STATUS_CD = #{statusCd,jdbcType=VARCHAR} 
 	AND TAX_PAYER_ID = #{taxPayerId,jdbcType=BIGINT}

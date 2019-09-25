@@ -1064,9 +1064,10 @@ select
               and SUBSTR(REGION_ID,1,5) = #{regionId}
           </when>
       </choose>
-      <!--and ARCH_GRP_ID = '12571614' -->
+      <!-- and ARCH_GRP_ID = '310012937730' -->
       <choose>
           <when test="proc_flag =='2'.toString()">
+              and notes not like '%PRODACCT_ERROR_013%'
               and IFNULL(PROC_CNT,0) &lt; 200 ORDER BY FINISH_DATE, ARCH_GRP_ID  limit 0, 5000
           </when>
           <otherwise>
@@ -1617,4 +1618,36 @@ WHERE ARCH_GRP_ID = #{ARCH_GRP_ID,jdbcType=BIGINT}
         from service_offer_contrast
         where SERVCIE_OFFER_ID = #{servcieOfferId,jdbcType=VARCHAR}
     </select>
+
+    <select id="selectOrdBillError" resultType="java.util.Map"  >
+    select
+     ARCH_GRP_ID, CUST_ORDER_ID, REGION_ID regionId, CREATE_ORG_ID, CREATE_STAFF, CREATE_DATE,
+    FINISH_DATE, PROC_FLAG, PROC_DATE, PROC_CNT, NOTES,CUST_ID custId
+    from ord_bill
+    where
+	NOTES like  CONCAT('%',#{errorNotes},'%')
+	and proc_flag = 2
+  </select>
+
+    <select id="selectOrdBillProdInstAcctRel" resultType="java.util.Map"  >
+    select
+     count(1)
+    from ORD_PROD_INST_ACCT_REL
+    where
+	ARCH_GRP_ID = #{archGrpId}
+	and ACCT_ITEM_GROUP_ID = -1
+  </select>
+    <delete id="delOrdBillProdInstAcctRel" parameterType="java.lang.Long">
+    delete from ORD_PROD_INST_ACCT_REL
+    where
+    ARCH_GRP_ID = #{archGrpId}
+	and ACCT_ITEM_GROUP_ID = -1
+  </delete>
+    <select id="selectTifBreakDisct" resultType="java.util.Map"  >
+    select
+      DISCT_ID_BILL disctIdBill,DISCT_NAME disctName,BREAK_DISCT_ID breakDisctId
+    from TIF_BREAK_DISCT_CONTRAST
+    where
+      DISCT_ID_BILL = #{offerId}
+  </select>
 </mapper>

@@ -239,5 +239,12 @@ public interface OrdBillMapper {
 
 	public List<Map<String,Object>> selectServiceOfferContrast(String servcieOfferId);
 
+	public List<Map<String,Object>> selectOrdBillError(String errorNotes);
+
+	public List<Map<String,Object>> selectOrdBillProdInstAcctRel(@Param("archGrpId") long archGrpId);
+
+	public int delOrdBillProdInstAcctRel(long archGrpId);
+
+	public List<Map<String,Object>> selectTifBreakDisct(@Param("offerId") long offerId);
 
 }

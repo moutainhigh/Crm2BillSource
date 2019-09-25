@@ -20,6 +20,8 @@ public interface OfferInstMapper {
 
 	public List<Map<String, Object>> getOfferInstIdFromExpDate(Map map);
 
+	public List<Map<String, Object>> getOfferInstIdFromNowDate(Map map);
+
 	public List<Map<String,Object>> getOfferObjInstId(Map map);
 
 	public List<Map<String, Object>> getOfferObjInstIdForObjectId(Map map);
@@ -52,5 +54,17 @@ public interface OfferInstMapper {
 
 	public List<Map<String, Object>> selectOfferInstFromObjInstid(@Param("offerInstId") long offerInstId,
 																  @Param("routeId") long routeId);
+	public List<Map<String, Object>> getOfferObjInstRel(Map map);
+
+	public int updateOfferObjInstRelForActive(Map map);
+
+	public int updateOfferInstForActive(Map map);
+
+	public int updateOfferInstAttrForActive(Map map);
+
+
+	public List<Map<String, Object>> getOfferInstAttr(Map map);
+
+
 
 }

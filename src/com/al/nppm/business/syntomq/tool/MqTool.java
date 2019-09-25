@@ -37,6 +37,10 @@ public class MqTool {
 			properties.setProperty(PropertyKeyConst.NamesrvAuthID, propertiesUtil.readProperty("mq.zj.NamesrvAuthID"));
 
 			properties.setProperty(PropertyKeyConst.NamesrvAuthPwd, PasswordUtil.decrypt(propertiesUtil.readProperty("mq.zj.NamesrvAuthPwd"),"bss@2018"));
+			properties.setProperty(PropertyKeyConst.ClusterName, propertiesUtil.readProperty("mq.zj.clusterName"));
+			properties.setProperty(PropertyKeyConst.TenantID, propertiesUtil.readProperty("mq.zj.TenantID"));
+			properties.setProperty(PropertyKeyConst.InstanceName, propertiesUtil.readProperty("mq.zj.InstanceName"));
+
 
 			producer = CTGMQFactory.createProducer(properties);
 			connect =producer.connect();

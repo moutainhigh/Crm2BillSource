@@ -156,7 +156,7 @@ public interface IProdInstMapper {
 	public Long selectProdInstAttrId(Map map);
 	public Map<String, Object> getForProdInstAcctRelId(Map map);
 	public List<Map<String, Object>> selectProdInstAttr1000(Map map);//add by wangaboqiang
-	public List<Map<String, Object>> selectProdInstAttr1415(Map map);//add by wangaboqiang selectProdInstGroup
+	public List<Map<String, Object>> selectProdInstAttr1015(Map map);//add by wangaboqiang selectProdInstGroup
 	public List<Map<String, Object>> selectProdInstGroup(Map map);//add by wangaboqiang 用户群
 	public int insertSendMsg(Map map);
 	public List<Map<String,Object>> selectSendMsg(Map map);

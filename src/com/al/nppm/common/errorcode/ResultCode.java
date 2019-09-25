@@ -121,6 +121,7 @@ public class ResultCode {
     public static String PRODINST_U_ERROR_041 = "PRODINST_U_ERROR_041";
     public static String PRODINST_U_ERROR_042 = "PRODINST_U_ERROR_042";
     public static String PRODINST_U_ERROR_043 = "PRODINST_U_ERROR_043";
+    public static String PRODINST_U_ERROR_044 = "PRODINST_U_ERROR_044";
     //销户错误码
     public static String PRODINST_D_ERROR_001 = "PRODINST_D_ERROR_001";
     public static String PRODINST_D_ERROR_002 = "PRODINST_D_ERROR_002";
@@ -158,6 +159,9 @@ public class ResultCode {
     public static String PRODSUB_ERROR_010 = "PRODSUB_ERROR_010";
     public static String PRODSUB_ERROR_011 = "PRODSUB_ERROR_011";
     public static String PRODSUB_ERROR_012 = "PRODSUB_ERROR_012";
+    public static String PRODSUB_ERROR_013 = "PRODSUB_ERROR_013";
+    public static String PRODSUB_ERROR_014 = "PRODSUB_ERROR_014";
+    public static String PRODSUB_ERROR_015 = "PRODSUB_ERROR_015";
     //用户群
     public static String PRODGROUP_ERROR_001 = "PRODGROUP_ERROR_001";
     public static String PRODGROUP_ERROR_002 = "PRODGROUP_ERROR_002";
