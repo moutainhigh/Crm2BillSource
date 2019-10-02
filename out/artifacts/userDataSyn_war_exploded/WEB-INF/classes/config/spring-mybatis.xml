@@ -1,0 +1,256 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns:mvc="http://www.springframework.org/schema/mvc"
+    xmlns:spring-zext-web="http://www.asiainfo-linkage.com/schema/spring-zext-web"
+    xmlns:spring-zext-service="http://www.asiainfo-linkage.com/schema/spring-zext-service"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx"     
+	xsi:schemaLocation="
+        http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd
+        http://www.asiainfo-linkage.com/schema/spring-zext-web http://www.asiainfo-linkage.com/schema/spring-zext-web.xsd
+        http://www.asiainfo-linkage.com/schema/spring-zext-service http://www.asiainfo-linkage.com/schema/spring-zext-service.xsd
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd
+        http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd  
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+	
+	<!-- 引入配置文件 -->
+	<bean id="propertyConfigurer"
+		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="location" value="classpath:config/jdbc.properties" />
+	</bean>
+	<!-- 注册解析注解的处理器  -->
+	<aop:config proxy-target-class="true"></aop:config>
+	<!-- 启用AspectJ对Annotation的支持 --> 
+	<aop:aspectj-autoproxy/>
+
+<!-- 	<bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource" destroy-method="close">
+		<property name="driverClass" value="${jdbc.driverClassName}"/>
+		<property name="jdbcUrl" value="${jdbc.url}"/>
+		<property name="user" value="${jdbc.username}"/>
+		<property name="password" value="${jdbc.password}"/>
+		<property name="acquireIncrement" value="${acquireIncrement}"></property>
+		<property name="maxIdleTime" value="${maxIdleTime}"></property>
+		<property name="initialPoolSize" value="${initialPoolSize}"></property>
+		<property name="maxPoolSize" value="${maxPoolSize}"></property>
+		<property name="minPoolSize" value="${minPoolSize}"></property>
+		<property name="maxStatements" value="${maxStatements}"></property>
+		<property name="maxStatementsPerConnection" value="${maxStatementsPerConnection}"></property>
+	</bean> -->
+
+	<!-- spring和MyBatis完美整合，不需要mybatis的配置映射文件 -->
+	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="nppmDataSource" />
+		<!-- 自动扫描mapping.xml文件 -->
+  		<property name="mapperLocations" value="classpath*:com/al/nppm/business/*/dao/*.xml"></property>
+ 		<property name="configLocation"  value="classpath:config/mybatis-config.xml"/> 
+	</bean>
+	<!-- DAO接口所在包名，Spring会自动查找其下的类 -->
+	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+		<property name="basePackage" value="com.al.nppm.business.*.dao" />
+		<property name="sqlSessionFactoryBeanName" value="sqlSessionFactory"></property>
+	</bean>
+	<!-- (事务管理)transaction manager, use JtaTransactionManager for global tx -->
+	<bean id="transactionManager"
+		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="nppmDataSource" />
+	</bean>
+	<tx:annotation-driven transaction-manager="transactionManager" />
+
+    <!--
+	<bean id="parentSource" class="com.mchange.v2.c3p0.ComboPooledDataSource" destroy-method="close"  lazy-init="true">
+		<property name="driverClass" value="${jdbc.driverClassName}"/>
+		<property name="acquireIncrement" value="${acquireIncrement}"></property>
+		<property name="maxIdleTime" value="${maxIdleTime}"></property>
+		<property name="initialPoolSize" value="${initialPoolSize}"></property>
+		<property name="maxPoolSize" value="${maxPoolSize}"></property>
+		<property name="minPoolSize" value="${minPoolSize}"></property>
+		<property name="maxStatements" value="${maxStatements}"></property>
+		<property name="maxStatementsPerConnection" value="${maxStatementsPerConnection}"></property>
+	</bean>
+	-->
+    <bean id="dbPasswordCallback" class="com.al.nppm.common.utils.DbPasswordCallback" lazy-init="true"/>
+    <bean id="parentSource" class="com.alibaba.druid.pool.DruidDataSource" init-method="init" destroy-method="close" lazy-init="true">
+        <property name="driverClassName" value="${jdbc.driverClassName}" />
+        <!-- 配置初始化大小、最小、最大 -->
+        <property name="maxActive" value="20" />
+        <property name="initialSize" value="3" />
+        <property name="minIdle" value="3" />
+        <!-- maxWait获取连接等待超时的时间 -->
+        <property name="maxWait" value="60000" />
+
+        <!-- timeBetweenEvictionRunsMillis间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒 -->
+        <property name="timeBetweenEvictionRunsMillis" value="60000" />
+        <!-- minEvictableIdleTimeMillis一个连接在池中最小空闲的时间，单位是毫秒-->
+        <property name="minEvictableIdleTimeMillis" value="300000" />
+        <property name="validationQuery" value="SELECT 'z'" />
+        <property name="testWhileIdle" value="true" />
+        <property name="testOnBorrow" value="false" />
+        <property name="testOnReturn" value="false" />
+    </bean>
+	 	
+ 	<bean id="nppmDataSource" parent="parentSource">
+ 		<property name="connectionProperties"  value="password=${jdbc.password}"/>
+        <property name="passwordCallback" ref="dbPasswordCallback"/>
+		<property name="url" value="${jdbc.url}" />
+		<property name="username" value="${jdbc.username}" />
+		<!-- 
+		<property name="password" value="${jdbc.password}" />
+		 -->
+	</bean>
+    <!--
+	<bean id="nppmProperties" class="com.al.nppm.common.utils.PropertiesEncryptFactoryBean">  
+        <property name="properties">  
+            <props>  
+                <prop key="password">${jdbc.password}</prop>
+            </props>  
+        </property>  
+    </bean>
+    -->
+	
+	
+<!-- 	<bean id="cfgDataSource" parent="parentSource"> -->
+<!-- 		<property name="jdbcUrl" value="${jdbc.cfg.url}" /> -->
+<!-- 		<property name="user" value="${jdbc.cfg.username}" /> -->
+<!-- 		<property name="password" value="${jdbc.cfg.password}" /> -->
+<!-- 	</bean>  -->
+
+	<!--
+	<bean id="dataSource" class="com.al.nppm.common.aop.DynamicDataSource"> 
+		<property name="targetDataSources">
+			 <map key-type="java.lang.String">
+  			 	<entry key="nppm" value-ref="nppmDataSource" />
+  			 	<entry key="ord" value-ref="ordDataSource" /> 
+			 </map>
+		</property>
+ 		<property name="defaultTargetDataSource" ref="nppmDataSource"/>
+ 	</bean>
+ 	-->
+<!--
+	<bean id="choiceDataSource" class="com.al.nppm.common.aop.ChoiceDataSource"></bean>
+	<aop:config proxy-target-class="true">
+		<aop:aspect ref="choiceDataSource" >
+		
+			<aop:pointcut expression="execution(* com.al.nppm.business.*.service..*.*(..))"
+				id="logpointcut" />
+			<aop:before method="doAccessCheck" pointcut-ref="logpointcut" />
+			<aop:after-returning method="doAfterReturning"
+				pointcut-ref="logpointcut" />
+		</aop:aspect>
+	</aop:config>
+	-->
+	
+	<!-- 新增数据连接 -->	
+	<bean id="zlDataSource" parent="parentSource">
+        <property name="connectionProperties"  value="password=${jdbc.zl.password}"/>
+        <property name="passwordCallback" ref="dbPasswordCallback"/>
+		<property name="url" value="${jdbc.zl.url}" />
+		<property name="username" value="${jdbc.zl.username}" />
+		<!-- 
+		<property name="password" value="${jdbc.zl.password}" />
+		 -->
+	</bean>
+    <!--
+	<bean id="zlProperties" class="com.al.nppm.common.utils.PropertiesEncryptFactoryBean">  
+        <property name="properties">  
+            <props>  
+                <prop key="password">${jdbc.zl.password}</prop>
+            </props>  
+        </property>  
+    </bean>
+    -->
+	<bean id="zlSqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="zlDataSource" />
+ 		<property name="configLocation"  value="classpath:config/mybatis-config.xml"/> 
+	</bean>
+	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+		<property name="basePackage" value="com.al.nppm.business.syntomq.mapper" /> 
+		<property name="sqlSessionFactoryBeanName" value="zlSqlSessionFactory"></property>
+	</bean>
+	<bean id="zlTransactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="zlDataSource" />
+	</bean>
+	
+	<!-- 接口表数据源 -->
+	<bean id="ordDataSource" parent="parentSource" >
+
+        <property name="connectionProperties"  value="password=${jdbc.ord.password}"/>
+        <property name="passwordCallback" ref="dbPasswordCallback"/>
+ 		<property name="url" value="${jdbc.ord.url}" />
+ 		<property name="username" value="${jdbc.ord.username}" />
+ 		<!-- 
+ 		<property name="password" value="${jdbc.ord.password}" /> 
+ 		 -->
+ 	</bean>
+    <!--CPCP数据源-->
+	<bean id="cpcpDataSource" parent="parentSource" >
+		<property name="connectionProperties"  value="password=${jdbc.cpcp.password}"/>
+		<property name="passwordCallback" ref="dbPasswordCallback"/>
+		<property name="url" value="${jdbc.cpcp.url}" />
+		<property name="username" value="${jdbc.cpcp.username}" />
+	</bean>
+	<bean id="sqlSessionFactory_cpcp" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="cpcpDataSource" />
+		<property name="mapperLocations" value="classpath*:com/al/nppm/business/cpcp/dao/*.xml"></property>
+		<property name="configLocation"  value="classpath:config/mybatis-config.xml"/>
+	</bean>
+    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <property name="basePackage" value="com.al.nppm.business.cpcp.dao" />
+        <property name="sqlSessionFactoryBeanName" value="sqlSessionFactory_cpcp"></property>
+    </bean>
+    <bean id="transactionManager_cpcp"
+          class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="cpcpDataSource" />
+    </bean>
+	<!--增加数据源-->
+	<!-- 停复机工单数据源 -->
+	<bean id="orderDataSource" parent="parentSource" >
+		<property name="driverClassName" value="oracle.jdbc.driver.OracleDriver" />
+		<property name="connectionProperties"  value="password=${jdbc.order.password}"/>
+		<property name="passwordCallback" ref="dbPasswordCallback"/>
+		<property name="url" value="${jdbc.order.url}" />
+		<property name="username" value="${jdbc.order.username}" />
+	</bean>
+	<bean id="sqlSessionFactory_order" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="orderDataSource" />
+		<property name="mapperLocations" value="classpath*:com/al/nppm/business/order/dao/*.xml"></property>
+		<property name="configLocation"  value="classpath:config/mybatis-config.xml"/>
+	</bean>
+	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+		<property name="basePackage" value="com.al.nppm.business.order.dao" />
+		<property name="sqlSessionFactoryBeanName" value="sqlSessionFactory_order"></property>
+	</bean>
+	<bean id="transactionManager_order"
+		  class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="orderDataSource" />
+	</bean>
+    <!--
+ 	<bean id="ordProperties" class="com.al.nppm.common.utils.PropertiesEncryptFactoryBean">  
+        <property name="properties">  
+            <props>  
+                <prop key="password">${jdbc.ord.password}</prop>  
+            </props>  
+        </property>  
+    </bean>
+    -->
+	<bean id="sqlSessionFactory_ord" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="ordDataSource" />
+		<!-- 自动扫描mapping.xml文件 -->
+  		<property name="mapperLocations" value="classpath*:com/al/nppm/ord/*/dao/*.xml"></property>
+
+ 		<property name="configLocation"  value="classpath:config/mybatis-config.xml"/> 
+	</bean>
+	<!-- DAO接口所在包名，Spring会自动查找其下的类 -->
+	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+		<property name="basePackage" value="com.al.nppm.ord.*.dao" />
+		<property name="sqlSessionFactoryBeanName" value="sqlSessionFactory_ord"></property>
+	</bean>
+	<!-- (事务管理)transaction manager, use JtaTransactionManager for global tx -->
+	<bean id="transactionManager_ord"
+		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="ordDataSource" />
+	</bean>
+
+</beans>

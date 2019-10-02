@@ -184,6 +184,26 @@
  		<property name="password" value="${jdbc.ord.password}" /> 
  		 -->
  	</bean>
+    <!--CPCP数据源-->
+	<bean id="cpcpDataSource" parent="parentSource" >
+		<property name="connectionProperties"  value="password=${jdbc.cpcp.password}"/>
+		<property name="passwordCallback" ref="dbPasswordCallback"/>
+		<property name="url" value="${jdbc.cpcp.url}" />
+		<property name="username" value="${jdbc.cpcp.username}" />
+	</bean>
+	<bean id="sqlSessionFactory_cpcp" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="cpcpDataSource" />
+		<property name="mapperLocations" value="classpath*:com/al/nppm/business/cpcp/dao/*.xml"></property>
+		<property name="configLocation"  value="classpath:config/mybatis-config.xml"/>
+	</bean>
+    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <property name="basePackage" value="com.al.nppm.business.cpcp.dao" />
+        <property name="sqlSessionFactoryBeanName" value="sqlSessionFactory_cpcp"></property>
+    </bean>
+    <bean id="transactionManager_cpcp"
+          class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="cpcpDataSource" />
+    </bean>
 	<!--增加数据源-->
 	<!-- 停复机工单数据源 -->
 	<bean id="orderDataSource" parent="parentSource" >

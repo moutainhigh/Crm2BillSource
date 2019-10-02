@@ -1,6 +1,6 @@
 package com.al.nppm.business.inter.service.impl;
 
-import com.al.nppm.business.account.dao.CpcMapper;
+import com.al.nppm.business.cpcp.dao.CpcMapper;
 import com.al.nppm.ord.ordbill.dao.OrdBillBackupMapper;
 import com.al.nppm.ord.ordbill.dao.OrdBillHisMapper;
 import org.apache.log4j.Logger;
@@ -184,8 +184,8 @@ public class OrdBackupService {
 //                    break;
 //                }
                 //租机套餐配置在OFFER_CATALOG_LOCATION表中
-                Long count = cpcDao.getCountFromOfferCatalogLocation(offerInstMap);
-                if (count>0&&!"1".equals(offerInstMap.get("statusCd"))){
+				List<Map<String,Object>> zjList = cpcDao.getCountFromOfferCatalogLocation(offerInstMap);
+                if (zjList.size()>0&&!"1".equals(offerInstMap.get("statusCd"))){
                     flag=false;
                     break;
                 }

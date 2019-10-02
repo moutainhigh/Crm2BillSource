@@ -1,0 +1,379 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="generator.ProdInstAcctRelAttrDao">
+  <resultMap id="BaseResultMap" type="generator.ProdInstAcctRelAttr">
+    <id column="prod_inst_acct_rel_id" jdbcType="BIGINT" property="prodInstAcctRelId" />
+    <result column="prod_inst_acct_rel_attr_id" jdbcType="BIGINT" property="prodInstAcctRelAttrId" />
+    <result column="attr_id" jdbcType="BIGINT" property="attrId" />
+    <result column="attr_value_id" jdbcType="BIGINT" property="attrValueId" />
+    <result column="attr_value" jdbcType="VARCHAR" property="attrValue" />
+    <result column="eff_date" jdbcType="TIMESTAMP" property="effDate" />
+    <result column="exp_date" jdbcType="TIMESTAMP" property="expDate" />
+    <result column="attr_name" jdbcType="VARCHAR" property="attrName" />
+    <result column="status_cd" jdbcType="VARCHAR" property="statusCd" />
+    <result column="status_date" jdbcType="TIMESTAMP" property="statusDate" />
+    <result column="create_staff" jdbcType="BIGINT" property="createStaff" />
+    <result column="create_date" jdbcType="TIMESTAMP" property="createDate" />
+    <result column="update_staff" jdbcType="BIGINT" property="updateStaff" />
+    <result column="update_date" jdbcType="TIMESTAMP" property="updateDate" />
+    <result column="ROUTE_ID" jdbcType="BIGINT" property="routeId" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    prod_inst_acct_rel_id, prod_inst_acct_rel_attr_id, attr_id, attr_value_id, attr_value, 
+    eff_date, exp_date, attr_name, status_cd, status_date, create_staff, create_date, 
+    update_staff, update_date, ROUTE_ID
+  </sql>
+  <select id="selectByExample" parameterType="generator.ProdInstAcctRelAttrExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from prod_inst_acct_rel_attr
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+    <if test="limit != null">
+      <if test="offset != null">
+        limit ${offset}, ${limit}
+      </if>
+      <if test="offset == null">
+        limit ${limit}
+      </if>
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from prod_inst_acct_rel_attr
+    where prod_inst_acct_rel_id = #{prodInstAcctRelId,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from prod_inst_acct_rel_attr
+    where prod_inst_acct_rel_id = #{prodInstAcctRelId,jdbcType=BIGINT}
+  </delete>
+  <delete id="deleteByExample" parameterType="generator.ProdInstAcctRelAttrExample">
+    delete from prod_inst_acct_rel_attr
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="generator.ProdInstAcctRelAttr">
+    insert into prod_inst_acct_rel_attr (prod_inst_acct_rel_id, prod_inst_acct_rel_attr_id, 
+      attr_id, attr_value_id, attr_value, 
+      eff_date, exp_date, attr_name, 
+      status_cd, status_date, create_staff, 
+      create_date, update_staff, update_date, 
+      ROUTE_ID)
+    values (#{prodInstAcctRelId,jdbcType=BIGINT}, #{prodInstAcctRelAttrId,jdbcType=BIGINT}, 
+      #{attrId,jdbcType=BIGINT}, #{attrValueId,jdbcType=BIGINT}, #{attrValue,jdbcType=VARCHAR}, 
+      #{effDate,jdbcType=TIMESTAMP}, #{expDate,jdbcType=TIMESTAMP}, #{attrName,jdbcType=VARCHAR}, 
+      #{statusCd,jdbcType=VARCHAR}, #{statusDate,jdbcType=TIMESTAMP}, #{createStaff,jdbcType=BIGINT}, 
+      #{createDate,jdbcType=TIMESTAMP}, #{updateStaff,jdbcType=BIGINT}, #{updateDate,jdbcType=TIMESTAMP}, 
+      #{routeId,jdbcType=BIGINT})
+  </insert>
+  <insert id="insertSelective" parameterType="generator.ProdInstAcctRelAttr">
+    insert into prod_inst_acct_rel_attr
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="prodInstAcctRelId != null">
+        prod_inst_acct_rel_id,
+      </if>
+      <if test="prodInstAcctRelAttrId != null">
+        prod_inst_acct_rel_attr_id,
+      </if>
+      <if test="attrId != null">
+        attr_id,
+      </if>
+      <if test="attrValueId != null">
+        attr_value_id,
+      </if>
+      <if test="attrValue != null">
+        attr_value,
+      </if>
+      <if test="effDate != null">
+        eff_date,
+      </if>
+      <if test="expDate != null">
+        exp_date,
+      </if>
+      <if test="attrName != null">
+        attr_name,
+      </if>
+      <if test="statusCd != null">
+        status_cd,
+      </if>
+      <if test="statusDate != null">
+        status_date,
+      </if>
+      <if test="createStaff != null">
+        create_staff,
+      </if>
+      <if test="createDate != null">
+        create_date,
+      </if>
+      <if test="updateStaff != null">
+        update_staff,
+      </if>
+      <if test="updateDate != null">
+        update_date,
+      </if>
+      <if test="routeId != null">
+        ROUTE_ID,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="prodInstAcctRelId != null">
+        #{prodInstAcctRelId,jdbcType=BIGINT},
+      </if>
+      <if test="prodInstAcctRelAttrId != null">
+        #{prodInstAcctRelAttrId,jdbcType=BIGINT},
+      </if>
+      <if test="attrId != null">
+        #{attrId,jdbcType=BIGINT},
+      </if>
+      <if test="attrValueId != null">
+        #{attrValueId,jdbcType=BIGINT},
+      </if>
+      <if test="attrValue != null">
+        #{attrValue,jdbcType=VARCHAR},
+      </if>
+      <if test="effDate != null">
+        #{effDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="expDate != null">
+        #{expDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="attrName != null">
+        #{attrName,jdbcType=VARCHAR},
+      </if>
+      <if test="statusCd != null">
+        #{statusCd,jdbcType=VARCHAR},
+      </if>
+      <if test="statusDate != null">
+        #{statusDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createStaff != null">
+        #{createStaff,jdbcType=BIGINT},
+      </if>
+      <if test="createDate != null">
+        #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateStaff != null">
+        #{updateStaff,jdbcType=BIGINT},
+      </if>
+      <if test="updateDate != null">
+        #{updateDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="routeId != null">
+        #{routeId,jdbcType=BIGINT},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="generator.ProdInstAcctRelAttrExample" resultType="java.lang.Long">
+    select count(*) from prod_inst_acct_rel_attr
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map">
+    update prod_inst_acct_rel_attr
+    <set>
+      <if test="record.prodInstAcctRelId != null">
+        prod_inst_acct_rel_id = #{record.prodInstAcctRelId,jdbcType=BIGINT},
+      </if>
+      <if test="record.prodInstAcctRelAttrId != null">
+        prod_inst_acct_rel_attr_id = #{record.prodInstAcctRelAttrId,jdbcType=BIGINT},
+      </if>
+      <if test="record.attrId != null">
+        attr_id = #{record.attrId,jdbcType=BIGINT},
+      </if>
+      <if test="record.attrValueId != null">
+        attr_value_id = #{record.attrValueId,jdbcType=BIGINT},
+      </if>
+      <if test="record.attrValue != null">
+        attr_value = #{record.attrValue,jdbcType=VARCHAR},
+      </if>
+      <if test="record.effDate != null">
+        eff_date = #{record.effDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.expDate != null">
+        exp_date = #{record.expDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.attrName != null">
+        attr_name = #{record.attrName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.statusCd != null">
+        status_cd = #{record.statusCd,jdbcType=VARCHAR},
+      </if>
+      <if test="record.statusDate != null">
+        status_date = #{record.statusDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.createStaff != null">
+        create_staff = #{record.createStaff,jdbcType=BIGINT},
+      </if>
+      <if test="record.createDate != null">
+        create_date = #{record.createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.updateStaff != null">
+        update_staff = #{record.updateStaff,jdbcType=BIGINT},
+      </if>
+      <if test="record.updateDate != null">
+        update_date = #{record.updateDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.routeId != null">
+        ROUTE_ID = #{record.routeId,jdbcType=BIGINT},
+      </if>
+    </set>
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update prod_inst_acct_rel_attr
+    set prod_inst_acct_rel_id = #{record.prodInstAcctRelId,jdbcType=BIGINT},
+      prod_inst_acct_rel_attr_id = #{record.prodInstAcctRelAttrId,jdbcType=BIGINT},
+      attr_id = #{record.attrId,jdbcType=BIGINT},
+      attr_value_id = #{record.attrValueId,jdbcType=BIGINT},
+      attr_value = #{record.attrValue,jdbcType=VARCHAR},
+      eff_date = #{record.effDate,jdbcType=TIMESTAMP},
+      exp_date = #{record.expDate,jdbcType=TIMESTAMP},
+      attr_name = #{record.attrName,jdbcType=VARCHAR},
+      status_cd = #{record.statusCd,jdbcType=VARCHAR},
+      status_date = #{record.statusDate,jdbcType=TIMESTAMP},
+      create_staff = #{record.createStaff,jdbcType=BIGINT},
+      create_date = #{record.createDate,jdbcType=TIMESTAMP},
+      update_staff = #{record.updateStaff,jdbcType=BIGINT},
+      update_date = #{record.updateDate,jdbcType=TIMESTAMP},
+      ROUTE_ID = #{record.routeId,jdbcType=BIGINT}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="generator.ProdInstAcctRelAttr">
+    update prod_inst_acct_rel_attr
+    <set>
+      <if test="prodInstAcctRelAttrId != null">
+        prod_inst_acct_rel_attr_id = #{prodInstAcctRelAttrId,jdbcType=BIGINT},
+      </if>
+      <if test="attrId != null">
+        attr_id = #{attrId,jdbcType=BIGINT},
+      </if>
+      <if test="attrValueId != null">
+        attr_value_id = #{attrValueId,jdbcType=BIGINT},
+      </if>
+      <if test="attrValue != null">
+        attr_value = #{attrValue,jdbcType=VARCHAR},
+      </if>
+      <if test="effDate != null">
+        eff_date = #{effDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="expDate != null">
+        exp_date = #{expDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="attrName != null">
+        attr_name = #{attrName,jdbcType=VARCHAR},
+      </if>
+      <if test="statusCd != null">
+        status_cd = #{statusCd,jdbcType=VARCHAR},
+      </if>
+      <if test="statusDate != null">
+        status_date = #{statusDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createStaff != null">
+        create_staff = #{createStaff,jdbcType=BIGINT},
+      </if>
+      <if test="createDate != null">
+        create_date = #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateStaff != null">
+        update_staff = #{updateStaff,jdbcType=BIGINT},
+      </if>
+      <if test="updateDate != null">
+        update_date = #{updateDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="routeId != null">
+        ROUTE_ID = #{routeId,jdbcType=BIGINT},
+      </if>
+    </set>
+    where prod_inst_acct_rel_id = #{prodInstAcctRelId,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="generator.ProdInstAcctRelAttr">
+    update prod_inst_acct_rel_attr
+    set prod_inst_acct_rel_attr_id = #{prodInstAcctRelAttrId,jdbcType=BIGINT},
+      attr_id = #{attrId,jdbcType=BIGINT},
+      attr_value_id = #{attrValueId,jdbcType=BIGINT},
+      attr_value = #{attrValue,jdbcType=VARCHAR},
+      eff_date = #{effDate,jdbcType=TIMESTAMP},
+      exp_date = #{expDate,jdbcType=TIMESTAMP},
+      attr_name = #{attrName,jdbcType=VARCHAR},
+      status_cd = #{statusCd,jdbcType=VARCHAR},
+      status_date = #{statusDate,jdbcType=TIMESTAMP},
+      create_staff = #{createStaff,jdbcType=BIGINT},
+      create_date = #{createDate,jdbcType=TIMESTAMP},
+      update_staff = #{updateStaff,jdbcType=BIGINT},
+      update_date = #{updateDate,jdbcType=TIMESTAMP},
+      ROUTE_ID = #{routeId,jdbcType=BIGINT}
+    where prod_inst_acct_rel_id = #{prodInstAcctRelId,jdbcType=BIGINT}
+  </update>
+</mapper>

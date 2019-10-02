@@ -6,10 +6,10 @@ package com.al.nppm.business.inter.service.impl;/**
  * @Software: IntelliJ IDEA 2019.3.15
  */
 
-import com.al.nppm.business.account.dao.CpcMapper;
 import com.al.nppm.business.account.dao.IPayToPlanMapper;
 import com.al.nppm.business.account.dao.IProdInstMapper;
 import com.al.nppm.business.core.SynMapContextHolder;
+import com.al.nppm.business.cpcp.dao.CpcMapper;
 import com.al.nppm.business.inter.service.IPayToPlanService;
 import com.al.nppm.business.inter.service.IRouteService;
 import com.al.nppm.business.syntomq.model.InterPayToPlan;
@@ -65,7 +65,6 @@ public class PayToPlanService implements IPayToPlanService {
     public IRouteService routeDao;
     @Autowired
     public OrdBillMapper ordBillDao;
-
     /**
      * @return void
      * @Author maozp3
@@ -193,35 +192,46 @@ public class PayToPlanService implements IPayToPlanService {
         }
 
         try {
-            //  -301009  预存支付计划类销售品
-            // TODO: 2019/7/22 暂时屏蔽 ，计费暂时没有这个表，尚未具备这个条件
-           /* Long count = cpcDao.getCountFromOfferCatalogLocation(orderMap);
-            // 是预存款目录的才处理
-            if(count > 0){
-                if("1000".equals(orderMap.get("operType"))){
-                    orderMap.put("jfOperType","1");
-                }else if("1100".equals(orderMap.get("operType"))){
-                    orderMap.put("jfOperType","3");
+            String flag="0";// flag=0 赠款 1红包金
+            // '-1064785','-1064786'  预存支付计划类销售品
+            List<Map<String,Object>> zjList = cpcDao.getCountFromOfferCatalogLocation(orderMap);
+            //红包金类销售品目录
+            if(zjList.size()>0){
+                if("-1064785".equals(zjList.get(0).get("catalogItemId").toString())){
+                    flag="0";
                 }else{
+                    flag="1";
+                }
+            // 是预存款目录的才处理
+            if(zjList.size() > 0) {
+                if ("1000".equals(orderMap.get("operType"))) {
+                    orderMap.put("jfOperType", "1");
+                } else if ("1100".equals(orderMap.get("operType"))) {
+                    orderMap.put("jfOperType", "3");
+                    if ("1".equals(flag)) {
+                        orderMap.put("jfOperType","4");//红包金退订填4
+                    }
+                    }
+                } else {
                     msg.setMessage("OPER_TYPE=不是1000、1100的不处理");
                     return 1;
                 }
                 Long counter = cpcDao.getCountFromPOfferPayplanInfo(orderMap);
-                if(counter > 0){
+                if (counter > 0) {
                     //取出余额级别
                     shareLevel = cpcDao.getShareLevel(orderMap);
-                    //ICB销售品类型为1
-                    if("109000000913".equals(orderMap.get("offerId"))
-                        || "349000007051".equals(orderMap.get("offerId"))
-                        || "349000007052".equals(orderMap.get("offerId"))
-                    ){
+                    //ICB销售品类型为1 吉林应该没有这个
+                    if ("109000000913".equals(orderMap.get("offerId"))
+                            || "349000007051".equals(orderMap.get("offerId"))
+                            || "349000007052".equals(orderMap.get("offerId"))
+                    ) {
                         depositType = 1L;
                         //ICB取CRM金额
                         //新增才取金额
                         try {
-                            if("1000".equals(orderMap.get("operType"))){
+                            if ("1000".equals(orderMap.get("operType"))) {
                                 amount = ordPayDao.getAttrValue(orderMap);
-                            }else{
+                            } else {
                                 amount = null;
                             }
                         } catch (Exception e) {
@@ -229,18 +239,21 @@ public class PayToPlanService implements IPayToPlanService {
                             e.printStackTrace();
                             throw e;
                         }
-                    }else{
+                    } else {
                         depositType = 2L;
+                        if("1".equals(flag)){
+                            depositType = 10L;//红包金depositType为10其他逻辑和赠款一样
+                        }
                         amount = null;
                     }
-                }else{
+                } else {
                     //预存款销售品
                     depositType = 3L;
                     //新增才取金额
                     try {
-                        if("1000".equals(orderMap.get("operType"))){
+                        if ("1000".equals(orderMap.get("operType"))) {
                             amount = ordPayDao.getAttrValue(orderMap);
-                        }else{
+                        } else {
                             amount = null;
                         }
                     } catch (Exception e) {
@@ -248,8 +261,8 @@ public class PayToPlanService implements IPayToPlanService {
                         e.printStackTrace();
                         throw e;
                     }
-                }*/
-
+                }
+            }
             try {
                 //用户级销售品
                 prodInstId = ordPayDao.getProdInstId(orderMap);
@@ -301,7 +314,7 @@ public class PayToPlanService implements IPayToPlanService {
                 //用户级预存
                 objectId = prodInstId;
             }
-            //新增开始 0721
+            //新增开始 0721  这个是吉林迎合2.0处理的逻辑，3.0要屏蔽掉
             if ("1000".equals(orderMap.get("operType"))) {
                 orderMap.put("jfOperType", "1");
             } else if ("1100".equals(orderMap.get("operType"))) {

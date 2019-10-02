@@ -221,7 +221,7 @@
 			<ref bean="scanTaskJob" />
 		</property>
 		<property name="cronExpression">
-			<value>*/30 * * * * ?</value>
+			<value>* */5 * * * ?</value>
 		</property>
 	</bean>
     <bean id="scanTaskTimeForStart" class="org.springframework.scheduling.quartz.SimpleTriggerBean">

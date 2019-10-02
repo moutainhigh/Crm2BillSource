@@ -1,0 +1,426 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="generator.ExtAcctDao">
+  <resultMap id="BaseResultMap" type="generator.ExtAcct">
+    <id column="EXT_ACCT_ID" jdbcType="BIGINT" property="extAcctId" />
+    <result column="CUST_ID" jdbcType="BIGINT" property="custId" />
+    <result column="PAY_CHANNEL" jdbcType="INTEGER" property="payChannel" />
+    <result column="PAY_ACCT_CODE" jdbcType="VARCHAR" property="payAcctCode" />
+    <result column="PAY_ACCT_NAME" jdbcType="VARCHAR" property="payAcctName" />
+    <result column="ACCT_OWNER_ORG" jdbcType="BIGINT" property="acctOwnerOrg" />
+    <result column="ACCT_OWNER_ORG_BRANCH" jdbcType="BIGINT" property="acctOwnerOrgBranch" />
+    <result column="EFF_DATE" jdbcType="TIMESTAMP" property="effDate" />
+    <result column="EXP_DATE" jdbcType="TIMESTAMP" property="expDate" />
+    <result column="IF_CONTRACT_QUICK_PAY" jdbcType="INTEGER" property="ifContractQuickPay" />
+    <result column="STATUS_CD" jdbcType="VARCHAR" property="statusCd" />
+    <result column="STATUS_DATE" jdbcType="TIMESTAMP" property="statusDate" />
+    <result column="CREATE_STAFF" jdbcType="BIGINT" property="createStaff" />
+    <result column="CREATE_DATE" jdbcType="TIMESTAMP" property="createDate" />
+    <result column="UPDATE_STAFF" jdbcType="BIGINT" property="updateStaff" />
+    <result column="UPDATE_DATE" jdbcType="TIMESTAMP" property="updateDate" />
+    <result column="commision_agreement_id" jdbcType="VARCHAR" property="commisionAgreementId" />
+    <result column="ROUTE_ID" jdbcType="BIGINT" property="routeId" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    EXT_ACCT_ID, CUST_ID, PAY_CHANNEL, PAY_ACCT_CODE, PAY_ACCT_NAME, ACCT_OWNER_ORG, 
+    ACCT_OWNER_ORG_BRANCH, EFF_DATE, EXP_DATE, IF_CONTRACT_QUICK_PAY, STATUS_CD, STATUS_DATE, 
+    CREATE_STAFF, CREATE_DATE, UPDATE_STAFF, UPDATE_DATE, commision_agreement_id, ROUTE_ID
+  </sql>
+  <select id="selectByExample" parameterType="generator.ExtAcctExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from ext_acct
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+    <if test="limit != null">
+      <if test="offset != null">
+        limit ${offset}, ${limit}
+      </if>
+      <if test="offset == null">
+        limit ${limit}
+      </if>
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from ext_acct
+    where EXT_ACCT_ID = #{extAcctId,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from ext_acct
+    where EXT_ACCT_ID = #{extAcctId,jdbcType=BIGINT}
+  </delete>
+  <delete id="deleteByExample" parameterType="generator.ExtAcctExample">
+    delete from ext_acct
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="generator.ExtAcct">
+    insert into ext_acct (EXT_ACCT_ID, CUST_ID, PAY_CHANNEL, 
+      PAY_ACCT_CODE, PAY_ACCT_NAME, ACCT_OWNER_ORG, 
+      ACCT_OWNER_ORG_BRANCH, EFF_DATE, EXP_DATE, 
+      IF_CONTRACT_QUICK_PAY, STATUS_CD, STATUS_DATE, 
+      CREATE_STAFF, CREATE_DATE, UPDATE_STAFF, 
+      UPDATE_DATE, commision_agreement_id, ROUTE_ID
+      )
+    values (#{extAcctId,jdbcType=BIGINT}, #{custId,jdbcType=BIGINT}, #{payChannel,jdbcType=INTEGER}, 
+      #{payAcctCode,jdbcType=VARCHAR}, #{payAcctName,jdbcType=VARCHAR}, #{acctOwnerOrg,jdbcType=BIGINT}, 
+      #{acctOwnerOrgBranch,jdbcType=BIGINT}, #{effDate,jdbcType=TIMESTAMP}, #{expDate,jdbcType=TIMESTAMP}, 
+      #{ifContractQuickPay,jdbcType=INTEGER}, #{statusCd,jdbcType=VARCHAR}, #{statusDate,jdbcType=TIMESTAMP}, 
+      #{createStaff,jdbcType=BIGINT}, #{createDate,jdbcType=TIMESTAMP}, #{updateStaff,jdbcType=BIGINT}, 
+      #{updateDate,jdbcType=TIMESTAMP}, #{commisionAgreementId,jdbcType=VARCHAR}, #{routeId,jdbcType=BIGINT}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="generator.ExtAcct">
+    insert into ext_acct
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="extAcctId != null">
+        EXT_ACCT_ID,
+      </if>
+      <if test="custId != null">
+        CUST_ID,
+      </if>
+      <if test="payChannel != null">
+        PAY_CHANNEL,
+      </if>
+      <if test="payAcctCode != null">
+        PAY_ACCT_CODE,
+      </if>
+      <if test="payAcctName != null">
+        PAY_ACCT_NAME,
+      </if>
+      <if test="acctOwnerOrg != null">
+        ACCT_OWNER_ORG,
+      </if>
+      <if test="acctOwnerOrgBranch != null">
+        ACCT_OWNER_ORG_BRANCH,
+      </if>
+      <if test="effDate != null">
+        EFF_DATE,
+      </if>
+      <if test="expDate != null">
+        EXP_DATE,
+      </if>
+      <if test="ifContractQuickPay != null">
+        IF_CONTRACT_QUICK_PAY,
+      </if>
+      <if test="statusCd != null">
+        STATUS_CD,
+      </if>
+      <if test="statusDate != null">
+        STATUS_DATE,
+      </if>
+      <if test="createStaff != null">
+        CREATE_STAFF,
+      </if>
+      <if test="createDate != null">
+        CREATE_DATE,
+      </if>
+      <if test="updateStaff != null">
+        UPDATE_STAFF,
+      </if>
+      <if test="updateDate != null">
+        UPDATE_DATE,
+      </if>
+      <if test="commisionAgreementId != null">
+        commision_agreement_id,
+      </if>
+      <if test="routeId != null">
+        ROUTE_ID,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="extAcctId != null">
+        #{extAcctId,jdbcType=BIGINT},
+      </if>
+      <if test="custId != null">
+        #{custId,jdbcType=BIGINT},
+      </if>
+      <if test="payChannel != null">
+        #{payChannel,jdbcType=INTEGER},
+      </if>
+      <if test="payAcctCode != null">
+        #{payAcctCode,jdbcType=VARCHAR},
+      </if>
+      <if test="payAcctName != null">
+        #{payAcctName,jdbcType=VARCHAR},
+      </if>
+      <if test="acctOwnerOrg != null">
+        #{acctOwnerOrg,jdbcType=BIGINT},
+      </if>
+      <if test="acctOwnerOrgBranch != null">
+        #{acctOwnerOrgBranch,jdbcType=BIGINT},
+      </if>
+      <if test="effDate != null">
+        #{effDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="expDate != null">
+        #{expDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="ifContractQuickPay != null">
+        #{ifContractQuickPay,jdbcType=INTEGER},
+      </if>
+      <if test="statusCd != null">
+        #{statusCd,jdbcType=VARCHAR},
+      </if>
+      <if test="statusDate != null">
+        #{statusDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createStaff != null">
+        #{createStaff,jdbcType=BIGINT},
+      </if>
+      <if test="createDate != null">
+        #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateStaff != null">
+        #{updateStaff,jdbcType=BIGINT},
+      </if>
+      <if test="updateDate != null">
+        #{updateDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="commisionAgreementId != null">
+        #{commisionAgreementId,jdbcType=VARCHAR},
+      </if>
+      <if test="routeId != null">
+        #{routeId,jdbcType=BIGINT},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="generator.ExtAcctExample" resultType="java.lang.Long">
+    select count(*) from ext_acct
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map">
+    update ext_acct
+    <set>
+      <if test="record.extAcctId != null">
+        EXT_ACCT_ID = #{record.extAcctId,jdbcType=BIGINT},
+      </if>
+      <if test="record.custId != null">
+        CUST_ID = #{record.custId,jdbcType=BIGINT},
+      </if>
+      <if test="record.payChannel != null">
+        PAY_CHANNEL = #{record.payChannel,jdbcType=INTEGER},
+      </if>
+      <if test="record.payAcctCode != null">
+        PAY_ACCT_CODE = #{record.payAcctCode,jdbcType=VARCHAR},
+      </if>
+      <if test="record.payAcctName != null">
+        PAY_ACCT_NAME = #{record.payAcctName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.acctOwnerOrg != null">
+        ACCT_OWNER_ORG = #{record.acctOwnerOrg,jdbcType=BIGINT},
+      </if>
+      <if test="record.acctOwnerOrgBranch != null">
+        ACCT_OWNER_ORG_BRANCH = #{record.acctOwnerOrgBranch,jdbcType=BIGINT},
+      </if>
+      <if test="record.effDate != null">
+        EFF_DATE = #{record.effDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.expDate != null">
+        EXP_DATE = #{record.expDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.ifContractQuickPay != null">
+        IF_CONTRACT_QUICK_PAY = #{record.ifContractQuickPay,jdbcType=INTEGER},
+      </if>
+      <if test="record.statusCd != null">
+        STATUS_CD = #{record.statusCd,jdbcType=VARCHAR},
+      </if>
+      <if test="record.statusDate != null">
+        STATUS_DATE = #{record.statusDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.createStaff != null">
+        CREATE_STAFF = #{record.createStaff,jdbcType=BIGINT},
+      </if>
+      <if test="record.createDate != null">
+        CREATE_DATE = #{record.createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.updateStaff != null">
+        UPDATE_STAFF = #{record.updateStaff,jdbcType=BIGINT},
+      </if>
+      <if test="record.updateDate != null">
+        UPDATE_DATE = #{record.updateDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.commisionAgreementId != null">
+        commision_agreement_id = #{record.commisionAgreementId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.routeId != null">
+        ROUTE_ID = #{record.routeId,jdbcType=BIGINT},
+      </if>
+    </set>
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update ext_acct
+    set EXT_ACCT_ID = #{record.extAcctId,jdbcType=BIGINT},
+      CUST_ID = #{record.custId,jdbcType=BIGINT},
+      PAY_CHANNEL = #{record.payChannel,jdbcType=INTEGER},
+      PAY_ACCT_CODE = #{record.payAcctCode,jdbcType=VARCHAR},
+      PAY_ACCT_NAME = #{record.payAcctName,jdbcType=VARCHAR},
+      ACCT_OWNER_ORG = #{record.acctOwnerOrg,jdbcType=BIGINT},
+      ACCT_OWNER_ORG_BRANCH = #{record.acctOwnerOrgBranch,jdbcType=BIGINT},
+      EFF_DATE = #{record.effDate,jdbcType=TIMESTAMP},
+      EXP_DATE = #{record.expDate,jdbcType=TIMESTAMP},
+      IF_CONTRACT_QUICK_PAY = #{record.ifContractQuickPay,jdbcType=INTEGER},
+      STATUS_CD = #{record.statusCd,jdbcType=VARCHAR},
+      STATUS_DATE = #{record.statusDate,jdbcType=TIMESTAMP},
+      CREATE_STAFF = #{record.createStaff,jdbcType=BIGINT},
+      CREATE_DATE = #{record.createDate,jdbcType=TIMESTAMP},
+      UPDATE_STAFF = #{record.updateStaff,jdbcType=BIGINT},
+      UPDATE_DATE = #{record.updateDate,jdbcType=TIMESTAMP},
+      commision_agreement_id = #{record.commisionAgreementId,jdbcType=VARCHAR},
+      ROUTE_ID = #{record.routeId,jdbcType=BIGINT}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="generator.ExtAcct">
+    update ext_acct
+    <set>
+      <if test="custId != null">
+        CUST_ID = #{custId,jdbcType=BIGINT},
+      </if>
+      <if test="payChannel != null">
+        PAY_CHANNEL = #{payChannel,jdbcType=INTEGER},
+      </if>
+      <if test="payAcctCode != null">
+        PAY_ACCT_CODE = #{payAcctCode,jdbcType=VARCHAR},
+      </if>
+      <if test="payAcctName != null">
+        PAY_ACCT_NAME = #{payAcctName,jdbcType=VARCHAR},
+      </if>
+      <if test="acctOwnerOrg != null">
+        ACCT_OWNER_ORG = #{acctOwnerOrg,jdbcType=BIGINT},
+      </if>
+      <if test="acctOwnerOrgBranch != null">
+        ACCT_OWNER_ORG_BRANCH = #{acctOwnerOrgBranch,jdbcType=BIGINT},
+      </if>
+      <if test="effDate != null">
+        EFF_DATE = #{effDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="expDate != null">
+        EXP_DATE = #{expDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="ifContractQuickPay != null">
+        IF_CONTRACT_QUICK_PAY = #{ifContractQuickPay,jdbcType=INTEGER},
+      </if>
+      <if test="statusCd != null">
+        STATUS_CD = #{statusCd,jdbcType=VARCHAR},
+      </if>
+      <if test="statusDate != null">
+        STATUS_DATE = #{statusDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createStaff != null">
+        CREATE_STAFF = #{createStaff,jdbcType=BIGINT},
+      </if>
+      <if test="createDate != null">
+        CREATE_DATE = #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateStaff != null">
+        UPDATE_STAFF = #{updateStaff,jdbcType=BIGINT},
+      </if>
+      <if test="updateDate != null">
+        UPDATE_DATE = #{updateDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="commisionAgreementId != null">
+        commision_agreement_id = #{commisionAgreementId,jdbcType=VARCHAR},
+      </if>
+      <if test="routeId != null">
+        ROUTE_ID = #{routeId,jdbcType=BIGINT},
+      </if>
+    </set>
+    where EXT_ACCT_ID = #{extAcctId,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="generator.ExtAcct">
+    update ext_acct
+    set CUST_ID = #{custId,jdbcType=BIGINT},
+      PAY_CHANNEL = #{payChannel,jdbcType=INTEGER},
+      PAY_ACCT_CODE = #{payAcctCode,jdbcType=VARCHAR},
+      PAY_ACCT_NAME = #{payAcctName,jdbcType=VARCHAR},
+      ACCT_OWNER_ORG = #{acctOwnerOrg,jdbcType=BIGINT},
+      ACCT_OWNER_ORG_BRANCH = #{acctOwnerOrgBranch,jdbcType=BIGINT},
+      EFF_DATE = #{effDate,jdbcType=TIMESTAMP},
+      EXP_DATE = #{expDate,jdbcType=TIMESTAMP},
+      IF_CONTRACT_QUICK_PAY = #{ifContractQuickPay,jdbcType=INTEGER},
+      STATUS_CD = #{statusCd,jdbcType=VARCHAR},
+      STATUS_DATE = #{statusDate,jdbcType=TIMESTAMP},
+      CREATE_STAFF = #{createStaff,jdbcType=BIGINT},
+      CREATE_DATE = #{createDate,jdbcType=TIMESTAMP},
+      UPDATE_STAFF = #{updateStaff,jdbcType=BIGINT},
+      UPDATE_DATE = #{updateDate,jdbcType=TIMESTAMP},
+      commision_agreement_id = #{commisionAgreementId,jdbcType=VARCHAR},
+      ROUTE_ID = #{routeId,jdbcType=BIGINT}
+    where EXT_ACCT_ID = #{extAcctId,jdbcType=BIGINT}
+  </update>
+</mapper>

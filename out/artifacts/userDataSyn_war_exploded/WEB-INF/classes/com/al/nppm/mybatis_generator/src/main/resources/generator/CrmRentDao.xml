@@ -1,0 +1,394 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="generator.CrmRentDao">
+  <resultMap id="BaseResultMap" type="generator.CrmRent">
+    <id column="ROW_ID" jdbcType="BIGINT" property="rowId" />
+    <result column="ARCH_GRP_ID" jdbcType="BIGINT" property="archGrpId" />
+    <result column="ORDER_ITEM_ID" jdbcType="BIGINT" property="orderItemId" />
+    <result column="OFFER_INST_ID" jdbcType="BIGINT" property="offerInstId" />
+    <result column="PROD_INST_ID" jdbcType="BIGINT" property="prodInstId" />
+    <result column="OFFER_TYPE" jdbcType="VARCHAR" property="offerType" />
+    <result column="OFFER_START_DATE" jdbcType="TIMESTAMP" property="offerStartDate" />
+    <result column="BILL_TOTAL_FEE" jdbcType="BIGINT" property="billTotalFee" />
+    <result column="CRM_TOTAL_FEE" jdbcType="VARCHAR" property="crmTotalFee" />
+    <result column="END_TYPE" jdbcType="VARCHAR" property="endType" />
+    <result column="RENT_MONTH" jdbcType="BIGINT" property="rentMonth" />
+    <result column="OFFER_ID" jdbcType="BIGINT" property="offerId" />
+    <result column="RETURN_TYPE" jdbcType="BIGINT" property="returnType" />
+    <result column="RETURN_RULE_ID" jdbcType="BIGINT" property="returnRuleId" />
+    <result column="STATE" jdbcType="VARCHAR" property="state" />
+    <result column="STATUS_CD" jdbcType="BIGINT" property="statusCd" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    ROW_ID, ARCH_GRP_ID, ORDER_ITEM_ID, OFFER_INST_ID, PROD_INST_ID, OFFER_TYPE, OFFER_START_DATE, 
+    BILL_TOTAL_FEE, CRM_TOTAL_FEE, END_TYPE, RENT_MONTH, OFFER_ID, RETURN_TYPE, RETURN_RULE_ID, 
+    `STATE`, STATUS_CD
+  </sql>
+  <select id="selectByExample" parameterType="generator.CrmRentExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from crm_rent
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+    <if test="limit != null">
+      <if test="offset != null">
+        limit ${offset}, ${limit}
+      </if>
+      <if test="offset == null">
+        limit ${limit}
+      </if>
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from crm_rent
+    where ROW_ID = #{rowId,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from crm_rent
+    where ROW_ID = #{rowId,jdbcType=BIGINT}
+  </delete>
+  <delete id="deleteByExample" parameterType="generator.CrmRentExample">
+    delete from crm_rent
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="generator.CrmRent">
+    insert into crm_rent (ROW_ID, ARCH_GRP_ID, ORDER_ITEM_ID, 
+      OFFER_INST_ID, PROD_INST_ID, OFFER_TYPE, 
+      OFFER_START_DATE, BILL_TOTAL_FEE, CRM_TOTAL_FEE, 
+      END_TYPE, RENT_MONTH, OFFER_ID, 
+      RETURN_TYPE, RETURN_RULE_ID, `STATE`, 
+      STATUS_CD)
+    values (#{rowId,jdbcType=BIGINT}, #{archGrpId,jdbcType=BIGINT}, #{orderItemId,jdbcType=BIGINT}, 
+      #{offerInstId,jdbcType=BIGINT}, #{prodInstId,jdbcType=BIGINT}, #{offerType,jdbcType=VARCHAR}, 
+      #{offerStartDate,jdbcType=TIMESTAMP}, #{billTotalFee,jdbcType=BIGINT}, #{crmTotalFee,jdbcType=VARCHAR}, 
+      #{endType,jdbcType=VARCHAR}, #{rentMonth,jdbcType=BIGINT}, #{offerId,jdbcType=BIGINT}, 
+      #{returnType,jdbcType=BIGINT}, #{returnRuleId,jdbcType=BIGINT}, #{state,jdbcType=VARCHAR}, 
+      #{statusCd,jdbcType=BIGINT})
+  </insert>
+  <insert id="insertSelective" parameterType="generator.CrmRent">
+    insert into crm_rent
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="rowId != null">
+        ROW_ID,
+      </if>
+      <if test="archGrpId != null">
+        ARCH_GRP_ID,
+      </if>
+      <if test="orderItemId != null">
+        ORDER_ITEM_ID,
+      </if>
+      <if test="offerInstId != null">
+        OFFER_INST_ID,
+      </if>
+      <if test="prodInstId != null">
+        PROD_INST_ID,
+      </if>
+      <if test="offerType != null">
+        OFFER_TYPE,
+      </if>
+      <if test="offerStartDate != null">
+        OFFER_START_DATE,
+      </if>
+      <if test="billTotalFee != null">
+        BILL_TOTAL_FEE,
+      </if>
+      <if test="crmTotalFee != null">
+        CRM_TOTAL_FEE,
+      </if>
+      <if test="endType != null">
+        END_TYPE,
+      </if>
+      <if test="rentMonth != null">
+        RENT_MONTH,
+      </if>
+      <if test="offerId != null">
+        OFFER_ID,
+      </if>
+      <if test="returnType != null">
+        RETURN_TYPE,
+      </if>
+      <if test="returnRuleId != null">
+        RETURN_RULE_ID,
+      </if>
+      <if test="state != null">
+        `STATE`,
+      </if>
+      <if test="statusCd != null">
+        STATUS_CD,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="rowId != null">
+        #{rowId,jdbcType=BIGINT},
+      </if>
+      <if test="archGrpId != null">
+        #{archGrpId,jdbcType=BIGINT},
+      </if>
+      <if test="orderItemId != null">
+        #{orderItemId,jdbcType=BIGINT},
+      </if>
+      <if test="offerInstId != null">
+        #{offerInstId,jdbcType=BIGINT},
+      </if>
+      <if test="prodInstId != null">
+        #{prodInstId,jdbcType=BIGINT},
+      </if>
+      <if test="offerType != null">
+        #{offerType,jdbcType=VARCHAR},
+      </if>
+      <if test="offerStartDate != null">
+        #{offerStartDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="billTotalFee != null">
+        #{billTotalFee,jdbcType=BIGINT},
+      </if>
+      <if test="crmTotalFee != null">
+        #{crmTotalFee,jdbcType=VARCHAR},
+      </if>
+      <if test="endType != null">
+        #{endType,jdbcType=VARCHAR},
+      </if>
+      <if test="rentMonth != null">
+        #{rentMonth,jdbcType=BIGINT},
+      </if>
+      <if test="offerId != null">
+        #{offerId,jdbcType=BIGINT},
+      </if>
+      <if test="returnType != null">
+        #{returnType,jdbcType=BIGINT},
+      </if>
+      <if test="returnRuleId != null">
+        #{returnRuleId,jdbcType=BIGINT},
+      </if>
+      <if test="state != null">
+        #{state,jdbcType=VARCHAR},
+      </if>
+      <if test="statusCd != null">
+        #{statusCd,jdbcType=BIGINT},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="generator.CrmRentExample" resultType="java.lang.Long">
+    select count(*) from crm_rent
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map">
+    update crm_rent
+    <set>
+      <if test="record.rowId != null">
+        ROW_ID = #{record.rowId,jdbcType=BIGINT},
+      </if>
+      <if test="record.archGrpId != null">
+        ARCH_GRP_ID = #{record.archGrpId,jdbcType=BIGINT},
+      </if>
+      <if test="record.orderItemId != null">
+        ORDER_ITEM_ID = #{record.orderItemId,jdbcType=BIGINT},
+      </if>
+      <if test="record.offerInstId != null">
+        OFFER_INST_ID = #{record.offerInstId,jdbcType=BIGINT},
+      </if>
+      <if test="record.prodInstId != null">
+        PROD_INST_ID = #{record.prodInstId,jdbcType=BIGINT},
+      </if>
+      <if test="record.offerType != null">
+        OFFER_TYPE = #{record.offerType,jdbcType=VARCHAR},
+      </if>
+      <if test="record.offerStartDate != null">
+        OFFER_START_DATE = #{record.offerStartDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.billTotalFee != null">
+        BILL_TOTAL_FEE = #{record.billTotalFee,jdbcType=BIGINT},
+      </if>
+      <if test="record.crmTotalFee != null">
+        CRM_TOTAL_FEE = #{record.crmTotalFee,jdbcType=VARCHAR},
+      </if>
+      <if test="record.endType != null">
+        END_TYPE = #{record.endType,jdbcType=VARCHAR},
+      </if>
+      <if test="record.rentMonth != null">
+        RENT_MONTH = #{record.rentMonth,jdbcType=BIGINT},
+      </if>
+      <if test="record.offerId != null">
+        OFFER_ID = #{record.offerId,jdbcType=BIGINT},
+      </if>
+      <if test="record.returnType != null">
+        RETURN_TYPE = #{record.returnType,jdbcType=BIGINT},
+      </if>
+      <if test="record.returnRuleId != null">
+        RETURN_RULE_ID = #{record.returnRuleId,jdbcType=BIGINT},
+      </if>
+      <if test="record.state != null">
+        `STATE` = #{record.state,jdbcType=VARCHAR},
+      </if>
+      <if test="record.statusCd != null">
+        STATUS_CD = #{record.statusCd,jdbcType=BIGINT},
+      </if>
+    </set>
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update crm_rent
+    set ROW_ID = #{record.rowId,jdbcType=BIGINT},
+      ARCH_GRP_ID = #{record.archGrpId,jdbcType=BIGINT},
+      ORDER_ITEM_ID = #{record.orderItemId,jdbcType=BIGINT},
+      OFFER_INST_ID = #{record.offerInstId,jdbcType=BIGINT},
+      PROD_INST_ID = #{record.prodInstId,jdbcType=BIGINT},
+      OFFER_TYPE = #{record.offerType,jdbcType=VARCHAR},
+      OFFER_START_DATE = #{record.offerStartDate,jdbcType=TIMESTAMP},
+      BILL_TOTAL_FEE = #{record.billTotalFee,jdbcType=BIGINT},
+      CRM_TOTAL_FEE = #{record.crmTotalFee,jdbcType=VARCHAR},
+      END_TYPE = #{record.endType,jdbcType=VARCHAR},
+      RENT_MONTH = #{record.rentMonth,jdbcType=BIGINT},
+      OFFER_ID = #{record.offerId,jdbcType=BIGINT},
+      RETURN_TYPE = #{record.returnType,jdbcType=BIGINT},
+      RETURN_RULE_ID = #{record.returnRuleId,jdbcType=BIGINT},
+      `STATE` = #{record.state,jdbcType=VARCHAR},
+      STATUS_CD = #{record.statusCd,jdbcType=BIGINT}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="generator.CrmRent">
+    update crm_rent
+    <set>
+      <if test="archGrpId != null">
+        ARCH_GRP_ID = #{archGrpId,jdbcType=BIGINT},
+      </if>
+      <if test="orderItemId != null">
+        ORDER_ITEM_ID = #{orderItemId,jdbcType=BIGINT},
+      </if>
+      <if test="offerInstId != null">
+        OFFER_INST_ID = #{offerInstId,jdbcType=BIGINT},
+      </if>
+      <if test="prodInstId != null">
+        PROD_INST_ID = #{prodInstId,jdbcType=BIGINT},
+      </if>
+      <if test="offerType != null">
+        OFFER_TYPE = #{offerType,jdbcType=VARCHAR},
+      </if>
+      <if test="offerStartDate != null">
+        OFFER_START_DATE = #{offerStartDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="billTotalFee != null">
+        BILL_TOTAL_FEE = #{billTotalFee,jdbcType=BIGINT},
+      </if>
+      <if test="crmTotalFee != null">
+        CRM_TOTAL_FEE = #{crmTotalFee,jdbcType=VARCHAR},
+      </if>
+      <if test="endType != null">
+        END_TYPE = #{endType,jdbcType=VARCHAR},
+      </if>
+      <if test="rentMonth != null">
+        RENT_MONTH = #{rentMonth,jdbcType=BIGINT},
+      </if>
+      <if test="offerId != null">
+        OFFER_ID = #{offerId,jdbcType=BIGINT},
+      </if>
+      <if test="returnType != null">
+        RETURN_TYPE = #{returnType,jdbcType=BIGINT},
+      </if>
+      <if test="returnRuleId != null">
+        RETURN_RULE_ID = #{returnRuleId,jdbcType=BIGINT},
+      </if>
+      <if test="state != null">
+        `STATE` = #{state,jdbcType=VARCHAR},
+      </if>
+      <if test="statusCd != null">
+        STATUS_CD = #{statusCd,jdbcType=BIGINT},
+      </if>
+    </set>
+    where ROW_ID = #{rowId,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="generator.CrmRent">
+    update crm_rent
+    set ARCH_GRP_ID = #{archGrpId,jdbcType=BIGINT},
+      ORDER_ITEM_ID = #{orderItemId,jdbcType=BIGINT},
+      OFFER_INST_ID = #{offerInstId,jdbcType=BIGINT},
+      PROD_INST_ID = #{prodInstId,jdbcType=BIGINT},
+      OFFER_TYPE = #{offerType,jdbcType=VARCHAR},
+      OFFER_START_DATE = #{offerStartDate,jdbcType=TIMESTAMP},
+      BILL_TOTAL_FEE = #{billTotalFee,jdbcType=BIGINT},
+      CRM_TOTAL_FEE = #{crmTotalFee,jdbcType=VARCHAR},
+      END_TYPE = #{endType,jdbcType=VARCHAR},
+      RENT_MONTH = #{rentMonth,jdbcType=BIGINT},
+      OFFER_ID = #{offerId,jdbcType=BIGINT},
+      RETURN_TYPE = #{returnType,jdbcType=BIGINT},
+      RETURN_RULE_ID = #{returnRuleId,jdbcType=BIGINT},
+      `STATE` = #{state,jdbcType=VARCHAR},
+      STATUS_CD = #{statusCd,jdbcType=BIGINT}
+    where ROW_ID = #{rowId,jdbcType=BIGINT}
+  </update>
+</mapper>

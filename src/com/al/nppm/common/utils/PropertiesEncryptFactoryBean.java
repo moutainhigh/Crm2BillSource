@@ -37,7 +37,7 @@ public class PropertiesEncryptFactoryBean implements FactoryBean {
     
     public static void main(String[] args) throws Exception {
 //    	System.out.println(PasswordUtil.encrypt("12131111111", "12131111111"));
-    	System.out.println(PasswordUtil.encrypt("ctgcloud123", "bss@2018"));
+    	System.out.println(PasswordUtil.encrypt("Conf1234", "bss@2018"));
     	System.out.println(PasswordUtil.decrypt("9f0772d35241dc38a5cc3ef03350e0c1", "bss@2018"));
     	
 //    	String str=new String(Base64.decodeBase64("VGNzXzIZNDUK".getBytes()));

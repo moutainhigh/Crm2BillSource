@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.al.nppm.ord.ordbill.dao.OrdRouteMapper" >
+
+    <select id="getOrdAccountByOrdExtAcct" resultType="java.util.HashMap" parameterType="map"  >
+  select
+ ARCH_GRP_ID, ORDER_ITEM_ID, ACCT_ID acctId, ACCT_NAME acctName, ACCT_CD acctCd, CUST_ID custId, ACCT_LOGIN_NAME acctLoginName,
+    LOGIN_PASSWORD loginPassword, ACCT_BILLING_TYPE acctBillingType, ROW_ID rowId, OLD_ROW_ID oldRowId, OPER_TYPE operType, STATUS_CD statusCd, STATUS_DATE statusDate,
+    EFF_DATE effDate, EXP_DATE expDate, CREATE_STAFF createStaff, CREATE_DATE createDate, UPDATE_STAFF updateStaff, UPDATE_DATE updateDate, REMARK remark,
+    VER_NUM verNum, EXT_ACCT_ID extAcctId, PROD_INST_ID prodInstId, CUST_NAME custName, ACC_NUM accNum, OUTER_ACCT_ID outerAcctId,  GROUP_ACCT_ID groupAcctId
+	FROM ORD_ACCOUNT
+	WHERE  ARCH_GRP_ID = #{ARCH_GRP_ID,jdbcType=BIGINT}
+      AND  ORDER_ITEM_ID = #{ORDER_ITEM_ID,jdbcType=BIGINT}
+
+</select>
+
+    <select id="getOrdCustomerByTaxPayerId" resultType="java.util.HashMap" parameterType="map"  >
+	 select ARCH_GRP_ID archGrpId, ORDER_ITEM_ID orderItemId, CUST_ID custId, TAX_PAYER_ID taxPayerId , PARTY_ID partyId, CUST_NAME custName,
+	CUST_NUMBER custNumber, CUST_ADDR custAddr, REGION_ID regionId, CUST_TYPE custType, CUST_SUB_TYPE custSubType, CUST_SOURCE_ID custSourceId,
+	CUST_AREA_GRADE custAreaGrade , ENTER_DATE enterDate, CUST_STATUS_CD custStatusCd, CUST_STATUS_DATE custStatusDate, EXT_CUST_ID extCustId,
+	DISTRIBUTOR_ID distributorId, SECRECY_LEV secrecyLev, CUST_ORDER_ID custOrderId, CUST_CONTROL_LEVEL custControlLevel,
+	IS_INSTEAD isInstead, IS_REALNAME isRealname, ROW_ID rowId, OLD_ROW_ID oldRowId, OPER_TYPE operType,
+	STATUS_CD statusCd, STATUS_DATE statusDate, CREATE_STAFF createStaff, CREATE_DATE createDate, UPDATE_STAFF updateStaff, UPDATE_DATE updateDate, REMARK remark,
+	RECORD_STATUS_CD recordStatusCd, VER_NUM verNum, INDUSTRY_TYPE_ID industryTypeId, INDUSTRY_TYPE_NAME industryTypeName, OUTER_CUST_ID outerCustId, EXT1_CUST_ID,
+	EXT2_CUST_ID, EXT3_CUST_ID, GROUP_CUST_ID groupCustId, EXT_PARTY_ID extPartyId
+	from ord_customer
+	where ARCH_GRP_ID =#{ARCH_GRP_ID,jdbcType=BIGINT}
+		  and ORDER_ITEM_ID =#{ORDER_ITEM_ID,jdbcType=BIGINT}
+		  and TAX_PAYER_ID = #{taxPayerId,jdbcType=BIGINT}
+   </select>
+
+
+    <select id="getOrdContactsInfoByContactId" resultType="java.util.HashMap" parameterType="map"  >
+        SELECT ARCH_GRP_ID archGrpId,ORDER_ITEM_ID orderItemId,CONTACT_ID contactId,PARTY_ID partyId,CONTACT_TYPE contactType,
+        CONTACT_NAME contactName,CONTACT_GENDER contactGender,CONTACT_ADDR contactAddr,CONTACT_EMPLOYER contactEmployer,
+        HOME_PHONE homePhone,OFFICE_PHONE officePhone,MOBILE_PHONE mobilePhone,CONTACT_DESC contactDesc,E_MAIL eMail,
+        POSTCODE postcode,POST_ADDR postAddr,FAX fax,ROW_ID rowId,OLD_ROW_ID oldRowId,OPER_TYPE operType,STATUS_CD statusCd,
+        STATUS_DATE statusDate,CREATE_STAFF createStaff,CREATE_DATE createDate,UPDATE_STAFF updateStaff,UPDATE_DATE updateDate,
+        REMARK remark,VER_NUM verNum,UNSUITABLE_CONTACT_TIME unsuitableContactTime,YX_CODE yxCode,QQ_CODE qqCode,WX_CODE wxCode
+        FROM ord_contacts_info
+        WHERE ARCH_GRP_ID=#{ARCH_GRP_ID,jdbcType=BIGINT}
+            and  ORDER_ITEM_ID=#{ORDER_ITEM_ID,jdbcType=BIGINT}
+            and  CONTACT_ID = #{contactId,jdbcType=BIGINT}
+    </select>
+
+
+    <select id="getOrdProdInstAcctRelByProdInstId" resultType="java.util.HashMap" parameterType="map"  >
+  SELECT
+    ARCH_GRP_ID, ORDER_ITEM_ID, PROD_INST_ACCT_REL_ID prodInstAcctRelId, ACCT_ID acctId, ACCT_ITEM_GROUP_ID acctItemGroupId, PROD_INST_ID prodInstId,
+    PRIORITY priority, PAYMENT_LIMIT_TYPE paymentLimitType, PAYMENT_LIMIT paymentLimit, UPPER_AMOUNT upperAmount, IF_DEFAULT_ACCT_ID ifDefaultAcctId, ROW_ID rowId,
+    OLD_ROW_ID oldRowId, OPER_TYPE operType, STATUS_CD statusCd, STATUS_DATE statusDate, EFF_DATE effDate, EXP_DATE expDate, AGREE_ID agreeId, CREATE_STAFF createStaff,
+    CREATE_DATE createDate, UPDATE_STAFF updateStaff, UPDATE_DATE updateDate, VER_NUM verNum
+    FROM ORD_PROD_INST_ACCT_REL
+    WHERE ARCH_GRP_ID = #{ARCH_GRP_ID,jdbcType=BIGINT}
+     AND  ORDER_ITEM_ID = #{ORDER_ITEM_ID,jdbcType=BIGINT}
+     and PROD_INST_ID = #{prodInstId,jdbcType=BIGINT}
+</select>
+
+
+    <select id="getOrdOfferObjInstRelByOfferInstId" resultType="java.util.HashMap" parameterType="map"  >
+  select
+    ARCH_GRP_ID, ORDER_ITEM_ID, OFFER_OBJ_INST_REL_ID offerObjInstRelId, OFFER_INST_ID offerInstId, OBJ_TYPE objType, OBJ_ID objId,
+    ROLE_ID roleId, EFF_DATE effDate, EXP_DATE expDate, ROW_ID rowId, OLD_ROW_ID oldRowId, OPER_TYPE operType, STATUS_CD statusCd, STATUS_DATE statusDate,
+    CREATE_STAFF createStaff, CREATE_DATE createDate, UPDATE_STAFF updateStaff, UPDATE_DATE updateDate, REMARK remark,  OFFER_OBJ_REL_ID offerObjRelId, VER_NUM verNum,
+    SPEC_ID specId, OBJ_NAME objName, ROLE_NAME roleName
+    from ORD_OFFER_OBJ_INST_REL
+    WHERE ARCH_GRP_ID = #{ARCH_GRP_ID,jdbcType=BIGINT}
+     AND  ORDER_ITEM_ID = #{ORDER_ITEM_ID,jdbcType=BIGINT}
+     and  OFFER_INST_ID = #{offerInstId,jdbcType=BIGINT}
+</select>
+
+    <select id="getOrdOfferProdInstRelByOfferInstId" resultType="java.util.HashMap" parameterType="map"  >
+  select
+    ARCH_GRP_ID, ORDER_ITEM_ID, OFFER_INST_ID offerInstId, PROD_INST_ID prodInstId
+    from ORD_OFFER_PROD_INST_REL
+    WHERE ARCH_GRP_ID = #{ARCH_GRP_ID,jdbcType=BIGINT}
+     AND  ORDER_ITEM_ID = #{ORDER_ITEM_ID,jdbcType=BIGINT}
+     and  OFFER_INST_ID = #{offerInstId,jdbcType=BIGINT}
+</select>
+
+</mapper>

@@ -2407,7 +2407,7 @@ and route_id = #{routeId,jdbcType=BIGINT}
        WHERE PROD_INST_ID = #{prodInstId}
          AND EXP_DATE >#{statusDate}
          and route_id = #{routeId,jdbcType=BIGINT}
-         order by exp_date desc
+         order by exp_date,PROD_INST_STATE_ID desc
   </select>
 
     <select id="getForAccNumCount" resultType="java.lang.Long" parameterType="java.util.HashMap">

@@ -1,0 +1,3125 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.al.nppm.business.account.dao.IProdInstMapper">
+
+
+    <select id="getProductType" resultType="java.util.Map" parameterType="java.util.HashMap">
+SELECT PROD_ID, PROD_NBR, PROD_SYS_NBR, PROD_NAME, PROD_DESC, MANAGE_GRADE, 
+    PROD_COMP_TYPE, PROD_FUNC_TYPE, BILL_PROD_TYPE, PROD_USE_TYPE
+ FROM PRODUCT
+ WHERE PROD_ID =#{prodId,jdbcType=BIGINT}
+</select>
+    <select id="getProdInstRelId" resultType="java.util.Map" parameterType="java.util.HashMap">
+ select prod_inst_rel_id  prodInstRelId ,route_id routeId
+ from prod_inst_rel
+ WHERE   prod_inst_rel_id = #{prodInstRelId,jdbcType=BIGINT}
+ and route_id = #{routeId,jdbcType=BIGINT}
+
+</select>
+
+    <select id="getProdInstRelIdFromInstId" resultType="java.util.Map" parameterType="java.util.HashMap">
+ select prod_inst_rel_id  prodInstRelId ,route_id routeId
+ from prod_inst_rel
+ WHERE  Z_PROD_INST_ID = #{zProdInstId,jdbcType=BIGINT}
+ and A_PROD_INST_ID = #{aProdInstId,jdbcType=BIGINT}
+ and route_id = #{routeId,jdbcType=BIGINT}
+ and EXP_DATE > #{expDate}
+
+</select>
+    <select id="selectMinProdInstId" resultType="java.lang.Long" parameterType="map">
+SELECT 
+  	IFNULL(MIN(PROD_INST_ID),-1)
+    FROM  PROD_INST
+WHERE PROD_INST_ID IN  (${zProdInstId})
+and route_id = #{routeId,jdbcType=BIGINT}
+</select>
+
+    <select id="getProdInstPaymodeId" resultType="java.util.Map" parameterType="java.util.HashMap">
+        select paymode_id paymodeId ,ROUTE_ID routeId
+        from prod_inst_paymode
+        WHERE PROD_INST_ID = #{prodInstId,jdbcType=BIGINT}
+        AND STATUS_CD=1000
+        AND EXP_DATE>NOW()
+        and route_id = #{routeId,jdbcType=BIGINT}
+        <!--  	    -->
+    </select>
+
+    <select id="getProdInstStateId" resultType="java.util.Map" parameterType="java.util.HashMap">
+ select prod_inst_state_id  prodInstStateId ,ROUTE_ID routeId
+ from prod_inst_state
+ WHERE   PROD_INST_ID = #{prodInstId,jdbcType=BIGINT}
+ 	   AND STATUS_CD=1000
+ 	   AND EXP_DATE>NOW()
+ 	   and route_id = #{routeId,jdbcType=BIGINT}
+
+</select>
+    <!-- add by wangbaoqiang 用户状态取prod_inst_state_ex表 -->
+    <select id="getProdInstStateIdEx" resultType="java.util.Map" parameterType="java.util.HashMap">
+ select PROD_INST_STATE_ID prodInstStateId, PROD_INST_ID prodInstId, STOP_TYPE stopType, STATE state, EFF_DATE effDate, EXP_DATE expDate, STOP_DIRECTION stopDirection,
+    STOP_REASON stopReason, EVENT_DATE eventDate, STATUS_CD statusCd, CREATE_STAFF createStaff, UPDATE_STAFF updateStaff, CREATE_DATE createDate, STATUS_DATE statusDate,
+    UPDATE_DATE updateDate, LAST_ORDER_ITEM_ID lastOrderItemId, REMARK remark, ROUTE_ID routeId
+ from prod_inst_state_ext
+ WHERE   PROD_INST_ID = #{prodInstId,jdbcType=BIGINT}
+ 	   AND STATUS_CD=1000
+ 	   AND EXP_DATE>NOW()
+ 	   and route_id = #{routeId,jdbcType=BIGINT}
+
+</select>
+    <select id="getProdInstAccNumId" resultType="java.util.Map" parameterType="java.util.HashMap">
+ select prod_inst_acc_num_id  prodInstAccNumId ,acc_num accNum,ROUTE_ID routeId
+ from prod_inst_acc_num
+ WHERE   PROD_INST_ID = #{prodInstId,jdbcType=BIGINT}
+ 	   AND STATUS_CD=1000
+ 	   AND EXP_DATE>NOW()
+ 	   and acc_num = #{accNum,jdbcType=VARCHAR}
+ 	   and route_id = #{routeId,jdbcType=BIGINT}
+</select>
+
+    <select id="getProdInstRegion" resultType="java.util.Map" parameterType="java.util.HashMap">
+ select prod_inst_region_ID prodInstRegionId ,REGION_ID regionId, ROUTE_ID routeId
+ from prod_inst_region
+ WHERE  PROD_INST_ID = #{prodInstId,jdbcType=BIGINT}
+ 	   AND STATUS_CD=1000
+ 	   AND EXP_DATE>NOW()
+ 	   and route_id = #{routeId,jdbcType=BIGINT}
+</select>
+
+
+    <select id="seqProdInstAcctRelId" resultType="java.lang.Long">
+select seq_prod_inst_acct_rel_id.nextval
+</select>
+
+
+    <select id="getSequeId" resultType="java.lang.Long">
+select user_seq_id.nextval
+</select>
+
+    <select id="getProdInstOBJ" resultType="java.util.Map" parameterType="java.util.HashMap">
+SELECT 
+PROD_INST_ID prodInstId, PROD_ID prodId, ACC_PROD_INST_ID accProdInst, PROD_USE_TYPE prodUseType, ACC_NUM accNum, ACCOUNT account, PAYMENT_MODE_CD paymentModeCd,
+    ADDRESS_DESC addressDesc, OWNER_CUST_ID ownerCustId, PROD_INST_PWD prodInstPwd, EXCH_ID exchId, ADDRESS_ID addressId, REGION_ID regionId, LAN_ID lanId,
+    ACT_DATE actDate, BEGIN_RENT_DATE beginRentDate, STOP_RENT_DATE stopRentDate, STATUS_CD statusCd, CREATE_ORG_ID createOrgId, CREATE_STAFF createStaff,
+    UPDATE_STAFF updateStaff, CREATE_DATE createDate, STATUS_DATE statusDate, UPDATE_DATE updateDate, FIRST_FINISH_DATE firstFinishDate, BUSI_MOD_DATE busiModDate,
+    USE_CUST_ID useCustId, LAST_ORDER_ITEM_ID lastOrderItemId, REMARK remark, POINT_OWNER_ID pointOwnerId, EXT_PROD_INST_ID extProdInstId, ROUTE_ID routeId
+FROM PROD_INST
+WHERE prod_inst_id = #{prodInstId,jdbcType=BIGINT}
+and route_id = #{routeId,jdbcType=BIGINT}
+</select>
+    <select id="getProdInstAcctRelId" resultType="java.util.Map" parameterType="java.util.HashMap">
+    SELECT  PROD_INST_ACCT_REL_ID ,ROUTE_ID 
+    from PROD_INST_ACCT_REL
+    where  acct_id  = #{acctId,jdbcType=BIGINT}
+    and prod_inst_id = #{prodInstId,jdbcType=BIGINT}
+    and STATUS_CD='1'
+    and route_id = #{routeId,jdbcType=BIGINT}
+
+</select>
+
+    <select id="getProdInstAcctRelIdFromRelId" resultType="java.util.Map" parameterType="java.util.HashMap">
+    SELECT  PROD_INST_ACCT_REL_ID,ROUTE_ID 
+    from PROD_INST_ACCT_REL
+    where  PROD_INST_ACCT_REL_ID  = #{prodInstAcctRelId,jdbcType=BIGINT}
+    and STATUS_CD = '1'
+    and route_id = #{routeId,jdbcType=BIGINT}
+</select>
+
+    <select id="getProdInstSubId" resultType="java.util.Map" parameterType="java.util.HashMap">
+    SELECT   PROD_INST_id prodInstId,prod_id prodId,ROUTE_ID routeId
+    from PROD_INST_sub
+    where  PROD_INST_id = #{prodInstId,jdbcType=BIGINT}
+    and PROD_ID = #{prodId,jdbcType=BIGINT}
+    and route_id = #{routeId,jdbcType=BIGINT}
+ 
+</select>
+
+    <select id="getProdInstSubIdExp" resultType="java.util.Map" parameterType="java.util.HashMap">
+    SELECT   PROD_INST_ID prodInstId, PROD_ID prodId, ACC_PROD_INST_ID accProdInstId, PROD_USE_TYPE prodUseType, ACC_NUM accNum, ACCOUNT account, PAYMENT_MODE_CD paymentModeCd,
+    ADDRESS_DESC address, OWNER_CUST_ID ownerCustId, PROD_INST_PWD prodInstPwd, EXCH_ID exchId, ADDRESS_ID addressId, REGION_ID regionId, LAN_ID lanId,
+    ACT_DATE actDate, BEGIN_RENT_DATE beginRentDate, STOP_RENT_DATE stopRentDate, STATUS_CD statusCd, CREATE_ORG_ID createOrgId, CREATE_STAFF createStaff,
+    UPDATE_STAFF updateStaff, CREATE_DATE createDate, STATUS_DATE statusDate, UPDATE_DATE updateDate, FIRST_FINISH_DATE firstFinishDate, BUSI_MOD_DATE busiModDate,
+    USE_CUST_ID useCustId, LAST_ORDER_ITEM_ID lastOrderItemId, REMARK remark, POINT_OWNER_ID pointOwnerId, EXT_PROD_INST_ID extProdInstId, ROUTE_ID routeId
+    from PROD_INST_sub
+    where  ACC_PROD_INST_id = #{accProdInstId,jdbcType=BIGINT}
+    and PROD_ID = #{prodId,jdbcType=BIGINT}
+ 	AND STOP_RENT_DATE > #{statusDate} 
+ 	and route_id = #{routeId,jdbcType=BIGINT}
+</select>
+    <select id="getProdInstAttrId" resultType="java.util.Map" parameterType="java.util.HashMap">
+    SELECT   PROD_INST_ATTR_id prodInstAttrId,ROUTE_ID routeId
+    from PROD_INST_ATTR
+    where  PROD_INST_ATTR_id = #{prodInstAttrId,jdbcType=BIGINT}
+    and route_id = #{routeId,jdbcType=BIGINT}
+ 
+</select>
+    <select id="getProdInstAttrIdForSub" resultType="java.util.Map" parameterType="java.util.HashMap">
+    SELECT   PROD_INST_ATTR_id prodInstAttrId,ROUTE_ID routeId
+    from PROD_INST_ATTR_SUB
+    where  PROD_INST_ATTR_id = #{prodInstAttrId,jdbcType=BIGINT}
+    and route_id = #{routeId,jdbcType=BIGINT}
+ 
+</select>
+    <select id="getProdInstAcctId" resultType="java.util.Map" parameterType="map">
+    SELECT   acct_id acctId
+    from PROD_INST_ACCT_REL
+    where  STATUS_CD = '1'
+    and prod_inst_id = #{prodInstId,jdbcType=BIGINT}
+    and route_id = #{routeId,jdbcType=BIGINT}
+
+</select>
+    <select id="getProdInstAcctIdForNull" resultType="java.util.Map" parameterType="map">
+    SELECT   IFNULL(acct_id,0) acctId
+    from PROD_INST_ACCT_REL
+    where  STATUS_CD = '1'
+    and prod_inst_id = #{prodInstId,jdbcType=BIGINT}
+    and route_id = #{routeId,jdbcType=BIGINT}
+
+</select>
+    <select id="getProdInstAcctCnt" resultType="java.lang.Long" parameterType="map">
+    SELECT   count(1)
+    from PROD_INST_ACCT_REL
+    where  STATUS_CD = '1'
+    and prod_inst_id = #{prodInstId,jdbcType=BIGINT}
+    and route_id = #{routeId,jdbcType=BIGINT}
+
+</select>
+    <select id="getProdInstAcctInvalidCnt" resultType="java.lang.Long" parameterType="map">
+    SELECT   count(1)
+    from PROD_INST_ACCT_REL
+    where  STATUS_CD = '2'
+    and prod_inst_id = #{prodInstId,jdbcType=BIGINT}
+    and acct_id = #{acctId,jdbcType=BIGINT}
+    and route_id = #{routeId,jdbcType=BIGINT}
+
+</select>
+    <!-- add by wangbaoqiang begin -->
+    <select id="getProdInstFromAcctId" resultType="java.util.Map" parameterType="map">
+        SELECT prod_inst_id prodInstId
+        from PROD_INST_ACCT_REL
+        where STATUS_CD = '1'
+        <if test="acctId != null">
+            and acct_id = #{acctId,jdbcType=BIGINT}
+            and route_id = #{routeId,jdbcType=BIGINT}
+        </if>
+    </select>
+    <!-- add end -->
+    <update id="updateProdInstGroup" parameterType="map">
+        update prod_inst_group
+        <set>
+            <if test="statusCd != null">
+                STATUS_CD = #{statusCd,jdbcType=VARCHAR},
+            </if>
+            <if test="statusDate != null">
+                STATUS_DATE = #{statusDate,jdbcType=DATE},
+            </if>
+            <if test="updateDate != null">
+                UPDATE_DATE = #{updateDate,jdbcType=DATE}
+            </if>
+        </set>
+        where PROD_INST_ID = #{prodInstId,jdbcType=BIGINT}
+        and STATUS_CD not in ('110001', '110002','110000')
+        and route_id = #{routeId,jdbcType=BIGINT}
+    </update>
+    <!-- add by wangbaoqiang  -->
+    <select id="selectProdInstGroup" resultType="java.util.Map" parameterType="map">
+    select 
+    PROD_INST_ID, PROD_ID, ACC_PROD_INST_ID, PROD_USE_TYPE, ACC_NUM, ACCOUNT, PAYMENT_MODE_CD, 
+    ADDRESS_DESC, OWNER_CUST_ID, PROD_INST_PWD, EXCH_ID, ADDRESS_ID, REGION_ID, LAN_ID, 
+    ACT_DATE, BEGIN_RENT_DATE, STOP_RENT_DATE, STATUS_CD, CREATE_ORG_ID, CREATE_STAFF, 
+    UPDATE_STAFF, CREATE_DATE, STATUS_DATE, UPDATE_DATE, FIRST_FINISH_DATE, BUSI_MOD_DATE, 
+    USE_CUST_ID, LAST_ORDER_ITEM_ID, REMARK, POINT_OWNER_ID, EXT_PROD_INST_ID, ROUTE_ID
+    from prod_inst_group
+    where PROD_INST_ID = #{GroupProdInstId,jdbcType=BIGINT}
+    and route_id = #{routeId,jdbcType=BIGINT}
+  </select>
+    <!-- add end -->
+    <insert id="insertProdInstGroup" parameterType="map">
+        insert into prod_inst_group
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="prodInstId != null">
+                PROD_INST_ID,
+            </if>
+            <if test="prodId != null">
+                PROD_ID,
+            </if>
+            <if test="accProdInstId != null">
+                ACC_PROD_INST_ID,
+            </if>
+            <if test="prodUseType != null">
+                PROD_USE_TYPE,
+            </if>
+            <if test="accNum != null">
+                ACC_NUM,
+            </if>
+            <if test="account != null">
+                ACCOUNT,
+            </if>
+            <if test="paymentModeCd != null">
+                PAYMENT_MODE_CD,
+            </if>
+            <if test="addressDesc != null">
+                ADDRESS_DESC,
+            </if>
+            <if test="ownerCustId != null">
+                OWNER_CUST_ID,
+            </if>
+            <if test="prodInstPwd != null">
+                PROD_INST_PWD,
+            </if>
+            <if test="exchId != null">
+                EXCH_ID,
+            </if>
+            <if test="addressId != null">
+                ADDRESS_ID,
+            </if>
+            <if test="regionId != null">
+                REGION_ID,
+            </if>
+            <if test="lanId != null">
+                LAN_ID,
+            </if>
+            <if test="actDate != null">
+                ACT_DATE,
+            </if>
+            <if test="beginRentDate != null">
+                BEGIN_RENT_DATE,
+            </if>
+            <if test="stopRentDate != null">
+                STOP_RENT_DATE,
+            </if>
+            <if test="statusCd != null">
+                STATUS_CD,
+            </if>
+            <if test="createOrgId != null">
+                CREATE_ORG_ID,
+            </if>
+            <if test="createStaff != null">
+                CREATE_STAFF,
+            </if>
+            <if test="updateStaff != null">
+                UPDATE_STAFF,
+            </if>
+            <if test="createDate != null">
+                CREATE_DATE,
+            </if>
+            <if test="statusDate != null">
+                STATUS_DATE,
+            </if>
+            <if test="updateDate != null">
+                UPDATE_DATE,
+            </if>
+            <if test="firstFinishDate != null">
+                FIRST_FINISH_DATE,
+            </if>
+            <if test="busiModDate != null">
+                BUSI_MOD_DATE,
+            </if>
+            <if test="useCustId != null">
+                USE_CUST_ID,
+            </if>
+            <if test="lastOrderItemId != null">
+                LAST_ORDER_ITEM_ID,
+            </if>
+            <if test="remark != null">
+                REMARK,
+            </if>
+            <if test="pointOwnerId != null">
+                POINT_OWNER_ID,
+            </if>
+            <if test="extProdInstId != null">
+                EXT_PROD_INST_ID,
+            </if>
+            <if test="routeId != null">
+                ROUTE_ID,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="prodInstId != null">
+                #{prodInstId,jdbcType=BIGINT},
+            </if>
+            <if test="prodId != null">
+                #{prodId,jdbcType=BIGINT},
+            </if>
+            <if test="accProdInstId != null">
+                #{accProdInstId,jdbcType=BIGINT},
+            </if>
+            <if test="prodUseType != null">
+                #{prodUseType,jdbcType=VARCHAR},
+            </if>
+            <if test="accNum != null">
+                #{accNum,jdbcType=VARCHAR},
+            </if>
+            <if test="account != null">
+                #{account,jdbcType=VARCHAR},
+            </if>
+            <if test="paymentModeCd != null">
+                #{paymentModeCd,jdbcType=VARCHAR},
+            </if>
+            <if test="addressDesc != null">
+                #{addressDesc,jdbcType=VARCHAR},
+            </if>
+            <if test="ownerCustId != null">
+                #{ownerCustId,jdbcType=BIGINT},
+            </if>
+            <if test="prodInstPwd != null">
+                #{prodInstPwd,jdbcType=VARCHAR},
+            </if>
+            <if test="exchId != null">
+                #{exchId,jdbcType=BIGINT},
+            </if>
+            <if test="addressId != null">
+                #{addressId,jdbcType=BIGINT},
+            </if>
+            <if test="regionId != null">
+                #{regionId,jdbcType=BIGINT},
+            </if>
+            <if test="lanId != null">
+                #{lanId,jdbcType=BIGINT},
+            </if>
+            <if test="actDate != null">
+                #{actDate,jdbcType=DATE},
+            </if>
+            <if test="beginRentDate != null">
+                #{beginRentDate,jdbcType=DATE},
+            </if>
+            <if test="stopRentDate != null">
+                #{stopRentDate,jdbcType=DATE},
+            </if>
+            <if test="statusCd != null">
+                #{statusCd,jdbcType=VARCHAR},
+            </if>
+            <if test="createOrgId != null">
+                #{createOrgId,jdbcType=BIGINT},
+            </if>
+            <if test="createStaff != null">
+                #{createStaff,jdbcType=BIGINT},
+            </if>
+            <if test="updateStaff != null">
+                #{updateStaff,jdbcType=BIGINT},
+            </if>
+            <if test="createDate != null">
+                #{createDate,jdbcType=DATE},
+            </if>
+            <if test="statusDate != null">
+                #{statusDate,jdbcType=DATE},
+            </if>
+            <if test="updateDate != null">
+                #{updateDate,jdbcType=DATE},
+            </if>
+            <if test="firstFinishDate != null">
+                #{firstFinishDate,jdbcType=DATE},
+            </if>
+            <if test="busiModDate != null">
+                #{busiModDate,jdbcType=DATE},
+            </if>
+            <if test="useCustId != null">
+                #{useCustId,jdbcType=BIGINT},
+            </if>
+            <if test="lastOrderItemId != null">
+                #{lastOrderItemId,jdbcType=BIGINT},
+            </if>
+            <if test="remark != null">
+                #{remark,jdbcType=VARCHAR},
+            </if>
+            <if test="pointOwnerId != null">
+                #{pointOwnerId,jdbcType=BIGINT},
+            </if>
+            <if test="extProdInstId != null">
+                #{extProdInstId,jdbcType=BIGINT},
+            </if>
+            <if test="routeId != null">
+                #{routeId,jdbcType=BIGINT},
+            </if>
+        </trim>
+    </insert>
+
+    <update id="updateProdInstAcctRel" parameterType="map">
+        update prod_inst_acct_rel
+        <set>
+            <if test="expDate != null">
+                EXP_DATE = #{expDate,jdbcType=DATE},
+            </if>
+            <if test="statusCd != null">
+                STATUS_CD = #{statusCd,jdbcType=BIGINT},
+            </if>
+            <if test="statusDate != null">
+                STATUS_DATE = #{statusDate,jdbcType=DATE}
+            </if>
+        </set>
+        where PROD_INST_ACCT_REL_ID = #{prodInstAcctRelId,jdbcType=BIGINT}
+        AND ROUTE_ID=#{routeId,jdbcType=BIGINT}
+    </update>
+
+
+    <insert id="insertProdInstAcctRel" parameterType="map">
+        insert into prod_inst_acct_rel
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="prodInstAcctRelId != null">
+                PROD_INST_ACCT_REL_ID,
+            </if>
+            <if test="acctId != null">
+                ACCT_ID,
+            </if>
+            <if test="prodInstId != null">
+                PROD_INST_ID,
+            </if>
+            <if test="acctItemGroupId != null">
+                ACCT_ITEM_GROUP_ID,
+            </if>
+            <if test="priority != null">
+                PRIORITY,
+            </if>
+            <if test="paymentLimitType != null">
+                PAYMENT_LIMIT_TYPE,
+            </if>
+            <if test="paymentLimit != null">
+                PAYMENT_LIMIT,
+            </if>
+            <if test="upperAmount != null">
+                UPPER_AMOUNT,
+            </if>
+            <if test="effDate != null">
+                EFF_DATE,
+            </if>
+            <if test="expDate != null">
+                EXP_DATE,
+            </if>
+            <if test="ifDefaultAcctId != null">
+                IF_DEFAULT_ACCT_ID,
+            </if>
+            <if test="statusCd != null">
+                STATUS_CD,
+            </if>
+            <if test="lastOrderItemId != null">
+                LAST_ORDER_ITEM_ID,
+            </if>
+            <if test="statusDate != null">
+                STATUS_DATE,
+            </if>
+            <if test="agreeId != null">
+                AGREE_ID,
+            </if>
+            <if test="createStaff != null">
+                CREATE_STAFF,
+            </if>
+            <if test="createDate != null">
+                CREATE_DATE,
+            </if>
+            <if test="updateStaff != null">
+                UPDATE_STAFF,
+            </if>
+            <if test="updateDate != null">
+                UPDATE_DATE,
+            </if>
+            <if test="routeId != null">
+                ROUTE_ID,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="prodInstAcctRelId != null">
+                #{prodInstAcctRelId,jdbcType=BIGINT},
+            </if>
+            <if test="acctId != null">
+                #{acctId,jdbcType=BIGINT},
+            </if>
+            <if test="prodInstId != null">
+                #{prodInstId,jdbcType=BIGINT},
+            </if>
+            <if test="acctItemGroupId != null">
+                #{acctItemGroupId,jdbcType=BIGINT},
+            </if>
+            <if test="priority != null">
+                #{priority,jdbcType=INTEGER},
+            </if>
+            <if test="paymentLimitType != null">
+                #{paymentLimitType,jdbcType=INTEGER},
+            </if>
+            <if test="paymentLimit != null">
+                #{paymentLimit,jdbcType=BIGINT},
+            </if>
+            <if test="upperAmount != null">
+                #{upperAmount,jdbcType=BIGINT},
+            </if>
+            <if test="effDate != null">
+                #{effDate,jdbcType=DATE},
+            </if>
+            <if test="expDate != null">
+                #{expDate,jdbcType=DATE},
+            </if>
+            <if test="ifDefaultAcctId != null">
+                #{ifDefaultAcctId,jdbcType=INTEGER},
+            </if>
+            <if test="statusCd != null">
+                #{statusCd,jdbcType=BIGINT},
+            </if>
+            <if test="lastOrderItemId != null">
+                #{lastOrderItemId,jdbcType=BIGINT},
+            </if>
+            <if test="statusDate != null">
+                #{statusDate,jdbcType=DATE},
+            </if>
+            <if test="agreeId != null">
+                #{agreeId,jdbcType=BIGINT},
+            </if>
+            <if test="createStaff != null">
+                #{createStaff,jdbcType=BIGINT},
+            </if>
+            <if test="createDate != null">
+                #{createDate,jdbcType=DATE},
+            </if>
+            <if test="updateStaff != null">
+                #{updateStaff,jdbcType=BIGINT},
+            </if>
+            <if test="updateDate != null">
+                #{updateDate,jdbcType=DATE},
+            </if>
+            <if test="routeId != null">
+                #{routeId,jdbcType=BIGINT},
+            </if>
+        </trim>
+    </insert>
+
+
+    <insert id="insertProdInstAttrSub" parameterType="map">
+        insert into prod_inst_attr_sub
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="prodInstAttrId != null">
+                PROD_INST_ATTR_ID,
+            </if>
+            <if test="parProdInstAttrId != null">
+                PAR_PROD_INST_ATTR_ID,
+            </if>
+            <if test="prodInstId != null">
+                PROD_INST_ID,
+            </if>
+            <if test="attrId != null">
+                ATTR_ID,
+            </if>
+            <if test="attrValueId != null">
+                ATTR_VALUE_ID,
+            </if>
+            <if test="attrValue != null">
+                ATTR_VALUE,
+            </if>
+            <if test="busiModDate != null">
+                BUSI_MOD_DATE,
+            </if>
+            <if test="effDate != null">
+                EFF_DATE,
+            </if>
+            <if test="expDate != null">
+                EXP_DATE,
+            </if>
+            <if test="statusCd != null">
+                STATUS_CD,
+            </if>
+            <if test="createStaff != null">
+                CREATE_STAFF,
+            </if>
+            <if test="updateStaff != null">
+                UPDATE_STAFF,
+            </if>
+            <if test="createDate != null">
+                CREATE_DATE,
+            </if>
+            <if test="statusDate != null">
+                STATUS_DATE,
+            </if>
+            <if test="routeId != null">
+                ROUTE_ID,
+            </if>
+            <if test="updateDate != null">
+                update_date
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="prodInstAttrId != null">
+                #{prodInstAttrId,jdbcType=BIGINT},
+            </if>
+            <if test="parProdInstAttrId != null">
+                #{parProdInstAttrId,jdbcType=BIGINT},
+            </if>
+            <if test="prodInstId != null">
+                #{prodInstId,jdbcType=BIGINT},
+            </if>
+            <if test="attrId != null">
+                #{attrId,jdbcType=BIGINT},
+            </if>
+            <if test="attrValueId != null">
+                #{attrValueId,jdbcType=BIGINT},
+            </if>
+            <if test="attrValue != null">
+                #{attrValue,jdbcType=VARCHAR},
+            </if>
+            <if test="busiModDate != null">
+                #{busiModDate,jdbcType=DATE},
+            </if>
+            <if test="effDate != null">
+                #{effDate,jdbcType=DATE},
+            </if>
+            <if test="expDate != null">
+                #{expDate,jdbcType=DATE},
+            </if>
+            <if test="statusCd != null">
+                #{statusCd,jdbcType=VARCHAR},
+            </if>
+            <if test="createStaff != null">
+                #{createStaff,jdbcType=BIGINT},
+            </if>
+            <if test="updateStaff != null">
+                #{updateStaff,jdbcType=BIGINT},
+            </if>
+            <if test="createDate != null">
+                #{createDate,jdbcType=DATE},
+            </if>
+            <if test="statusDate != null">
+                #{statusDate,jdbcType=DATE},
+            </if>
+            <if test="routeId != null">
+                #{routeId,jdbcType=BIGINT},
+            </if>
+            <if test="updateDate != null">
+                #{updateDate,jdbcType=DATE}
+            </if>
+        </trim>
+    </insert>
+
+    <update id="updateProdInstSub" parameterType="map">
+        update prod_inst_sub
+        <set>
+            <if test="statusCd != null">
+                STATUS_CD = #{statusCd,jdbcType=VARCHAR},
+            </if>
+            <if test="statusDate != null">
+                STATUS_DATE = #{statusDate,jdbcType=DATE},
+            </if>
+            <if test="updateDate != null">
+                UPDATE_DATE = #{updateDate,jdbcType=DATE},
+            </if>
+            <if test="stopRentDate != null">
+                STOP_RENT_DATE = #{stopRentDate,jdbcType=DATE},
+            </if>
+            <if test="remark != null">
+                REMARK = #{remark,jdbcType=VARCHAR}
+            </if>
+        </set>
+        <where>
+            <if test="prodInstId != null">
+                PROD_INST_ID = #{prodInstId,jdbcType=BIGINT}
+            </if>
+            <if test="prodId != null">
+                and PROD_ID = #{prodId,jdbcType=BIGINT}
+            </if>
+            <if test="routeId != null">
+                and route_id = #{routeId,jdbcType=BIGINT}
+            </if>
+        </where>
+    </update>
+
+    <insert id="insertProdInstSub" parameterType="map">
+        insert into prod_inst_sub
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="grpProdNbr != null">
+                GRP_PROD_NBR,
+            </if>
+            <if test="prodInstId != null">
+                PROD_INST_ID,
+            </if>
+            <if test="prodId != null">
+                PROD_ID,
+            </if>
+            <if test="accProdInstId != null">
+                ACC_PROD_INST_ID,
+            </if>
+            <if test="prodUseType != null">
+                PROD_USE_TYPE,
+            </if>
+            <if test="accNum != null">
+                ACC_NUM,
+            </if>
+            <if test="account != null">
+                ACCOUNT,
+            </if>
+            <if test="paymentModeCd != null">
+                PAYMENT_MODE_CD,
+            </if>
+            <if test="addressDesc != null">
+                ADDRESS_DESC,
+            </if>
+            <if test="ownerCustId != null">
+                OWNER_CUST_ID,
+            </if>
+            <if test="prodInstPwd != null">
+                PROD_INST_PWD,
+            </if>
+            <if test="exchId != null">
+                EXCH_ID,
+            </if>
+            <if test="addressId != null">
+                ADDRESS_ID,
+            </if>
+            <if test="regionId != null">
+                REGION_ID,
+            </if>
+            <if test="lanId != null">
+                LAN_ID,
+            </if>
+            <if test="actDate != null">
+                ACT_DATE,
+            </if>
+            <if test="beginRentDate != null">
+                BEGIN_RENT_DATE,
+            </if>
+            <if test="stopRentDate != null">
+                STOP_RENT_DATE,
+            </if>
+            <if test="statusCd != null">
+                STATUS_CD,
+            </if>
+            <if test="createOrgId != null">
+                CREATE_ORG_ID,
+            </if>
+            <if test="createStaff != null">
+                CREATE_STAFF,
+            </if>
+            <if test="updateStaff != null">
+                UPDATE_STAFF,
+            </if>
+            <if test="createDate != null">
+                CREATE_DATE,
+            </if>
+            <if test="statusDate != null">
+                STATUS_DATE,
+            </if>
+            <if test="updateDate != null">
+                UPDATE_DATE,
+            </if>
+            <if test="firstFinishDate != null">
+                FIRST_FINISH_DATE,
+            </if>
+            <if test="busiModDate != null">
+                BUSI_MOD_DATE,
+            </if>
+            <if test="useCustId != null">
+                USE_CUST_ID,
+            </if>
+            <if test="lastOrderItemId != null">
+                LAST_ORDER_ITEM_ID,
+            </if>
+            <if test="remark != null">
+                REMARK,
+            </if>
+            <if test="pointOwnerId != null">
+                POINT_OWNER_ID,
+            </if>
+            <if test="extProdInstId != null">
+                EXT_PROD_INST_ID,
+            </if>
+            <if test="routeId != null">
+                ROUTE_ID,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="grpProdNbr != null">
+                #{grpProdNbr},
+            </if>
+            <if test="prodInstId != null">
+                #{prodInstId,jdbcType=BIGINT},
+            </if>
+            <if test="prodId != null">
+                #{prodId,jdbcType=BIGINT},
+            </if>
+            <if test="accProdInstId != null">
+                #{accProdInstId,jdbcType=BIGINT},
+            </if>
+            <if test="prodUseType != null">
+                #{prodUseType,jdbcType=VARCHAR},
+            </if>
+            <if test="accNum != null">
+                #{accNum,jdbcType=VARCHAR},
+            </if>
+            <if test="account != null">
+                #{account,jdbcType=VARCHAR},
+            </if>
+            <if test="paymentModeCd != null">
+                #{paymentModeCd,jdbcType=VARCHAR},
+            </if>
+            <if test="addressDesc != null">
+                #{addressDesc,jdbcType=VARCHAR},
+            </if>
+            <if test="ownerCustId != null">
+                #{ownerCustId,jdbcType=BIGINT},
+            </if>
+            <if test="prodInstPwd != null">
+                #{prodInstPwd,jdbcType=VARCHAR},
+            </if>
+            <if test="exchId != null">
+                #{exchId,jdbcType=BIGINT},
+            </if>
+            <if test="addressId != null">
+                #{addressId,jdbcType=BIGINT},
+            </if>
+            <if test="regionId != null">
+                #{regionId,jdbcType=BIGINT},
+            </if>
+            <if test="lanId != null">
+                #{lanId,jdbcType=BIGINT},
+            </if>
+            <if test="actDate != null">
+                #{actDate,jdbcType=DATE},
+            </if>
+            <if test="beginRentDate != null">
+                #{beginRentDate,jdbcType=DATE},
+            </if>
+            <if test="stopRentDate != null">
+                #{stopRentDate,jdbcType=DATE},
+            </if>
+            <if test="statusCd != null">
+                #{statusCd,jdbcType=VARCHAR},
+            </if>
+            <if test="createOrgId != null">
+                #{createOrgId,jdbcType=BIGINT},
+            </if>
+            <if test="createStaff != null">
+                #{createStaff,jdbcType=BIGINT},
+            </if>
+            <if test="updateStaff != null">
+                #{updateStaff,jdbcType=BIGINT},
+            </if>
+            <if test="createDate != null">
+                #{createDate,jdbcType=DATE},
+            </if>
+            <if test="statusDate != null">
+                #{statusDate,jdbcType=DATE},
+            </if>
+            <if test="updateDate != null">
+                #{updateDate,jdbcType=DATE},
+            </if>
+            <if test="firstFinishDate != null">
+                #{firstFinishDate,jdbcType=DATE},
+            </if>
+            <if test="busiModDate != null">
+                #{busiModDate,jdbcType=DATE},
+            </if>
+            <if test="useCustId != null">
+                #{useCustId,jdbcType=BIGINT},
+            </if>
+            <if test="lastOrderItemId != null">
+                #{lastOrderItemId,jdbcType=BIGINT},
+            </if>
+            <if test="remark != null">
+                #{remark,jdbcType=VARCHAR},
+            </if>
+            <if test="pointOwnerId != null">
+                #{pointOwnerId,jdbcType=BIGINT},
+            </if>
+            <if test="extProdInstId != null">
+                #{extProdInstId,jdbcType=BIGINT},
+            </if>
+            <if test="routeId != null">
+                #{routeId,jdbcType=BIGINT},
+            </if>
+        </trim>
+    </insert>
+
+    <update id="updateProdInstRel" parameterType="map">
+        update prod_inst_rel
+        <set>
+            <if test="expDate != null">
+                EXP_DATE = #{expDate,jdbcType=DATE},
+            </if>
+            <if test="statusCd != null">
+                STATUS_CD = #{statusCd,jdbcType=VARCHAR},
+            </if>
+            <if test="statusDate != null">
+                STATUS_DATE = #{statusDate,jdbcType=DATE},
+            </if>
+            <if test="updateDate != null">
+                UPDATE_DATE = #{updateDate,jdbcType=DATE}
+            </if>
+        </set>
+        where PROD_INST_REL_ID = #{prodInstRelId,jdbcType=BIGINT}
+        and route_id = #{routeId,jdbcType=BIGINT}
+    </update>
+
+    <insert id="insertProdInstRel" parameterType="map">
+        insert into prod_inst_rel
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="prodInstRelId != null">
+                PROD_INST_REL_ID,
+            </if>
+            <if test="aProdInstId != null">
+                A_PROD_INST_ID,
+            </if>
+            <if test="zProdInstId != null">
+                Z_PROD_INST_ID,
+            </if>
+            <if test="relType != null">
+                REL_TYPE,
+            </if>
+            <if test="roleId != null">
+                ROLE_ID,
+            </if>
+            <if test="effDate != null">
+                EFF_DATE,
+            </if>
+            <if test="expDate != null">
+                EXP_DATE,
+            </if>
+            <if test="statusCd != null">
+                STATUS_CD,
+            </if>
+            <if test="createStaff != null">
+                CREATE_STAFF,
+            </if>
+            <if test="updateStaff != null">
+                UPDATE_STAFF,
+            </if>
+            <if test="createDate != null">
+                CREATE_DATE,
+            </if>
+            <if test="statusDate != null">
+                STATUS_DATE,
+            </if>
+            <if test="updateDate != null">
+                UPDATE_DATE,
+            </if>
+            <if test="lastOrderItemId != null">
+                LAST_ORDER_ITEM_ID,
+            </if>
+            <if test="remark != null">
+                REMARK,
+            </if>
+            <if test="routeId != null">
+                ROUTE_ID,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="prodInstRelId != null">
+                #{prodInstRelId,jdbcType=BIGINT},
+            </if>
+            <if test="aProdInstId != null">
+                #{aProdInstId,jdbcType=BIGINT},
+            </if>
+            <if test="zProdInstId != null">
+                #{zProdInstId,jdbcType=BIGINT},
+            </if>
+            <if test="relType != null">
+                #{relType,jdbcType=VARCHAR},
+            </if>
+            <if test="roleId != null">
+                #{roleId,jdbcType=BIGINT},
+            </if>
+            <if test="effDate != null">
+                #{effDate,jdbcType=DATE},
+            </if>
+            <if test="expDate != null">
+                #{expDate,jdbcType=DATE},
+            </if>
+            <if test="statusCd != null">
+                #{statusCd,jdbcType=VARCHAR},
+            </if>
+            <if test="createStaff != null">
+                #{createStaff,jdbcType=BIGINT},
+            </if>
+            <if test="updateStaff != null">
+                #{updateStaff,jdbcType=BIGINT},
+            </if>
+            <if test="createDate != null">
+                #{createDate,jdbcType=DATE},
+            </if>
+            <if test="statusDate != null">
+                #{statusDate,jdbcType=DATE},
+            </if>
+            <if test="updateDate != null">
+                #{updateDate,jdbcType=DATE},
+            </if>
+            <if test="lastOrderItemId != null">
+                #{lastOrderItemId,jdbcType=BIGINT},
+            </if>
+            <if test="remark != null">
+                #{remark,jdbcType=VARCHAR},
+            </if>
+            <if test="routeId != null">
+                #{routeId,jdbcType=BIGINT},
+            </if>
+        </trim>
+    </insert>
+
+
+    <update id="updateProdInstAttr" parameterType="map">
+        update prod_inst_attr
+        <set>
+            <if test="expDate != null">
+                EXP_DATE = #{expDate,jdbcType=DATE},
+            </if>
+            <if test="statusCd != null">
+                STATUS_CD = #{statusCd,jdbcType=VARCHAR},
+            </if>
+            <if test="statusDate != null">
+                STATUS_DATE = #{statusDate,jdbcType=DATE},
+            </if>
+            <if test="updateDate != null">
+                UPDATE_DATE = #{updateDate,jdbcType=DATE}
+            </if>
+        </set>
+        where PROD_INST_ATTR_ID = #{prodInstAttrId,jdbcType=BIGINT}
+        and ROUTE_ID = #{routeId,jdbcType=BIGINT}
+    </update>
+
+    <update id="updateProdInstRegion" parameterType="map">
+        update prod_inst_region
+        <set>
+            <if test="expDate != null">
+                EXP_DATE = #{expDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="statusCd != null">
+                STATUS_CD = #{statusCd,jdbcType=VARCHAR},
+            </if>
+            <if test="statusDate != null">
+                STATUS_DATE = #{statusDate,jdbcType=TIMESTAMP},
+            </if>
+            UPDATE_DATE = now()
+            <!--       <if test="updateDate != null" > -->
+            <!--         UPDATE_DATE = #{updateDate,jdbcType=TIMESTAMP}, -->
+            <!--       </if> -->
+        </set>
+        where PROD_INST_REGION_ID = #{prodInstRegionId,jdbcType=BIGINT}
+        and ROUTE_ID=#{routeId,jdbcType=BIGINT}
+    </update>
+
+    <update id="updateProdInstAccNum" parameterType="map">
+        update prod_inst_acc_num
+        <set>
+            <if test="statusCd != null">
+                STATUS_CD = #{statusCd,jdbcType=VARCHAR},
+            </if>
+            <if test="expDate != null">
+                EXP_DATE = #{expDate,jdbcType=DATE}
+            </if>
+        </set>
+        where PROD_INST_ACC_NUM_ID = #{prodInstAccNumId,jdbcType=BIGINT}
+        and ROUTE_ID = #{routeId,jdbcType=BIGINT}
+    </update>
+
+    <update id="updateProdInstPaymode" parameterType="map">
+        update prod_inst_paymode
+        <set>
+            <if test="expDate != null">
+                EXP_DATE = #{expDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="statusCd != null">
+                STATUS_CD = #{statusCd,jdbcType=VARCHAR}
+            </if>
+        </set>
+        where PAYMODE_ID = #{paymodeId,jdbcType=BIGINT}
+        and ROUTE_ID = #{routeId,jdbcType=BIGINT}
+    </update>
+
+    <update id="updateProdInstStateExt" parameterType="map">
+        update prod_inst_state_ext
+        <set>
+            <if test="expDate != null">
+                EXP_DATE = #{expDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="statusCd != null">
+                STATUS_CD = #{statusCd,jdbcType=VARCHAR},
+            </if>
+            <if test="remark != null">
+                REMARK = #{remark,jdbcType=VARCHAR}
+            </if>
+        </set>
+        where PROD_INST_STATE_ID = #{prodInstStateId,jdbcType=BIGINT}
+        and ROUTE_ID = #{routeId,jdbcType=BIGINT}
+    </update>
+
+    <update id="updateProdInstState" parameterType="map">
+        update prod_inst_state
+        <set>
+            <if test="expDate != null">
+                EXP_DATE = #{expDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="statusCd != null">
+                STATUS_CD = #{statusCd,jdbcType=VARCHAR},
+            </if>
+            <if test="remark != null">
+                REMARK = #{remark,jdbcType=VARCHAR}
+            </if>
+        </set>
+        where PROD_INST_STATE_ID = #{prodInstStateId,jdbcType=BIGINT}
+        and ROUTE_ID = #{routeId,jdbcType=BIGINT}
+    </update>
+
+    <update id="updateProdInstForDisassembe" parameterType="map">
+        update prod_inst
+        <set>
+            <if test="statusCd != null">
+                STATUS_CD = #{statusCd,jdbcType=VARCHAR},
+            </if>
+            STATUS_DATE = now()
+        </set>
+        where PROD_INST_ID = #{prodInstId,jdbcType=BIGINT}
+        and ROUTE_ID = #{routeId,jdbcType=BIGINT}
+        and STATUS_CD not in ('110001', '110002','110000')
+    </update>
+
+    <update id="updateProdInst" parameterType="map">
+        update prod_inst
+        <set>
+            <if test="prodId != null">
+                PROD_ID = #{prodId,jdbcType=BIGINT},
+            </if>
+            <!--if test="accNum != null">
+                ACC_NUM = #{accNum,jdbcType=VARCHAR},
+            </if>-->
+            <if test="account != null">
+                ACCOUNT = #{account,jdbcType=VARCHAR},
+            </if>
+            <!--<if test="addressId != null" >
+             ADDRESS_ID = #{addressId,jdbcType=VARCHAR},
+           </if>
+           <if test="paymentModeCd != null" >
+             PAYMENT_MODE_CD = #{paymentModeCd,jdbcType=VARCHAR},
+           </if>
+           <if test="addressDesc != null" >
+             ADDRESS_DESC = #{addressDesc,jdbcType=VARCHAR},
+           </if>
+           <if test="regionId != null" >
+             REGION_ID = #{regionId,jdbcType=BIGINT},
+           </if>-->
+            <!--<if test="actDate != null">
+                ACT_DATE = #{actDate,jdbcType=DATE},
+            </if>-->
+            <if test="statusCd != null">
+                STATUS_CD = #{statusCd,jdbcType=VARCHAR},
+            </if>
+            <if test="statusDate != null">
+                STATUS_DATE = #{statusDate,jdbcType=DATE},
+            </if>
+            <!--if test="updateDate != null">
+                UPDATE_DATE = #{updateDate,jdbcType=DATE},
+            </if>-->
+            <!--<if test="stopRentDate != null" >
+              STOP_RENT_DATE = #{stopRentDate,jdbcType=VARCHAR},
+            </if>-->
+            <!--<if test="remark != null">
+                REMARK = #{remark,jdbcType=VARCHAR},
+            </if>-->
+            <if test="grpProdNbr != null">
+                GRP_PROD_NBR = #{grpProdNbr,jdbcType=VARCHAR},
+            </if>
+            <if test="extProdInstId != null">
+                EXT_PROD_INST_ID = #{extProdInstId,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where PROD_INST_ID = #{prodInstId,jdbcType=BIGINT}
+        and ROUTE_ID = #{routeId,jdbcType=BIGINT}
+        and STATUS_CD not in ('110001', '110002','110000')
+    </update>
+    <insert id="insertProdInstAttr" parameterType="map">
+        insert into prod_inst_attr
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="prodInstAttrId != null">
+                PROD_INST_ATTR_ID,
+            </if>
+            <if test="parProdInstAttrId != null">
+                PAR_PROD_INST_ATTR_ID,
+            </if>
+            <if test="prodInstId != null">
+                PROD_INST_ID,
+            </if>
+            <if test="attrId != null">
+                ATTR_ID,
+            </if>
+            <if test="attrValueId != null">
+                ATTR_VALUE_ID,
+            </if>
+            <if test="attrValue != null">
+                ATTR_VALUE,
+            </if>
+            <if test="busiModDate != null">
+                BUSI_MOD_DATE,
+            </if>
+            <if test="effDate != null">
+                EFF_DATE,
+            </if>
+            <if test="expDate != null">
+                EXP_DATE,
+            </if>
+            <if test="statusCd != null">
+                STATUS_CD,
+            </if>
+            <if test="createStaff != null">
+                CREATE_STAFF,
+            </if>
+            <if test="updateStaff != null">
+                UPDATE_STAFF,
+            </if>
+            <if test="createDate != null">
+                CREATE_DATE,
+            </if>
+            <if test="statusDate != null">
+                STATUS_DATE,
+            </if>
+            <if test="updateDate != null">
+                UPDATE_DATE,
+            </if>
+            <if test="lastOrderItemId != null">
+                LAST_ORDER_ITEM_ID,
+            </if>
+            <if test="remark != null">
+                REMARK,
+            </if>
+            <if test="routeId != null">
+                ROUTE_ID,
+            </if>
+            <if test="grpAttrNbr != null">
+                GRP_ATTR_NBR,
+            </if>
+            <if test="grpAttrValueNbr != null">
+                GRP_ATTR_VALUE_NBR
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="prodInstAttrId != null">
+                #{prodInstAttrId,jdbcType=BIGINT},
+            </if>
+            <if test="parProdInstAttrId != null">
+                #{parProdInstAttrId,jdbcType=BIGINT},
+            </if>
+            <if test="prodInstId != null">
+                #{prodInstId,jdbcType=BIGINT},
+            </if>
+            <if test="attrId != null">
+                #{attrId,jdbcType=BIGINT},
+            </if>
+            <if test="attrValueId != null">
+                #{attrValueId,jdbcType=BIGINT},
+            </if>
+            <if test="attrValue != null">
+                #{attrValue,jdbcType=VARCHAR},
+            </if>
+            <if test="busiModDate != null">
+                #{busiModDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="effDate != null">
+                #{effDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="expDate != null">
+                #{expDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="statusCd != null">
+                #{statusCd,jdbcType=VARCHAR},
+            </if>
+            <if test="createStaff != null">
+                #{createStaff,jdbcType=BIGINT},
+            </if>
+            <if test="updateStaff != null">
+                #{updateStaff,jdbcType=BIGINT},
+            </if>
+            <if test="createDate != null">
+                #{createDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="statusDate != null">
+                #{statusDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateDate != null">
+                #{updateDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="lastOrderItemId != null">
+                #{lastOrderItemId,jdbcType=BIGINT},
+            </if>
+            <if test="remark != null">
+                #{remark,jdbcType=VARCHAR},
+            </if>
+            <if test="routeId != null">
+                #{routeId,jdbcType=BIGINT},
+            </if>
+            <if test="grpAttrNbr != null">
+                #{GRP_ATTR_NBR,jdbcType=VARCHAR},
+            </if>
+            <if test="grpAttrValueNbr != null">
+                #{GRP_ATTR_VALUE_NBR,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+
+    <insert id="insertProdInstAccNum" parameterType="map">
+        insert into prod_inst_acc_num
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="prodInstAccNumId != null">
+                PROD_INST_ACC_NUM_ID,
+            </if>
+            <if test="prodInstId != null">
+                PROD_INST_ID,
+            </if>
+            <if test="accNumType != null">
+                ACC_NUM_TYPE,
+            </if>
+            <if test="accNum != null">
+                ACC_NUM,
+            </if>
+            <if test="platId != null">
+                PLAT_ID,
+            </if>
+            <if test="password != null">
+                PASSWORD,
+            </if>
+            <if test="applyRegionId != null">
+                APPLY_REGION_ID,
+            </if>
+            <if test="statusCd != null">
+                STATUS_CD,
+            </if>
+            <if test="createStaff != null">
+                CREATE_STAFF,
+            </if>
+            <if test="updateStaff != null">
+                UPDATE_STAFF,
+            </if>
+            <if test="createDate != null">
+                CREATE_DATE,
+            </if>
+            <if test="updateDate != null">
+                UPDATE_DATE,
+            </if>
+            <if test="statusDate != null">
+                STATUS_DATE,
+            </if>
+            <if test="lastOrderItemId != null">
+                LAST_ORDER_ITEM_ID,
+            </if>
+            <if test="remark != null">
+                REMARK,
+            </if>
+            <if test="effDate != null">
+                EFF_DATE,
+            </if>
+            <if test="expDate != null">
+                EXP_DATE,
+            </if>
+            <if test="routeId != null">
+                ROUTE_ID,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="prodInstAccNumId != null">
+                #{prodInstAccNumId,jdbcType=BIGINT},
+            </if>
+            <if test="prodInstId != null">
+                #{prodInstId,jdbcType=BIGINT},
+            </if>
+            <if test="accNumType != null">
+                #{accNumType,jdbcType=VARCHAR},
+            </if>
+            <if test="accNum != null">
+                #{accNum,jdbcType=VARCHAR},
+            </if>
+            <if test="platId != null">
+                #{platId,jdbcType=BIGINT},
+            </if>
+            <if test="password != null">
+                #{password,jdbcType=VARCHAR},
+            </if>
+            <if test="applyRegionId != null">
+                #{applyRegionId,jdbcType=BIGINT},
+            </if>
+            <if test="statusCd != null">
+                #{statusCd,jdbcType=VARCHAR},
+            </if>
+            <if test="createStaff != null">
+                #{createStaff,jdbcType=BIGINT},
+            </if>
+            <if test="updateStaff != null">
+                #{updateStaff,jdbcType=BIGINT},
+            </if>
+            <if test="createDate != null">
+                #{createDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateDate != null">
+                #{updateDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="statusDate != null">
+                #{statusDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="lastOrderItemId != null">
+                #{lastOrderItemId,jdbcType=BIGINT},
+            </if>
+            <if test="remark != null">
+                #{remark,jdbcType=VARCHAR},
+            </if>
+            <if test="effDate != null">
+                #{effDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="expDate != null">
+                #{expDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="routeId != null">
+                #{routeId,jdbcType=BIGINT},
+            </if>
+        </trim>
+    </insert>
+
+    <insert id="insertProdInstPyamode" parameterType="map">
+        insert into prod_inst_paymode
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="paymodeId != null">
+                PAYMODE_ID,
+            </if>
+            <if test="prodInstId != null">
+                PROD_INST_ID,
+            </if>
+            <if test="paymentModeCd != null">
+                PAYMENT_MODE_CD,
+            </if>
+            <if test="effDate != null">
+                EFF_DATE,
+            </if>
+            <if test="expDate != null">
+                EXP_DATE,
+            </if>
+            <if test="statusCd != null">
+                STATUS_CD,
+            </if>
+            <if test="createStaff != null">
+                CREATE_STAFF,
+            </if>
+            <if test="updateStaff != null">
+                UPDATE_STAFF,
+            </if>
+            <if test="createDate != null">
+                CREATE_DATE,
+            </if>
+            <if test="statusDate != null">
+                STATUS_DATE,
+            </if>
+            <if test="updateDate != null">
+                UPDATE_DATE,
+            </if>
+            <if test="lastOrderItemId != null">
+                LAST_ORDER_ITEM_ID,
+            </if>
+            <if test="remark != null">
+                REMARK,
+            </if>
+            <if test="routeId != null">
+                ROUTE_ID,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="paymodeId != null">
+                #{paymodeId,jdbcType=BIGINT},
+            </if>
+            <if test="prodInstId != null">
+                #{prodInstId,jdbcType=BIGINT},
+            </if>
+            <if test="paymentModeCd != null">
+                #{paymentModeCd,jdbcType=VARCHAR},
+            </if>
+            <if test="effDate != null">
+                #{effDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="expDate != null">
+                #{expDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="statusCd != null">
+                #{statusCd,jdbcType=VARCHAR},
+            </if>
+            <if test="createStaff != null">
+                #{createStaff,jdbcType=BIGINT},
+            </if>
+            <if test="updateStaff != null">
+                #{updateStaff,jdbcType=BIGINT},
+            </if>
+            <if test="createDate != null">
+                #{createDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="statusDate != null">
+                #{statusDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateDate != null">
+                #{updateDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="lastOrderItemId != null">
+                #{lastOrderItemId,jdbcType=BIGINT},
+            </if>
+            <if test="remark != null">
+                #{remark,jdbcType=VARCHAR},
+            </if>
+            <if test="routeId != null">
+                #{routeId,jdbcType=BIGINT},
+            </if>
+        </trim>
+    </insert>
+
+    <insert id="insertProdInstRegion" parameterType="map">
+        insert into prod_inst_region
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="prodInstRegionId != null">
+                PROD_INST_REGION_ID,
+            </if>
+            <if test="prodInstId != null">
+                PROD_INST_ID,
+            </if>
+            <if test="regionId != null">
+                REGION_ID,
+            </if>
+            <if test="effDate != null">
+                EFF_DATE,
+            </if>
+            <if test="expDate != null">
+                EXP_DATE,
+            </if>
+            <if test="statusCd != null">
+                STATUS_CD,
+            </if>
+            <if test="createStaff != null">
+                CREATE_STAFF,
+            </if>
+            <if test="updateStaff != null">
+                UPDATE_STAFF,
+            </if>
+            <if test="createDate != null">
+                CREATE_DATE,
+            </if>
+            <if test="statusDate != null">
+                STATUS_DATE,
+            </if>
+            <if test="updateDate != null">
+                UPDATE_DATE,
+            </if>
+            <if test="lastOrderItemId != null">
+                LAST_ORDER_ITEM_ID,
+            </if>
+            <if test="remark != null">
+                REMARK,
+            </if>
+            <if test="routeId != null">
+                ROUTE_ID,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+
+            <if test="prodInstRegionId != null">
+                #{prodInstRegionId,jdbcType=BIGINT},
+            </if>
+            <if test="prodInstId != null">
+                #{prodInstId,jdbcType=BIGINT},
+            </if>
+            <if test="regionId != null">
+                #{regionId,jdbcType=BIGINT},
+            </if>
+            <if test="effDate != null">
+                #{effDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="expDate != null">
+                #{expDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="statusCd != null">
+                #{statusCd,jdbcType=VARCHAR},
+            </if>
+            <if test="createStaff != null">
+                #{createStaff,jdbcType=BIGINT},
+            </if>
+            <if test="updateStaff != null">
+                #{updateStaff,jdbcType=BIGINT},
+            </if>
+            <if test="createDate != null">
+                #{createDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="statusDate != null">
+                #{statusDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateDate != null">
+                #{updateDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="lastOrderItemId != null">
+                #{lastOrderItemId,jdbcType=BIGINT},
+            </if>
+            <if test="remark != null">
+                #{remark,jdbcType=VARCHAR},
+            </if>
+            <if test="routeId != null">
+                #{routeId,jdbcType=BIGINT},
+            </if>
+        </trim>
+    </insert>
+
+
+    <insert id="insertProdInstStateExt" parameterType="map">
+        insert into prod_inst_state_ext
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="prodInstStateId != null">
+                PROD_INST_STATE_ID,
+            </if>
+            <if test="prodInstId != null">
+                PROD_INST_ID,
+            </if>
+            <if test="stopType != null">
+                STOP_TYPE,
+            </if>
+            <if test="state != null">
+                STATE,
+            </if>
+            <if test="effDate != null">
+                EFF_DATE,
+            </if>
+            <if test="expDate != null">
+                EXP_DATE,
+            </if>
+            <if test="stopDirection != null">
+                STOP_DIRECTION,
+            </if>
+            <if test="stopReason != null">
+                STOP_REASON,
+            </if>
+            <if test="eventDate != null">
+                EVENT_DATE,
+            </if>
+            <if test="statusCd != null">
+                STATUS_CD,
+            </if>
+            <if test="createStaff != null">
+                CREATE_STAFF,
+            </if>
+            <if test="updateStaff != null">
+                UPDATE_STAFF,
+            </if>
+            <if test="createDate != null">
+                CREATE_DATE,
+            </if>
+            <if test="statusDate != null">
+                STATUS_DATE,
+            </if>
+            <if test="updateDate != null">
+                UPDATE_DATE,
+            </if>
+            <if test="lastOrderItemId != null">
+                LAST_ORDER_ITEM_ID,
+            </if>
+            <if test="remark != null">
+                REMARK,
+            </if>
+            <if test="routeId != null">
+                ROUTE_ID,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="prodInstStateId != null">
+                #{prodInstStateId,jdbcType=BIGINT},
+            </if>
+            <if test="prodInstId != null">
+                #{prodInstId,jdbcType=BIGINT},
+            </if>
+            <if test="stopType != null">
+                #{stopType,jdbcType=VARCHAR},
+            </if>
+            <if test="state != null">
+                #{state,jdbcType=VARCHAR},
+            </if>
+            <if test="effDate != null">
+                #{effDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="expDate != null">
+                #{expDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="stopDirection != null">
+                #{stopDirection,jdbcType=VARCHAR},
+            </if>
+            <if test="stopReason != null">
+                #{stopReason,jdbcType=VARCHAR},
+            </if>
+            <if test="eventDate != null">
+                #{eventDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="statusCd != null">
+                #{statusCd,jdbcType=VARCHAR},
+            </if>
+            <if test="createStaff != null">
+                #{createStaff,jdbcType=BIGINT},
+            </if>
+            <if test="updateStaff != null">
+                #{updateStaff,jdbcType=BIGINT},
+            </if>
+            <if test="createDate != null">
+                #{createDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="statusDate != null">
+                #{statusDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateDate != null">
+                #{updateDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="lastOrderItemId != null">
+                #{lastOrderItemId,jdbcType=BIGINT},
+            </if>
+            <if test="remark != null">
+                #{remark,jdbcType=VARCHAR},
+            </if>
+            <if test="routeId != null">
+                #{routeId,jdbcType=BIGINT},
+            </if>
+        </trim>
+    </insert>
+
+    <insert id="insertProdInstState" parameterType="map">
+        insert into prod_inst_state
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="prodInstStateId != null">
+                PROD_INST_STATE_ID,
+            </if>
+            <if test="prodInstId != null">
+                PROD_INST_ID,
+            </if>
+            <if test="stopType != null">
+                STOP_TYPE,
+            </if>
+            <if test="effDate != null">
+                EFF_DATE,
+            </if>
+            <if test="expDate != null">
+                EXP_DATE,
+            </if>
+            <if test="stopDirection != null">
+                STOP_DIRECTION,
+            </if>
+            <if test="stopReason != null">
+                STOP_REASON,
+            </if>
+            <if test="eventDate != null">
+                EVENT_DATE,
+            </if>
+            <if test="statusCd != null">
+                STATUS_CD,
+            </if>
+            <if test="createStaff != null">
+                CREATE_STAFF,
+            </if>
+            <if test="updateStaff != null">
+                UPDATE_STAFF,
+            </if>
+            <if test="createDate != null">
+                CREATE_DATE,
+            </if>
+            <if test="statusDate != null">
+                STATUS_DATE,
+            </if>
+            <if test="updateDate != null">
+                UPDATE_DATE,
+            </if>
+            <if test="lastOrderItemId != null">
+                LAST_ORDER_ITEM_ID,
+            </if>
+            <if test="remark != null">
+                REMARK,
+            </if>
+            <if test="routeId != null">
+                ROUTE_ID,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="prodInstStateId != null">
+                #{prodInstStateId,jdbcType=BIGINT},
+            </if>
+            <if test="prodInstId != null">
+                #{prodInstId,jdbcType=BIGINT},
+            </if>
+            <if test="stopType != null">
+                #{stopType,jdbcType=VARCHAR},
+            </if>
+            <if test="effDate != null">
+                #{effDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="expDate != null">
+                #{expDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="stopDirection != null">
+                #{stopDirection,jdbcType=VARCHAR},
+            </if>
+            <if test="stopReason != null">
+                #{stopReason,jdbcType=VARCHAR},
+            </if>
+            <if test="eventDate != null">
+                #{eventDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="statusCd != null">
+                #{statusCd,jdbcType=VARCHAR},
+            </if>
+            <if test="createStaff != null">
+                #{createStaff,jdbcType=BIGINT},
+            </if>
+            <if test="updateStaff != null">
+                #{updateStaff,jdbcType=BIGINT},
+            </if>
+            <if test="createDate != null">
+                #{createDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="statusDate != null">
+                #{statusDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateDate != null">
+                #{updateDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="lastOrderItemId != null">
+                #{lastOrderItemId,jdbcType=BIGINT},
+            </if>
+            <if test="remark != null">
+                #{remark,jdbcType=VARCHAR},
+            </if>
+            <if test="routeId != null">
+                #{routeId,jdbcType=BIGINT},
+            </if>
+        </trim>
+    </insert>
+    <insert id="insertProdInst" parameterType="map">
+        insert into prod_inst
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="grpProdNbr != null">
+                GRP_PROD_NBR,
+            </if>
+            <if test="routeId != null">
+                ROUTE_ID,
+            </if>
+            <if test="prodInstId != null">
+                PROD_INST_ID,
+            </if>
+            <if test="prodId != null">
+                PROD_ID,
+            </if>
+            <if test="accProdInstId != null">
+                ACC_PROD_INST_ID,
+            </if>
+            <if test="prodUseType != null">
+                PROD_USE_TYPE,
+            </if>
+            <if test="accNum != null">
+                ACC_NUM,
+            </if>
+            <if test="account != null">
+                ACCOUNT,
+            </if>
+            <if test="paymentModeCd != null">
+                PAYMENT_MODE_CD,
+            </if>
+            <if test="addressDesc != null">
+                ADDRESS_DESC,
+            </if>
+            <if test="ownerCustId != null">
+                OWNER_CUST_ID,
+            </if>
+            <if test="prodInstPwd != null">
+                PROD_INST_PWD,
+            </if>
+            <if test="exchId != null">
+                EXCH_ID,
+            </if>
+            <if test="addressId != null">
+                ADDRESS_ID,
+            </if>
+            <if test="regionId != null">
+                REGION_ID,
+            </if>
+            <if test="lanId != null">
+                LAN_ID,
+            </if>
+            <if test="actDate != null">
+                ACT_DATE,
+            </if>
+            <if test="beginRentDate != null">
+                BEGIN_RENT_DATE,
+            </if>
+            <if test="stopRentDate != null">
+                STOP_RENT_DATE,
+            </if>
+            <if test="statusCd != null">
+                STATUS_CD,
+            </if>
+            <if test="createOrgId != null">
+                CREATE_ORG_ID,
+            </if>
+            <if test="createStaff != null">
+                CREATE_STAFF,
+            </if>
+            <if test="updateStaff != null">
+                UPDATE_STAFF,
+            </if>
+            <if test="createDate != null">
+                CREATE_DATE,
+            </if>
+            <if test="statusDate != null">
+                STATUS_DATE,
+            </if>
+            <if test="updateDate != null">
+                UPDATE_DATE,
+            </if>
+            <if test="firstFinishDate != null">
+                FIRST_FINISH_DATE,
+            </if>
+            <if test="busiModDate != null">
+                BUSI_MOD_DATE,
+            </if>
+            <if test="useCustId != null">
+                USE_CUST_ID,
+            </if>
+            <if test="lastOrderItemId != null">
+                LAST_ORDER_ITEM_ID,
+            </if>
+            <if test="remark != null">
+                REMARK,
+            </if>
+            <if test="pointOwnerId != null">
+                POINT_OWNER_ID,
+            </if>
+            <if test="extProdInstId != null">
+                EXT_PROD_INST_ID,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+
+            <if test="grpProdNbr != null">
+                #{grpProdNbr,jdbcType=BIGINT},
+            </if>
+            <if test="routeId != null">
+                #{routeId,jdbcType=BIGINT},
+            </if>
+            <if test="prodInstId != null">
+                #{prodInstId,jdbcType=BIGINT},
+            </if>
+            <if test="prodId != null">
+                #{prodId,jdbcType=BIGINT},
+            </if>
+            <if test="accProdInstId != null">
+                #{accProdInstId,jdbcType=BIGINT},
+            </if>
+            <if test="prodUseType != null">
+                #{prodUseType,jdbcType=VARCHAR},
+            </if>
+            <if test="accNum != null">
+                #{accNum,jdbcType=VARCHAR},
+            </if>
+            <if test="account != null">
+                #{account,jdbcType=VARCHAR},
+            </if>
+            <if test="paymentModeCd != null">
+                #{paymentModeCd,jdbcType=VARCHAR},
+            </if>
+            <if test="addressDesc != null">
+                #{addressDesc,jdbcType=VARCHAR},
+            </if>
+            <if test="ownerCustId != null">
+                #{ownerCustId,jdbcType=BIGINT},
+            </if>
+            <if test="prodInstPwd != null">
+                #{prodInstPwd,jdbcType=VARCHAR},
+            </if>
+            <if test="exchId != null">
+                #{exchId,jdbcType=BIGINT},
+            </if>
+            <if test="addressId != null">
+                #{addressId,jdbcType=BIGINT},
+            </if>
+            <if test="regionId != null">
+                #{regionId,jdbcType=BIGINT},
+            </if>
+            <if test="lanId != null">
+                #{lanId,jdbcType=BIGINT},
+            </if>
+            <if test="actDate != null">
+                #{actDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="beginRentDate != null">
+                #{beginRentDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="stopRentDate != null">
+                #{stopRentDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="statusCd != null">
+                #{statusCd,jdbcType=VARCHAR},
+            </if>
+            <if test="createOrgId != null">
+                #{createOrgId,jdbcType=BIGINT},
+            </if>
+            <if test="createStaff != null">
+                #{createStaff,jdbcType=BIGINT},
+            </if>
+            <if test="updateStaff != null">
+                #{updateStaff,jdbcType=BIGINT},
+            </if>
+            <if test="createDate != null">
+                #{createDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="statusDate != null">
+                #{statusDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateDate != null">
+                #{updateDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="firstFinishDate != null">
+                #{firstFinishDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="busiModDate != null">
+                #{busiModDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="useCustId != null">
+                #{useCustId,jdbcType=BIGINT},
+            </if>
+            <if test="lastOrderItemId != null">
+                #{lastOrderItemId,jdbcType=BIGINT},
+            </if>
+            <if test="remark != null">
+                #{remark,jdbcType=VARCHAR},
+            </if>
+            <if test="pointOwnerId != null">
+                #{pointOwnerId,jdbcType=BIGINT},
+            </if>
+            <if test="extProdInstId != null">
+                #{extProdInstId,jdbcType=BIGINT},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateProdInstAttrSub" parameterType="map">
+        update PROD_INST_ATTR_SUB
+        <set>
+            <if test="expDate != null">
+                EXP_DATE = #{expDate,jdbcType=DATE},
+            </if>
+            <if test="statusCd != null">
+                STATUS_CD = #{statusCd,jdbcType=VARCHAR},
+            </if>
+            <if test="statusDate != null">
+                STATUS_DATE = #{statusDate,jdbcType=DATE},
+            </if>
+            <if test="updateDate != null">
+                UPDATE_DATE = #{updateDate,jdbcType=DATE},
+            </if>
+            <if test="remark != null">
+                REMARK = #{remark,jdbcType=VARCHAR}
+            </if>
+        </set>
+        where PROD_INST_ATTR_ID = #{prodInstAttrId,jdbcType=BIGINT}
+        and route_id = #{routeId,jdbcType=BIGINT}
+    </update>
+    <!-- add by wangbaoqiang -->
+    <update id="updateProdInstAttrSub_1" parameterType="map">
+        update PROD_INST_ATTR_SUB
+        <set>
+            <if test="expDate != null">
+                EXP_DATE = #{expDate,jdbcType=DATE},
+            </if>
+            <if test="statusCd != null">
+                STATUS_CD = #{statusCd,jdbcType=VARCHAR},
+            </if>
+            <if test="statusDate != null">
+                STATUS_DATE = #{statusDate,jdbcType=DATE},
+            </if>
+            <if test="updateDate != null">
+                UPDATE_DATE = #{updateDate,jdbcType=DATE}
+            </if>
+        </set>
+        where PROD_INST_ID = #{prodInstId,jdbcType=BIGINT}
+        and route_id = #{routeId,jdbcType=BIGINT}
+        and eff_date > #{stopRentDate jdbcType=DATE}
+    </update>
+    <!-- add by wangbaoqiang -->
+    <update id="updateProdInstAttrSubAttr" parameterType="map">
+        update PROD_INST_ATTR_SUB
+        <set>
+            <if test="expDate != null">
+                EXP_DATE = #{expDate,jdbcType=DATE},
+            </if>
+            <if test="statusCd != null">
+                STATUS_CD = #{statusCd,jdbcType=VARCHAR},
+            </if>
+            <if test="statusDate != null">
+                STATUS_DATE = #{statusDate,jdbcType=DATE},
+            </if>
+            <if test="updateDate != null">
+                UPDATE_DATE = #{updateDate,jdbcType=DATE}
+            </if>
+        </set>
+        where PROD_INST_ID = #{prodInstId,jdbcType=BIGINT}
+        and route_id = #{routeId,jdbcType=BIGINT}
+        and attr_id = 35214005
+    </update>
+    <select id="getForLiCount" resultType="java.lang.Long" parameterType="map">
+	select count(*) 
+	from PROD_INST
+	where ACC_NUM=#{accNum} and STATUS_CD NOT IN ('110001', '110002','110000')
+	and route_id = #{routeId,jdbcType=BIGINT}
+  </select>
+    <!-- add by wangbaoqiang begin -->
+    <select id="getProdInstCount2Ha" resultType="java.lang.Long" parameterType="map">
+	select count(*) 
+	from PROD_INST
+	where PROD_INST_ID=#{prodInstId} and STATUS_CD NOT IN ('110001', '110002','110000')
+	and route_id = #{routeId,jdbcType=BIGINT}
+  </select>
+    <select id="getMinProdInstId" resultType="java.lang.Long" parameterType="map">
+	select IFNULL(MIN(PROD_INST_ID),-1) prodInstId
+	from PROD_INST
+	where PROD_INST_ID IN (${prodInstId}) and STATUS_CD NOT IN ('110001', '110002','110000')
+	and route_id = #{routeId,jdbcType=BIGINT}
+  </select>
+    <!-- add end  -->
+    <select id="getForLiCountFlag" resultType="long" parameterType="map">
+	select count(1) 
+	from PROD_INST
+	where ACC_NUM=#{accNum} 
+	and STATUS_CD NOT IN ('110001', '110002','110000')
+	and PROD_ID=#{prodId}
+	and route_id = #{routeId,jdbcType=BIGINT}
+  </select>
+    <select id="getForNetWorkId" resultType="map" parameterType="map">
+	select a.PROD_ID,b.NETWORK_ID netWorkId
+	from PROD_INST a, product_network b
+	where a.ACC_NUM=#{accNum}
+	and a.STATUS_CD NOT IN ('110001', '110002','110000')
+	and a.PROD_ID = b.PRODUCT_ID
+	and a.route_id = #{routeId,jdbcType=BIGINT}
+  </select>
+    <select id="getProdInstId" resultType="java.lang.Long" parameterType="map">
+	select PROD_INST_ID 
+	from PROD_INST
+	where ACC_NUM=#{accNum} 
+	and STATUS_CD NOT IN ('110001', '110002','110000')
+	and PROD_ID=4154
+	and route_id = #{routeId,jdbcType=BIGINT}
+  </select>
+
+    <update id="updateProdInstServ" parameterType="map">
+        UPDATE PROD_INST
+        <set>
+            STATUS_CD = '110001',
+            STATUS_DATE = #{statusDate}
+        </set>
+        where PROD_INST_ID = #{getInfo}
+        AND STATUS_CD NOT IN ('110001', '110002','110000')
+        and route_id = #{routeId,jdbcType=BIGINT}
+    </update>
+    <update id="updateProdInstOwnerCust" parameterType="map">
+        UPDATE PROD_INST
+        <set>
+            OWNER_CUST_ID = #{ownerCustId}
+        </set>
+        where PROD_INST_ID = #{prodInstId}
+        AND STATUS_CD NOT IN ('110001', '110002','110000')
+        and route_id = #{routeId,jdbcType=BIGINT}
+    </update>
+    <update id="updateProdInstBeginRentDate" parameterType="map">
+        UPDATE PROD_INST
+        <set>
+            BEGIN_RENT_DATE = #{beginRentDate},
+            REMARK = #{remark}
+        </set>
+        where PROD_INST_ID = #{prodInstId}
+        AND STATUS_CD NOT IN ('110001', '110002','110000')
+        and route_id = #{routeId,jdbcType=BIGINT}
+    </update>
+    <update id="updateProdInstUserCust" parameterType="map">
+        UPDATE PROD_INST
+        <set>
+            USE_CUST_ID = #{useCustId}
+        </set>
+        where PROD_INST_ID = #{prodInstId}
+        AND STATUS_CD NOT IN ('110001', '110002','110000')
+        and route_id = #{routeId,jdbcType=BIGINT}
+    </update>
+    <update id="updateProdInstNumber" parameterType="map">
+        UPDATE PROD_INST
+        <set>
+            ACC_NUM = #{accNum}
+        </set>
+        where PROD_INST_ID = #{prodInstId}
+        AND STATUS_CD NOT IN ('110001', '110002','110000')
+        and route_id = #{routeId,jdbcType=BIGINT}
+    </update>
+    <update id="updateProdInstAddress" parameterType="map">
+        UPDATE PROD_INST
+        <set>
+            ADDRESS_DESC = #{addressDesc}
+        </set>
+        where PROD_INST_ID = #{prodInstId}
+        AND STATUS_CD NOT IN ('110001', '110002','110000')
+        and route_id = #{routeId,jdbcType=BIGINT}
+    </update>
+
+    <select id="getProdInstState" resultType="java.util.Map" parameterType="map">
+	 SELECT * 
+	 FROM PROD_INST_STATE_EXT
+     WHERE PROD_INST_ID = #{prodInstId}
+     AND EXP_DATE>NOW()
+     and route_id = #{routeId,jdbcType=BIGINT}
+   </select>
+    <update id="updateProdInstStateExt2" parameterType="map">
+        UPDATE PROD_INST_STATE_EXT
+        <set>
+            STATUS_CD = '1100',
+            STATUS_DATE = NOW()
+        </set>
+        where PROD_INST_STATE_ID = #{PROD_INST_STATE_ID}
+        and route_id = #{routeId,jdbcType=BIGINT}
+    </update>
+
+    <insert id="insertProdInstStateExt2" parameterType="map">
+  	 INSERT INTO PROD_INST_STATE_EXT
+  	 (PROD_INST_STATE_ID,PROD_INST_ID,STOP_TYPE,STATE,EFF_DATE,EXP_DATE,STATUS_CD)
+     VALUES(24,#{prodInstId},0,110001,NOW(),NOW(),1000);
+  </insert>
+
+    <select id="getProdInstAccNumId2" resultType="java.lang.Long" parameterType="map">
+  	 SELECT PROD_INST_ACC_NUM_ID 
+  	 FROM PROD_INST_ACC_NUM 
+     WHERE  PROD_INST_ID=#{getInfo}
+     AND  EXP_DATE>#{statusDate}
+     and route_id = #{routeId,jdbcType=BIGINT}
+  </select>
+
+    <update id="updateProdInstAccNum2" parameterType="map">
+        update prod_inst_acc_num
+        <set>
+            EXP_DATE = #{statusDate}
+        </set>
+        where PROD_INST_ACC_NUM_ID = #{curServImsi}
+        and route_id = #{routeId,jdbcType=BIGINT}
+    </update>
+
+    <select id="getForImsiCount" resultType="java.lang.Long" parameterType="map">
+  	 SELECT COUNT(*)
+  	 FROM PROD_INST_ACC_NUM 
+     WHERE  ACC_NUM_TYPE='9000'
+     AND ACC_NUM = #{cdmaImsi, jdbcType=VARCHAR}
+     AND  EXP_DATE>#{beginRentDate}
+     and route_id = #{routeId,jdbcType=BIGINT}
+  </select>
+
+    <select id="getForGsmImsiCount" resultType="java.lang.Long" parameterType="map">
+  	 SELECT COUNT(*)
+  	 FROM PROD_INST_ACC_NUM 
+     WHERE  ACC_NUM_TYPE='9000'
+     AND ACC_NUM = #{gsmImsi}
+     AND  EXP_DATE>#{beginRentDate}
+     and route_id = #{routeId,jdbcType=BIGINT}
+  </select>
+
+    <select id="getForLteImsiCount" resultType="java.lang.Long" parameterType="map">
+  	 SELECT COUNT(*)
+  	 FROM PROD_INST_ACC_NUM 
+     WHERE  ACC_NUM_TYPE='9000'
+     AND ACC_NUM = #{lteImsi}
+     AND  EXP_DATE>#{beginRentDate}
+     and route_id = #{routeId,jdbcType=BIGINT}
+  </select>
+    <!-- add by wangbaoqiang begin -->
+    <select id="getForCountNumType1000" resultType="java.lang.Long" parameterType="map">
+  	 SELECT COUNT(*)
+  	 FROM PROD_INST_ACC_NUM 
+     WHERE  ACC_NUM_TYPE='1000'
+     AND ACC_NUM = #{accNum}
+     AND  EXP_DATE>#{beginRentDate}
+     and route_id = #{routeId,jdbcType=BIGINT}
+  </select>
+    <!-- add by wangbaoqiang end -->
+
+    <select id="getForCountByProdInstId" resultType="java.lang.Long" parameterType="map">
+  	 SELECT COUNT(*)
+  	 FROM PROD_INST 
+     WHERE  PROD_INST_ID=#{prodInstId}
+     and route_id = #{routeId,jdbcType=BIGINT}
+  </select>
+    <select id="getProdInstStateExt" resultType="java.util.Map" parameterType="map">
+  	 SELECT PROD_INST_STATE_ID, STOP_TYPE, STATUS_CD
+  	 FROM PROD_INST_STATE_EXT 
+     WHERE  PROD_INST_ID=#{prodInstId}
+      AND EXP_DATE > #{statusDate}
+      and route_id = #{routeId,jdbcType=BIGINT}
+  </select>
+
+    <select id="getProdInstAccNum" resultType="java.util.Map" parameterType="java.util.HashMap">
+ 	select prod_inst_acc_num_id  prodInstAccNumId ,acc_num accNum,ACC_NUM_TYPE accNumType
+ 	from prod_inst_acc_num
+ 	WHERE   PROD_INST_ID = #{prodInstId,jdbcType=BIGINT}
+ 	AND EXP_DATE>#{statusDate}
+ 	and route_id = #{routeId,jdbcType=BIGINT}
+  </select>
+
+    <select id="getProdInstAccNumFor1000" resultType="java.util.Map" parameterType="java.util.HashMap">
+ 	select prod_inst_acc_num_id  prodInstAccNumId ,acc_num accNum,ACC_NUM_TYPE accNumType
+ 	from prod_inst_acc_num
+ 	WHERE   PROD_INST_ID = #{prodInstId,jdbcType=BIGINT}
+ 	and ACC_NUM_TYPE = 1000
+ 	AND EXP_DATE>#{statusDate}
+ 	and route_id = #{routeId,jdbcType=BIGINT}
+  </select>
+    <select id="getMinProdInstIdFromAcctRel" resultType="java.lang.Long" parameterType="java.util.HashMap">
+ 	select IFNULL(min(PROD_INST_ID),0) prodInstId
+ 	from prod_inst_acct_rel A
+ 	WHERE A.ACCT_ID=#{newAcctId}
+    AND A.PROD_INST_ID!=#{prodInstId}
+    AND A.EXP_DATE>NOW()
+    and route_id = #{routeId,jdbcType=BIGINT}
+  </select>
+    <!-- add by wangbaoqiang begin -->
+    <select id="getProdInstIdFromAcctRel" resultType="java.util.Map" parameterType="java.util.HashMap">
+        select IFNULL(group_concat(prod_inst_id),-1) prodInstId
+        from prod_inst_acct_rel A
+        WHERE A.ACCT_ID=#{acctId}
+        <!-- AND A.EXP_DATE>#{statusDate,jdbcType=DATE} -->
+        and status_cd = 1
+        and route_id = #{routeId,jdbcType=BIGINT}
+    </select>
+    <select id="getCntProdInstIdFromAcctRel" resultType="java.lang.Long" parameterType="java.util.HashMap">
+        select count(1)
+        from prod_inst_acct_rel A
+        WHERE A.ACCT_ID=#{acctId}
+        AND A.PROD_INST_ID=#{prodInstId}
+        and a.STATUS_CD = 1
+        <!--AND A.EXP_DATE>#{statusDate,jdbcType=DATE} -->
+        and route_id = #{routeId,jdbcType=BIGINT}
+    </select>
+    <!-- add end -->
+    <update id="updateAccount" parameterType="map">
+        update ACCOUNT
+        <set>
+            PROD_INST_ID = #{minProdInstId}
+        </set>
+        where ACCT_ID = #{newAcctId}
+        and route_id = #{routeId,jdbcType=BIGINT}
+    </update>
+
+    <!--重复，该sql没有用到 -->
+    <select id="getProdInst" resultType="java.util.Map" parameterType="map">
+    SELECT 
+    PROD_INST_ID prodInstId, PROD_ID, ACC_PROD_INST_ID accProdInst, PROD_USE_TYPE, ACC_NUM accNum, ACCOUNT, PAYMENT_MODE_CD paymentModeCd,
+    ADDRESS_DESC, OWNER_CUST_ID, PROD_INST_PWD, EXCH_ID, ADDRESS_ID, REGION_ID regionId, LAN_ID,
+    ACT_DATE, BEGIN_RENT_DATE, STOP_RENT_DATE, STATUS_CD statusCd, CREATE_ORG_ID, CREATE_STAFF,
+    UPDATE_STAFF, CREATE_DATE, STATUS_DATE statusDate, UPDATE_DATE, FIRST_FINISH_DATE, BUSI_MOD_DATE,
+    USE_CUST_ID, LAST_ORDER_ITEM_ID, REMARK, POINT_OWNER_ID, EXT_PROD_INST_ID, ROUTE_ID routeId
+    FROM PROD_INST
+     WHERE PROD_INST_ID = #{prodInstId}
+     AND STATUS_CD NOT IN (110000,110001,110002)
+     and route_id = #{routeId,jdbcType=BIGINT}
+  </select>
+
+    <select id="getProdInstStateExtFromStateExt" resultType="java.util.Map" parameterType="java.util.HashMap">
+ 	SELECT PROD_INST_STATE_ID prodInstStateId, PROD_INST_ID prodInstId, STOP_TYPE stopType, STATE state, EFF_DATE effDate, EXP_DATE expDate, STOP_DIRECTION stopDirection, 
+    STOP_REASON stopReason, EVENT_DATE, STATUS_CD statusCd, CREATE_STAFF createStaff, UPDATE_STAFF updateStaff, CREATE_DATE createDate, STATUS_DATE statusDate, 
+    UPDATE_DATE updateDate, LAST_ORDER_ITEM_ID, REMARK remark, ROUTE_ID routeId
+        FROM PROD_INST_STATE_EXT
+       WHERE PROD_INST_ID = #{prodInstId}
+         AND EXP_DATE >#{statusDate}
+         and route_id = #{routeId,jdbcType=BIGINT}
+         order by exp_date,PROD_INST_STATE_ID desc
+  </select>
+
+    <select id="getForAccNumCount" resultType="java.lang.Long" parameterType="java.util.HashMap">
+ 	SELECT count(*)
+    from PROD_INST
+    where acc_num=#{accNum}
+    and  STATUS_CD NOT IN ('110000', '110001', '110002')
+       AND PROD_INST_ID != #{prodInstId}
+       and route_id = #{routeId,jdbcType=BIGINT}
+  </select>
+    <select id="getForProdInst2hx" resultType="java.lang.Long" parameterType="java.util.HashMap">
+ 	SELECT count(*)
+    from PROD_INST
+    where   STATUS_CD  IN ('110000', '110001', '110002')
+       AND PROD_INST_ID = #{prodInstId}
+       and route_id = #{routeId,jdbcType=BIGINT}
+  </select>
+    <select id="getProdInstPaymode" resultType="java.util.Map" parameterType="java.util.HashMap">
+ 	SELECT PAYMODE_ID paymodeId
+    from PROD_INST_PAYMODE
+    where PROD_INST_ID=#{prodInstId}
+    and EXP_DATE>#{statusDate}
+    and route_id = #{routeId,jdbcType=BIGINT}
+  </select>
+    <select id="getProdInstPaymode_1" resultType="java.lang.Long" parameterType="java.util.HashMap">
+ 	SELECT PAYMODE_ID paymodeId
+    from PROD_INST_PAYMODE
+    where PROD_INST_ID=#{prodInstId}
+    and EXP_DATE>#{statusDate}
+    and route_id = #{routeId,jdbcType=BIGINT}
+  </select>
+    <select id="selectProdInstStateExt" resultType="java.util.Map" parameterType="java.util.HashMap">
+ 	SELECT  STOP_TYPE, EFF_DATE
+    FROM PROD_INST_STATE_EXT
+    where PROD_INST_ID=#{prodInstId}
+    and state = "120000"
+    and STOP_TYPE IN(150001,150002)
+    and EXP_DATE>='2039/01/01'
+    and route_id = #{routeId,jdbcType=BIGINT}
+  </select>
+
+    <select id="getEffDatefromStateExt" resultType="java.lang.String" parameterType="java.util.HashMap">
+ 	SELECT   EFF_DATE
+    FROM PROD_INST_STATE_EXT
+    where PROD_INST_ID=#{prodInstId}
+    and state = "120000"
+    and STOP_TYPE = "120000"
+    and EXP_DATE>=#{realNameEffDate1}
+    and route_id = #{routeId,jdbcType=BIGINT}
+  </select>
+
+
+    <select id="selectProdInstAccNum" resultType="java.util.Map" parameterType="java.util.HashMap">
+        SELECT PROD_INST_ACC_NUM_ID prodInstAccNumId , ACC_NUM accNum
+        FROM PROD_INST_ACC_NUM
+        where ACC_NUM_TYPE = "3000"
+        and PROD_INST_ID = #{prodInstId}
+        and EXP_DATE>#{statusDate}
+        <!--and SUBSTR(ACC_NUM,1,5)="46003"-->
+        and route_id = #{routeId,jdbcType=BIGINT}
+    </select>
+
+    <insert id="insertSendMsg" parameterType="map">
+        insert into bill_send_msg_log
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="messageId != null">
+                message_id,
+            </if>
+            <if test="messageType != null">
+                message_type,
+            </if>
+            <if test="status != null">
+                status,
+            </if>
+            <if test="createDate != null">
+                create_date,
+            </if>
+            <if test="updateDate != null">
+                update_date,
+            </if>
+            <if test="sendCount != null">
+                send_count,
+            </if>
+            <if test="msg != null">
+                msg,
+            </if>
+            <if test="custId != null">
+                cust_Id,
+            </if>
+            <if test="archGrpId != null">
+                arch_grp_id,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=BIGINT},
+            </if>
+            <if test="messageId != null">
+                #{messageId,jdbcType=VARCHAR},
+            </if>
+            <if test="messageType != null">
+                #{messageType,jdbcType=BIGINT},
+            </if>
+            <if test="status != null">
+                #{status,jdbcType=BIGINT},
+            </if>
+            <if test="createDate != null">
+                #{createDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateDate != null">
+                #{updateDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="sendCount != null">
+                #{sendCount,jdbcType=BIGINT},
+            </if>
+            <if test="msg != null">
+                #{msg,jdbcType=LONGVARBINARY},
+            </if>
+            <if test="custId != null">
+                #{custId,jdbcType=BIGINT},
+            </if>
+            <if test="archGrpId != null">
+                #{archGrpId,jdbcType=BIGINT},
+            </if>
+        </trim>
+    </insert>
+    <select id="selectSendMsg" resultType="java.util.HashMap">
+  select
+    id,
+ message_id,
+ message_type,
+ msg,
+ status,
+ create_date,
+ update_date,
+ send_count
+  from bill_send_msg_log where status !=2  order by id
+   limit 0, 2000
+</select>
+
+    <update id="updateSendMsgLog" parameterType="map">
+        update bill_send_msg_log
+        <set>
+            <if test="status != null">
+                status = #{status,jdbcType=BIGINT},
+            </if>
+            <if test="remark != null">
+                remark = #{remark,jdbcType=VARCHAR},
+            </if>
+            send_count = IFNULL(send_count,1)+1,
+
+            update_Date= now()
+        </set>
+        where id = #{id,jdbcType=VARCHAR}
+    </update>
+
+    <select id="getSeq" resultType="java.lang.Long" parameterType="map">
+	select ${seq_name}.nextval
+  </select>
+
+    <insert id="insertProdInstAcctRelAttr" parameterType="map">
+        insert into PROD_INST_ACCT_REL_ATTR
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="PROD_INST_ACCT_REL_ATTR_ID != null">
+                PROD_INST_ACCT_REL_ATTR_ID,
+            </if>
+            <if test="PROD_INST_ACCT_REL_ID != null">
+                PROD_INST_ACCT_REL_ID,
+            </if>
+            <if test="ATTR_ID != null">
+                ATTR_ID,
+            </if>
+            <if test="ATTR_VALUE_ID != null">
+                ATTR_VALUE_ID,
+            </if>
+            <if test="ATTR_VALUE != null">
+                ATTR_VALUE,
+            </if>
+            <if test="EFF_DATE != null">
+                EFF_DATE,
+            </if>
+            <if test="EXP_DATE != null">
+                EXP_DATE,
+            </if>
+            <if test="ATTR_NAME != null">
+                ATTR_NAME,
+            </if>
+            <if test="STATUS_CD != null">
+                STATUS_CD,
+            </if>
+            <if test="STATUS_DATE != null">
+                STATUS_DATE,
+            </if>
+            <if test="CREATE_STAFF != null">
+                CREATE_STAFF,
+            </if>
+            <if test="CREATE_DATE != null">
+                CREATE_DATE,
+            </if>
+            <if test="UPDATE_STAFF != null">
+                UPDATE_STAFF,
+            </if>
+            <if test="UPDATE_DATE != null">
+                UPDATE_DATE,
+            </if>
+            <if test="routeId != null">
+                ROUTE_ID,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="PROD_INST_ACCT_REL_ATTR_ID != null">
+                #{PROD_INST_ACCT_REL_ATTR_ID},
+            </if>
+            <if test="PROD_INST_ACCT_REL_ID != null">
+                #{PROD_INST_ACCT_REL_ID},
+            </if>
+            <if test="ATTR_ID != null">
+                #{ATTR_ID},
+            </if>
+            <if test="ATTR_VALUE_ID != null">
+                #{ATTR_VALUE_ID},
+            </if>
+            <if test="ATTR_VALUE != null">
+                #{ATTR_VALUE},
+            </if>
+            <if test="EFF_DATE != null">
+                #{EFF_DATE},
+            </if>
+            <if test="EXP_DATE != null">
+                #{EXP_DATE},
+            </if>
+            <if test="ATTR_NAME != null">
+                #{ATTR_NAME},
+            </if>
+            <if test="STATUS_CD != null">
+                #{STATUS_CD},
+            </if>
+            <if test="STATUS_DATE != null">
+                #{STATUS_DATE},
+            </if>
+            <if test="CREATE_STAFF != null">
+                #{CREATE_STAFF},
+            </if>
+            <if test="CREATE_DATE != null">
+                #{CREATE_DATE},
+            </if>
+            <if test="UPDATE_STAFF != null">
+                #{UPDATE_STAFF},
+            </if>
+            <if test="UPDATE_DATE != null">
+                #{UPDATE_DATE},
+            </if>
+            <if test="routeId != null">
+                #{routeId},
+            </if>
+        </trim>
+    </insert>
+    <insert id="insertPayToPlan" parameterType="map">
+        insert into inter_pay_to_plan
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="interPlanId != null">
+                inter_plan_id,
+            </if>
+            <if test="offerInstId != null">
+                offer_inst_id,
+            </if>
+            <if test="offerId != null">
+                offer_id,
+            </if>
+            <if test="objectType != null">
+                object_type,
+            </if>
+            <if test="objectId != null">
+                object_id,
+            </if>
+            <if test="operType != null">
+                oper_type,
+            </if>
+            <if test="operState != null">
+                oper_state,
+            </if>
+            <if test="effDate != null">
+                eff_date,
+            </if>
+            <if test="orderDate != null">
+                order_date,
+            </if>
+            <if test="createDate != null">
+                create_date,
+            </if>
+            <if test="operDate != null">
+                oper_date,
+            </if>
+            <if test="acctId != null">
+                acct_id,
+            </if>
+            <if test="amount != null">
+                amount,
+            </if>
+            <if test="depositType != null">
+                deposit_type
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="interPlanId != null">
+                #{interPlanId,jdbcType=BIGINT},
+            </if>
+            <if test="offerInstId != null">
+                #{offerInstId,jdbcType=BIGINT},
+            </if>
+            <if test="offerId != null">
+                #{offerId,jdbcType=BIGINT},
+            </if>
+            <if test="objectType != null">
+                #{objectType,jdbcType=BIGINT},
+            </if>
+            <if test="objectId != null">
+                #{objectId,jdbcType=BIGINT},
+            </if>
+            <if test="operType != null">
+                #{operType,jdbcType=BIGINT},
+            </if>
+            <if test="operState != null">
+                #{operState,jdbcType=BIGINT},
+            </if>
+            <if test="effDate != null">
+                #{effDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="orderDate != null">
+                #{orderDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="createDate != null">
+                #{createDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="operDate != null">
+                #{operDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="acctId != null">
+                #{acctId,jdbcType=BIGINT},
+            </if>
+            <if test="amount != null">
+                #{amount,jdbcType=DECIMAL},
+            </if>
+            <if test="depositType != null">
+                #{depositType,jdbcType=BIGINT}
+            </if>
+        </trim>
+    </insert>
+    <insert id="inserCustChange" parameterType="map">
+        insert into intf_serv_cust_change_contrast
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="archGrpId != null">
+                ARCH_GRP_ID,
+            </if>
+            <if test="servId != null">
+                SERV_ID,
+            </if>
+            <if test="oldCustId != null">
+                OLD_CUST_ID,
+            </if>
+            <if test="newCustId != null">
+                NEW_CUST_ID,
+            </if>
+            <if test="changeDate != null">
+                CHANGE_DATE,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="archGrpId != null">
+                #{archGrpId,jdbcType=BIGINT},
+            </if>
+            <if test="servId != null">
+                #{servId,jdbcType=BIGINT},
+            </if>
+            <if test="oldCustId != null">
+                #{oldCustId,jdbcType=BIGINT},
+            </if>
+            <if test="newCustId != null">
+                #{newCustId,jdbcType=BIGINT},
+            </if>
+            <if test="changeDate != null">
+                #{changeDate,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+
+
+    <update id="updateProdInstAcctRelAttr" parameterType="map">
+  	update PROD_INST_ACCT_REL_ATTR
+  	set STATUS_CD = '1100',
+  	STATUS_DATE = #{STATUS_DATE},
+  	UPDATE_STAFF = #{UPDATE_STAFF},
+  	UPDATE_DATE = #{UPDATE_DATE}
+  	where PROD_INST_ACCT_REL_ATTR_ID = #{PROD_INST_ACCT_REL_ATTR_ID}
+  	and route_id = #{routeId,jdbcType=BIGINT}
+  </update>
+
+    <select id="getForCdmaImsiCount" resultType="java.lang.Long">
+    select count(*)
+    from PROD_INST_ACC_NUM  
+     where ACC_NUM = #{cdmaImsi}
+     AND ACC_NUM_TYPE = '3000'
+     AND PROD_INST_ID != #{prodInstId}
+     AND EXP_DATE > #{statusDate}
+     and route_id = #{routeId,jdbcType=BIGINT}
+  </select>
+
+    <select id="getForGsmImsiCount2" resultType="java.lang.Long">
+    select count(*)
+    from PROD_INST_ACC_NUM  
+     where  PROD_INST_ID != #{prodInstId}
+     AND ACC_NUM_TYPE = '2000'
+     AND ACC_NUM = #{gsmImsi}
+     AND EXP_DATE > #{statusDate}
+     and route_id = #{routeId,jdbcType=BIGINT}
+  </select>
+
+
+    <select id="selectProdInstAccNum2" resultType="java.util.Map" parameterType="java.util.HashMap">
+        SELECT PROD_INST_ACC_NUM_ID prodInstAccNumId , ACC_NUM accNum
+        FROM PROD_INST_ACC_NUM
+        where ACC_NUM_TYPE = "2000"
+        and PROD_INST_ID = #{prodInstId}
+        and EXP_DATE>#{statusDate}
+        <!--and SUBSTR(ACC_NUM,1,5)!="46003"
+        and SUBSTR(ACC_NUM,1,5)!="46011" -->
+        and route_id = #{routeId,jdbcType=BIGINT}
+    </select>
+
+    <select id="getForLteImsiCount2" resultType="java.lang.Long" parameterType="java.util.HashMap">
+    select count(*)
+    from PROD_INST_ACC_NUM  
+     where  PROD_INST_ID != #{prodInstId}
+     AND ACC_NUM_TYPE = '5000'
+     AND ACC_NUM = #{lteImsi}
+     AND EXP_DATE > #{statusDate}
+     and route_id = #{routeId,jdbcType=BIGINT}
+  </select>
+
+    <select id="selectProdInstAccNum3" resultType="java.util.Map" parameterType="java.util.HashMap">
+        SELECT PROD_INST_ACC_NUM_ID prodInstAccNumId , ACC_NUM accNum
+        FROM PROD_INST_ACC_NUM
+        where ACC_NUM_TYPE = "5000"
+        and PROD_INST_ID = #{prodInstId}
+        and EXP_DATE>#{statusDate}
+        <!--and SUBSTR(ACC_NUM,1,5)="46011"-->
+        and route_id = #{routeId,jdbcType=BIGINT}
+    </select>
+
+    <select id="selectProdInstAccNum4" resultType="java.util.Map" parameterType="java.util.HashMap">
+ 	SELECT PROD_INST_ACC_NUM_ID  prodInstAccNumId , ACC_NUM accNum
+    FROM PROD_INST_ACC_NUM
+    where ACC_NUM_TYPE = #{accNumType}
+   	and PROD_INST_ID = #{prodInstId}
+    and EXP_DATE>#{statusDate}
+    and route_id = #{routeId,jdbcType=BIGINT}
+  </select>
+
+    <select id="getForProdInstCount" resultType="java.lang.Long" parameterType="java.util.HashMap">
+    select count(*)
+    from PROD_INST  
+     where  PROD_INST_ID = #{accProdInstId}
+     AND STATUS_CD NOT IN ('110001', '110002','110000')
+     and route_id = #{routeId,jdbcType=BIGINT}
+  </select>
+    <select id="getNextMonth" resultType="java.lang.String" parameterType="java.lang.String">
+	select DATE_ADD(#{effDate},INTERVAL 1 month)
+  </select>
+
+    <select id="getForProdInstSubCount" resultType="java.lang.Long" parameterType="java.util.HashMap">
+    select count(*)
+    from PROD_INST_SUB
+     WHERE ACC_PROD_INST_ID = #{accProdInstId}
+     AND PROD_ID = #{prodId}
+     AND STOP_RENT_DATE > #{statusDate}
+     and route_id = #{routeId,jdbcType=BIGINT}
+  </select>
+    <!-- add by wangbaoqiang 按主键取数据-->
+    <select id="getProdInstSubPrimaryKeyCnt" resultType="java.lang.Long" parameterType="java.util.HashMap">
+    select count(*)
+    from PROD_INST_SUB
+     WHERE PROD_INST_ID = #{prodInstId}
+     AND STOP_RENT_DATE > #{statusDate}
+     and route_id = #{routeId,jdbcType=BIGINT}
+  </select>
+    <!-- end按主键取数据-->
+
+    <!--获取天 2019-04-08 14:15:14   结果为08-->
+    <select id="getDay" resultType="java.lang.String" parameterType="java.lang.String">
+	select SUBSTR(#{effDate} , 9 , 2)
+  </select>
+    <!--获取月 2019-04-08 14:15:14    结果为04-->
+    <select id="getMonth" resultType="java.lang.String" parameterType="java.lang.String">
+	select SUBSTR(#{effDate} , 1 , 7)
+  </select>
+
+    <select id="getForProdInstAttrCount" resultType="java.lang.Long" parameterType="java.util.HashMap">
+    select count(*)
+    from PROD_INST_ATTR
+     WHERE PROD_INST_ID = #{accProdInstId}
+     and ATTR_ID = #{attrId}
+     and route_id = #{routeId,jdbcType=BIGINT}
+  </select>
+
+    <select id="getForProdInstAttrId" resultType="java.lang.Long" parameterType="java.util.HashMap">
+    select count(1)
+    from PROD_INST_ATTR
+     WHERE PROD_INST_ID = #{accProdInstId}
+     and ATTR_ID = #{attrId}
+     and EXP_DATE>#{expDate}
+     and route_id = #{routeId,jdbcType=BIGINT}
+  </select>
+
+    <select id="getProdInstAttrIdFromAttrId" resultType="java.util.HashMap" parameterType="java.util.HashMap">
+    select PROD_INST_ATTR_ID prodInstAttrId
+    from PROD_INST_ATTR
+     WHERE PROD_INST_ID = #{accProdInstId}
+     and ATTR_ID = #{attrId}
+     and EXP_DATE>#{expDate}
+     and route_id = #{routeId,jdbcType=BIGINT}
+  </select>
+
+    <select id="getForProdInstAcctRelId" resultType="java.util.Map" parameterType="java.util.HashMap">
+    select PROD_INST_ACCT_REL_ID 
+    from PROD_INST_ACCT_REL_ATTR
+     WHERE PROD_INST_ACCT_REL_ID = #{PROD_INST_ACCT_REL_ID}
+     and route_id = #{routeId,jdbcType=BIGINT}
+  </select>
+    <!-- add by wangbaoqiang -->
+    <select id="selectProdInstAttr1000" resultType="java.util.Map" parameterType="java.util.HashMap">
+    select 
+    PROD_INST_ATTR_ID, PAR_PROD_INST_ATTR_ID, PROD_INST_ID, ATTR_ID attrID, ATTR_VALUE_ID attrValueId, ATTR_VALUE attrValue, 
+    BUSI_MOD_DATE, EFF_DATE, EXP_DATE, STATUS_CD, CREATE_STAFF, UPDATE_STAFF, CREATE_DATE, 
+    STATUS_DATE, UPDATE_DATE, LAST_ORDER_ITEM_ID, REMARK, ROUTE_ID
+    from prod_inst_attr
+    where PROD_INST_ID = #{prodInstId,jdbcType=BIGINT}
+    and ATTR_ID = 1000
+    and exp_date >#{sysDate}
+    and route_id = #{routeId,jdbcType=BIGINT}
+  </select>
+    <select id="selectProdInstAttr1015" resultType="java.util.Map" parameterType="java.util.HashMap">
+    select 
+    PROD_INST_ATTR_ID prodInstAttrId, PAR_PROD_INST_ATTR_ID parProdInstAttrId, PROD_INST_ID prodInstId, ATTR_ID attrID, ATTR_VALUE_ID attrValueId, ATTR_VALUE attrValue,
+    BUSI_MOD_DATE busiModDate, EFF_DATE effDate, EXP_DATE expDate, STATUS_CD statusCd, CREATE_STAFF createStaff, UPDATE_STAFF updateStaff, CREATE_DATE createDate,
+    STATUS_DATE statusDate, UPDATE_DATE updateDate, LAST_ORDER_ITEM_ID lastOrderItemId, REMARK remark, ROUTE_ID routeId
+    from prod_inst_attr
+    where PROD_INST_ID = #{prodInstId,jdbcType=BIGINT}
+    and ATTR_ID = 1015
+    and exp_date > now()
+    and route_id = #{routeId,jdbcType=BIGINT}
+  </select>
+    <update id="updateProdInstAttrNet" parameterType="java.util.HashMap">
+        update prod_inst_attr
+        <set>
+            <if test="attrValue != null">
+                ATTR_VALUE = #{attrValue,jdbcType=VARCHAR},
+            </if>
+            <if test="expDate != null">
+                EXP_DATE = #{expDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="statusCd != null">
+                STATUS_CD = #{statusCd,jdbcType=VARCHAR},
+            </if>
+            <if test="createDate != null">
+                CREATE_DATE = #{createDate,jdbcType=DATE},
+            </if>
+            <if test="statusDate != null">
+                STATUS_DATE = #{statusDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateDate != null">
+                UPDATE_DATE = #{updateDate,jdbcType=DATE},
+            </if>
+            <if test="remark != null">
+                REMARK = #{remark,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where PROD_INST_ATTR_ID = #{prodInstAttrId,jdbcType=BIGINT}
+        and route_id = #{routeId,jdbcType=BIGINT}
+    </update>
+    <!--从PROD_INST_SUB表获取PROD_INST_ID-->
+    <select id="selectProdInstIdFromProdInstSub" resultType="java.lang.Long" parameterType="map">
+        SELECT PROD_INST_ID prodInstId
+        from PROD_INST_SUB
+        where 1=1
+        <if test="prodId != null">
+            and PROD_ID = #{prodId}
+        </if>
+        <if test="accProdInstId != null">
+            and ACC_PROD_INST_ID = #{accProdInstId}
+        </if>
+        <if test="stopRentDate != null">
+            and STOP_RENT_DATE = #{stopRentDate}
+        </if>
+        and route_id = #{routeId,jdbcType=BIGINT}
+    </select>
+
+    <!--从PROD_INST_ATTR表获取PROD_INST_ATTR_ID-->
+    <select id="selectProdInstAttrIdFromProdInstAttr" resultType="java.lang.Long" parameterType="map">
+        SELECT PROD_INST_ATTR_ID prodInstAttrId
+        from PROD_INST_ATTR
+        where 1=1
+        <if test="prodInstId != null">
+            and PROD_INST_ID = #{prodInstId}
+        </if>
+        <if test="attrId != null">
+            and ATTR_ID = #{attrId}
+        </if>
+        <if test="expDate != null">
+            and EXP_DATE > #{expDate}
+        </if>
+        and route_id = #{routeId,jdbcType=BIGINT}
+    </select>
+
+    <!--从PROD_INST_ATTR_SUB表获取PROD_INST_ATTR_ID。其中PROD_INST_ID来自PROD_INST_SUB表-->
+    <select id="selectProdInstAttrIdFromProdInstAttrSub" resultType="java.lang.Long" parameterType="map">
+        SELECT PROD_INST_ATTR_ID prodInstAttrId
+        from PROD_INST_ATTR_SUB
+        where 1=1
+        <if test="PROD_INST_ID != null">
+            and PROD_INST_ID = #{PROD_INST_ID}
+        </if>
+        <if test="ATTR_ID != null">
+            and ATTR_ID = #{ATTR_ID}
+        </if>
+        <if test="ATTR_VALUE != null">
+            and ATTR_VALUE = #{ATTR_VALUE}
+        </if>
+        <if test="EXP_DATE != null">
+            and EXP_DATE = #{EXP_DATE}
+        </if>
+        and route_id = #{routeId,jdbcType=BIGINT}
+    </select>
+    <!-- add by wangbaoqiang -->
+    <select id="selectProdInstAttrMap" resultType="map" parameterType="map">
+        SELECT PROD_INST_ATTR_ID prodInstAttrId, PROD_INST_ID prodInstId, ATTR_ID attrId, ATTR_VALUE_ID attrValueId,
+        ATTR_VALUE attrValue,
+        EFF_DATE effDate, EXP_DATE expDate, STATUS_CD statusCd, CREATE_STAFF createStaff, UPDATE_STAFF updateStaff,
+        CREATE_DATE createDate,
+        STATUS_DATE statusDate, UPDATE_DATE updateDate, REMARK remark, ROUTE_ID routeId
+        from PROD_INST_ATTR
+        where 1=1
+        <if test="prodInstId != null">
+            and PROD_INST_ID = #{prodInstId}
+        </if>
+        <if test="attrId != null">
+            and ATTR_ID = #{attrId}
+        </if>
+        <if test="expDate != null">
+            and EXP_DATE > #{statusDate}
+        </if>
+        and route_id = #{routeId,jdbcType=BIGINT}
+    </select>
+    <!-- add by wangbaoqiang -->
+    <select id="selectProdInstAttrSubMap" resultType="map" parameterType="map">
+        SELECT PROD_INST_ATTR_ID prodInstAttrId, PROD_INST_ID prodInstId, ATTR_ID attrId, ATTR_VALUE_ID attrValueId,
+        ATTR_VALUE attrValue,
+        EFF_DATE effDate, EXP_DATE expDate, STATUS_CD statusCd, CREATE_STAFF createStaff, UPDATE_STAFF updateStaff,
+        CREATE_DATE createDate,
+        STATUS_DATE statusDate, UPDATE_DATE updateDate, REMARK remark, ROUTE_ID routeId
+        from PROD_INST_ATTR_SUB
+        where 1=1
+        <if test="prodInstId != null">
+            and PROD_INST_ID = #{prodInstId}
+        </if>
+        <if test="attrId != null">
+            and ATTR_ID = #{attrId}
+        </if>
+        <!--    <if test="attrValue != null">
+              and ATTR_VALUE = #{attrValue}
+            </if>-->
+        <if test="expDate != null">
+            and EXP_DATE > #{expDate}
+        </if>
+        and route_id = #{routeId,jdbcType=BIGINT}
+    </select>
+    <!-- add by wangbaoqiang 增加-->
+    <select id="selectProdInstSubMap" resultType="map" parameterType="map">
+    SELECT   PROD_INST_ID prodInstId, PROD_ID prodId, ACC_PROD_INST_ID accProdInstId, PROD_USE_TYPE prodUseType, ACC_NUM accNum, ACCOUNT account, PAYMENT_MODE_CD paymentModeCd,
+    ADDRESS_DESC address, OWNER_CUST_ID ownerCustId, PROD_INST_PWD prodInstPwd, EXCH_ID exchId, ADDRESS_ID addressId, REGION_ID regionId, LAN_ID lanId,
+    ACT_DATE actDate, BEGIN_RENT_DATE beginRentDate, STOP_RENT_DATE stopRentDate, STATUS_CD statusCd, CREATE_ORG_ID createOrgId, CREATE_STAFF createStaff,
+    UPDATE_STAFF updateStaff, CREATE_DATE createDate, STATUS_DATE statusDate, UPDATE_DATE updateDate, FIRST_FINISH_DATE firstFinishDate, BUSI_MOD_DATE busiModDate,
+    USE_CUST_ID useCustId, LAST_ORDER_ITEM_ID lastOrderItemId, REMARK remark, POINT_OWNER_ID pointOwnerId, EXT_PROD_INST_ID extProdInstId, ROUTE_ID routeId
+    from PROD_INST_SUB
+    where  1=1
+      and PROD_ID = #{prodId}
+      and ACC_PROD_INST_ID = #{accProdInstId}
+      and STOP_RENT_DATE > #{effDate}
+	and route_id = #{routeId,jdbcType=BIGINT}
+  </select>
+    <select id="selectProdInstAttrId" resultType="java.lang.Long"></select>
+    <select id="getOneItemAcctId" resultType="map" parameterType="map">
+select acct_id acctId from prod_inst_acct_rel
+where PROD_INST_ID=#{prodInstId,jdbcType=BIGINT}
+
+</select>
+
+    <select id="getOneItemInstId" resultType="map" parameterType="map">
+select OBJ_ID prodInstId from offer_obj_inst_rel
+where OFFER_INST_ID=#{offerInstId,jdbcType=BIGINT}
+</select>
+    <select id="selectPayToPlan" resultType="java.util.Map">
+select
+        INTER_PLAN_ID, OFFER_INST_ID, OFFER_ID, AMOUNT, DEPOSIT_TYPE, ACCT_ID, OBJECT_TYPE,
+    OBJECT_ID, OPER_TYPE, OPER_STATE, EFF_DATE, ORDER_DATE, CREATE_DATE, OPER_DATE, RECOUNT
+    from inter_pay_to_plan
+    where OFFER_INST_ID = #{offerInstId}
+    and OFFER_ID = #{offerId}
+    </select>
+<update id="udalStart">
+udal dt start
+</update>
+</mapper>

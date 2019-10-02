@@ -5,7 +5,13 @@
 <configuration>
     <settings>
         <!-- 打印查询语句 -->
-        <setting name="logImpl" value="LOG4J" />   
+        <!--setting name="logImpl" value="LOG4J" />-->
+        <setting name="logPrefix" value="dao."/>
+        <!--
+               <setting name="logPrefix" value="dao."/>
+               <setting name="localCacheScope" value="STATEMENT"/>
+               -->
+        <setting name="defaultStatementTimeout" value="30"/>
     </settings>
     <plugins>
          <!-- PageHelper4.1.6 --> 

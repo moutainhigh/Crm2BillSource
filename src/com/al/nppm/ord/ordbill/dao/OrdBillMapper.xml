@@ -1032,7 +1032,7 @@ select
     from ord_bill_obj
      WHERE TABLE_NAME IN ('ORD_PARTY', 'ORD_CUSTOMER','ORD_TAX_PAYER', 'ORD_ACCOUNT', 'ORD_PROD_INST', 'ORD_PROD_INST_ACCT_REL','ORD_OFFER_INST')
      AND ARCH_GRP_ID = #{archGrpId,jdbcType=BIGINT}
-     /*AND STATUS_CD = 'N'*/
+     AND STATUS_CD = 'N'
      ORDER BY SEQ_NO
   </select>
 

@@ -1,0 +1,236 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="generator.ServiceOfferContrastDao">
+  <resultMap id="BaseResultMap" type="generator.ServiceOfferContrast">
+    <id column="SERVCIE_OFFER_ID" jdbcType="BIGINT" property="servcieOfferId" />
+    <result column="SERVICE_OFER_NAME" jdbcType="VARCHAR" property="serviceOferName" />
+    <result column="STYPE_TYPE" jdbcType="BIGINT" property="stypeType" />
+    <result column="STATUS_CD" jdbcType="BIGINT" property="statusCd" />
+    <result column="BILL_STATUS_CD" jdbcType="BIGINT" property="billStatusCd" />
+    <result column="REMARK" jdbcType="VARCHAR" property="remark" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    SERVCIE_OFFER_ID, SERVICE_OFER_NAME, STYPE_TYPE, STATUS_CD, BILL_STATUS_CD, REMARK
+  </sql>
+  <select id="selectByExample" parameterType="generator.ServiceOfferContrastExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from service_offer_contrast
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+    <if test="limit != null">
+      <if test="offset != null">
+        limit ${offset}, ${limit}
+      </if>
+      <if test="offset == null">
+        limit ${limit}
+      </if>
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from service_offer_contrast
+    where SERVCIE_OFFER_ID = #{servcieOfferId,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from service_offer_contrast
+    where SERVCIE_OFFER_ID = #{servcieOfferId,jdbcType=BIGINT}
+  </delete>
+  <delete id="deleteByExample" parameterType="generator.ServiceOfferContrastExample">
+    delete from service_offer_contrast
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="generator.ServiceOfferContrast">
+    insert into service_offer_contrast (SERVCIE_OFFER_ID, SERVICE_OFER_NAME, STYPE_TYPE, 
+      STATUS_CD, BILL_STATUS_CD, REMARK
+      )
+    values (#{servcieOfferId,jdbcType=BIGINT}, #{serviceOferName,jdbcType=VARCHAR}, #{stypeType,jdbcType=BIGINT}, 
+      #{statusCd,jdbcType=BIGINT}, #{billStatusCd,jdbcType=BIGINT}, #{remark,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="generator.ServiceOfferContrast">
+    insert into service_offer_contrast
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="servcieOfferId != null">
+        SERVCIE_OFFER_ID,
+      </if>
+      <if test="serviceOferName != null">
+        SERVICE_OFER_NAME,
+      </if>
+      <if test="stypeType != null">
+        STYPE_TYPE,
+      </if>
+      <if test="statusCd != null">
+        STATUS_CD,
+      </if>
+      <if test="billStatusCd != null">
+        BILL_STATUS_CD,
+      </if>
+      <if test="remark != null">
+        REMARK,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="servcieOfferId != null">
+        #{servcieOfferId,jdbcType=BIGINT},
+      </if>
+      <if test="serviceOferName != null">
+        #{serviceOferName,jdbcType=VARCHAR},
+      </if>
+      <if test="stypeType != null">
+        #{stypeType,jdbcType=BIGINT},
+      </if>
+      <if test="statusCd != null">
+        #{statusCd,jdbcType=BIGINT},
+      </if>
+      <if test="billStatusCd != null">
+        #{billStatusCd,jdbcType=BIGINT},
+      </if>
+      <if test="remark != null">
+        #{remark,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="generator.ServiceOfferContrastExample" resultType="java.lang.Long">
+    select count(*) from service_offer_contrast
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map">
+    update service_offer_contrast
+    <set>
+      <if test="record.servcieOfferId != null">
+        SERVCIE_OFFER_ID = #{record.servcieOfferId,jdbcType=BIGINT},
+      </if>
+      <if test="record.serviceOferName != null">
+        SERVICE_OFER_NAME = #{record.serviceOferName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.stypeType != null">
+        STYPE_TYPE = #{record.stypeType,jdbcType=BIGINT},
+      </if>
+      <if test="record.statusCd != null">
+        STATUS_CD = #{record.statusCd,jdbcType=BIGINT},
+      </if>
+      <if test="record.billStatusCd != null">
+        BILL_STATUS_CD = #{record.billStatusCd,jdbcType=BIGINT},
+      </if>
+      <if test="record.remark != null">
+        REMARK = #{record.remark,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update service_offer_contrast
+    set SERVCIE_OFFER_ID = #{record.servcieOfferId,jdbcType=BIGINT},
+      SERVICE_OFER_NAME = #{record.serviceOferName,jdbcType=VARCHAR},
+      STYPE_TYPE = #{record.stypeType,jdbcType=BIGINT},
+      STATUS_CD = #{record.statusCd,jdbcType=BIGINT},
+      BILL_STATUS_CD = #{record.billStatusCd,jdbcType=BIGINT},
+      REMARK = #{record.remark,jdbcType=VARCHAR}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="generator.ServiceOfferContrast">
+    update service_offer_contrast
+    <set>
+      <if test="serviceOferName != null">
+        SERVICE_OFER_NAME = #{serviceOferName,jdbcType=VARCHAR},
+      </if>
+      <if test="stypeType != null">
+        STYPE_TYPE = #{stypeType,jdbcType=BIGINT},
+      </if>
+      <if test="statusCd != null">
+        STATUS_CD = #{statusCd,jdbcType=BIGINT},
+      </if>
+      <if test="billStatusCd != null">
+        BILL_STATUS_CD = #{billStatusCd,jdbcType=BIGINT},
+      </if>
+      <if test="remark != null">
+        REMARK = #{remark,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where SERVCIE_OFFER_ID = #{servcieOfferId,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="generator.ServiceOfferContrast">
+    update service_offer_contrast
+    set SERVICE_OFER_NAME = #{serviceOferName,jdbcType=VARCHAR},
+      STYPE_TYPE = #{stypeType,jdbcType=BIGINT},
+      STATUS_CD = #{statusCd,jdbcType=BIGINT},
+      BILL_STATUS_CD = #{billStatusCd,jdbcType=BIGINT},
+      REMARK = #{remark,jdbcType=VARCHAR}
+    where SERVCIE_OFFER_ID = #{servcieOfferId,jdbcType=BIGINT}
+  </update>
+</mapper>

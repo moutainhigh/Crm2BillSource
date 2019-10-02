@@ -71,7 +71,9 @@ public class CTGMqTool {
 	        }
         	long startTime=System.currentTimeMillis();
             MQMessage message = new MQMessage(topic,messageId,messageType,msg.getBytes("UTF-8"));
+			System.out.println(123);
             MQSendResult sendResult = producer.send(message);
+
             logger.debug("发送消息耗时："+(System.currentTimeMillis()-startTime)+"毫秒");
             if (sendResult.getSendStatus()==MQSendStatus.SEND_OK) {
 //            	producer.close();

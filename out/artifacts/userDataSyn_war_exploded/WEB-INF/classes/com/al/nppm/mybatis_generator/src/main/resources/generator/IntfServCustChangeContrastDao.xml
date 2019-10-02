@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="generator.IntfServCustChangeContrastDao">
+  <resultMap id="BaseResultMap" type="generator.IntfServCustChangeContrast">
+    <id column="ARCH_GRP_ID" jdbcType="BIGINT" property="archGrpId" />
+    <result column="SERV_ID" jdbcType="BIGINT" property="servId" />
+    <result column="OLD_CUST_ID" jdbcType="BIGINT" property="oldCustId" />
+    <result column="NEW_CUST_ID" jdbcType="BIGINT" property="newCustId" />
+    <result column="CHANGE_DATE" jdbcType="VARCHAR" property="changeDate" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    ARCH_GRP_ID, SERV_ID, OLD_CUST_ID, NEW_CUST_ID, CHANGE_DATE
+  </sql>
+  <select id="selectByExample" parameterType="generator.IntfServCustChangeContrastExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from intf_serv_cust_change_contrast
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+    <if test="limit != null">
+      <if test="offset != null">
+        limit ${offset}, ${limit}
+      </if>
+      <if test="offset == null">
+        limit ${limit}
+      </if>
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from intf_serv_cust_change_contrast
+    where ARCH_GRP_ID = #{archGrpId,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from intf_serv_cust_change_contrast
+    where ARCH_GRP_ID = #{archGrpId,jdbcType=BIGINT}
+  </delete>
+  <delete id="deleteByExample" parameterType="generator.IntfServCustChangeContrastExample">
+    delete from intf_serv_cust_change_contrast
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="generator.IntfServCustChangeContrast">
+    insert into intf_serv_cust_change_contrast (ARCH_GRP_ID, SERV_ID, OLD_CUST_ID, 
+      NEW_CUST_ID, CHANGE_DATE)
+    values (#{archGrpId,jdbcType=BIGINT}, #{servId,jdbcType=BIGINT}, #{oldCustId,jdbcType=BIGINT}, 
+      #{newCustId,jdbcType=BIGINT}, #{changeDate,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="generator.IntfServCustChangeContrast">
+    insert into intf_serv_cust_change_contrast
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="archGrpId != null">
+        ARCH_GRP_ID,
+      </if>
+      <if test="servId != null">
+        SERV_ID,
+      </if>
+      <if test="oldCustId != null">
+        OLD_CUST_ID,
+      </if>
+      <if test="newCustId != null">
+        NEW_CUST_ID,
+      </if>
+      <if test="changeDate != null">
+        CHANGE_DATE,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="archGrpId != null">
+        #{archGrpId,jdbcType=BIGINT},
+      </if>
+      <if test="servId != null">
+        #{servId,jdbcType=BIGINT},
+      </if>
+      <if test="oldCustId != null">
+        #{oldCustId,jdbcType=BIGINT},
+      </if>
+      <if test="newCustId != null">
+        #{newCustId,jdbcType=BIGINT},
+      </if>
+      <if test="changeDate != null">
+        #{changeDate,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="generator.IntfServCustChangeContrastExample" resultType="java.lang.Long">
+    select count(*) from intf_serv_cust_change_contrast
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map">
+    update intf_serv_cust_change_contrast
+    <set>
+      <if test="record.archGrpId != null">
+        ARCH_GRP_ID = #{record.archGrpId,jdbcType=BIGINT},
+      </if>
+      <if test="record.servId != null">
+        SERV_ID = #{record.servId,jdbcType=BIGINT},
+      </if>
+      <if test="record.oldCustId != null">
+        OLD_CUST_ID = #{record.oldCustId,jdbcType=BIGINT},
+      </if>
+      <if test="record.newCustId != null">
+        NEW_CUST_ID = #{record.newCustId,jdbcType=BIGINT},
+      </if>
+      <if test="record.changeDate != null">
+        CHANGE_DATE = #{record.changeDate,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update intf_serv_cust_change_contrast
+    set ARCH_GRP_ID = #{record.archGrpId,jdbcType=BIGINT},
+      SERV_ID = #{record.servId,jdbcType=BIGINT},
+      OLD_CUST_ID = #{record.oldCustId,jdbcType=BIGINT},
+      NEW_CUST_ID = #{record.newCustId,jdbcType=BIGINT},
+      CHANGE_DATE = #{record.changeDate,jdbcType=VARCHAR}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="generator.IntfServCustChangeContrast">
+    update intf_serv_cust_change_contrast
+    <set>
+      <if test="servId != null">
+        SERV_ID = #{servId,jdbcType=BIGINT},
+      </if>
+      <if test="oldCustId != null">
+        OLD_CUST_ID = #{oldCustId,jdbcType=BIGINT},
+      </if>
+      <if test="newCustId != null">
+        NEW_CUST_ID = #{newCustId,jdbcType=BIGINT},
+      </if>
+      <if test="changeDate != null">
+        CHANGE_DATE = #{changeDate,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where ARCH_GRP_ID = #{archGrpId,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="generator.IntfServCustChangeContrast">
+    update intf_serv_cust_change_contrast
+    set SERV_ID = #{servId,jdbcType=BIGINT},
+      OLD_CUST_ID = #{oldCustId,jdbcType=BIGINT},
+      NEW_CUST_ID = #{newCustId,jdbcType=BIGINT},
+      CHANGE_DATE = #{changeDate,jdbcType=VARCHAR}
+    where ARCH_GRP_ID = #{archGrpId,jdbcType=BIGINT}
+  </update>
+</mapper>

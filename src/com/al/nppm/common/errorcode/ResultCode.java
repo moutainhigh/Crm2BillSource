@@ -8,6 +8,8 @@ package com.al.nppm.common.errorcode;
  * @Version 1.0
  */
 public class ResultCode {
+
+    public static String PUB_ERROR_001 = "PUB_ERROR_001";
     //客户域错误码
     public static String CUSTOMER_ERROR_001 = "CUSTOMER_ERROR_001";
     public static String CUSTOMER_ERROR_002 = "CUSTOMER_ERROR_002";
