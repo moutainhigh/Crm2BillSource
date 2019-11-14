@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.al.nppm.business.account.dao.UserInfoBill2ctgmqMapper" >
+
+
+  <select id="queryUserInfoBill2ctgmq"  parameterType="java.util.HashMap" resultType="map">
+    select OP_SEQ opSeq, DBOP_DATE dbopDate, MEMOP_DATE memopDate, OP_TYPE opType,
+    TABLE_NAME tableName, TABLE_COLUMN_1 tableColumn1, TABLE_COLUMN_2 tableColumn2,
+    TABLE_COLUMN_3 tableColumn3, TABLE_COLUMN_4 tableColumn4, TABLE_COLUMN_5 tableColumn5, TABLE_COLUMN_6 tableColumn6,
+     NOTES notes, ROUTE_ID routeId, STATE  state
+    from user_info_bill2ctgmq
+    where state !=1
+      order by OP_SEQ  limit 0,1000
+  </select>
+
+  <update id="updateUserInfoBill2ctgmq" parameterType="map" >
+    update user_info_bill2ctgmq
+    set MEMOP_DATE = sysdate(),
+      NOTES = #{notes,jdbcType=VARCHAR},
+      STATE = #{state,jdbcType=INTEGER}
+    where OP_SEQ = #{opSeq,jdbcType=BIGINT}
+  </update>
+
+</mapper>

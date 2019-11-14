@@ -44,7 +44,6 @@ public interface IProdInstMapper {
 	
 	
 	
-	
 	public List<Map<String,Object>> getProdInstAcctId(Map map);
     public List<Map<String,Object>> getProdInstAcctIdForNull(Map map);
     public long getProdInstAcctCnt(Map map);
@@ -103,7 +102,7 @@ public interface IProdInstMapper {
 	public long getProdInstCount2Ha(Map map);//add by wangbaoqiang
 	public long getMinProdInstId(Map map);//add by wangbaoqiang
 	public long getForProdInstSubCount(Map map);
-	public long getProdInstSubPrimaryKeyCnt(Map map);//add bywangbaoqiang
+	public List<Map<String, Object>> getProdInstSubPrimaryKeyCnt(Map map);//add bywangbaoqiang
 
 	public long getForProdInstAttrCount(Map map);
 	public long getForProdInstAttrId(Map map);
@@ -173,10 +172,12 @@ public interface IProdInstMapper {
 	public int insertPayToPlan(Map map);
     public List<Map<String, Object>> getOneItemInstId(Map map);
     public List<Map<String, Object>> getOneItemAcctId(Map map);
-	public int inserCustChange(Map map);
-
+	//public int inserCustChange(Map map);
+	public int insertServAcctChange(Map map);
 	public List<Map<String, Object>> selectPayToPlan(@Param("offerInstId") long offerInstId,
 													 @Param("offerId") long offerId);
-
+	public int insertSendMsgHis(Map map);
+	public List<Map<String,Object>> selectSendMsgSucc(Map map);
+	public int deleteSendMsg(Map map);
 	public void udalStart();
 }

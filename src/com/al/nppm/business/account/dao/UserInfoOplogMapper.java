@@ -14,6 +14,7 @@ public interface UserInfoOplogMapper {
     public int insertUserInfoOplog005(Map map);
     public int insertUserInfoOplog006(Map map);
     public int insertUserInfoOplog007(Map map);
+    public int insertVpnUserInfoOplog001(Map map);
 
 
 }

@@ -7,13 +7,33 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
 public class DataSynDeal {
-	private static SimpleDateFormat df = new SimpleDateFormat( "yyyyMMddHHmmss" );
-	private static SimpleDateFormat df1= new SimpleDateFormat( "yyyy-MM-dd" );
-	private static SimpleDateFormat df2= new SimpleDateFormat( "yyyy-MM-dd HH:mm:ss" );
+	private static org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(DataSynDeal.class);
+//	private static SimpleDateFormat df = new SimpleDateFormat( "yyyyMMddHHmmss" );
+//	private static SimpleDateFormat df1= new SimpleDateFormat( "yyyy-MM-dd" );
+//	private static SimpleDateFormat df2= new SimpleDateFormat( "yyyy-MM-dd HH:mm:ss" );
+	private static final ThreadLocal<DateFormat> df = new ThreadLocal<DateFormat>() {
+		@Override
+		protected DateFormat initialValue() {
+			return new SimpleDateFormat("yyyyMMddHHmmss");
+		}
+	};
+	private static final ThreadLocal<DateFormat> df1 = new ThreadLocal<DateFormat>() {
+		@Override
+		protected DateFormat initialValue() {
+			return new SimpleDateFormat("yyyy-MM-dd");
+		}
+	};
+	private static final ThreadLocal<DateFormat> df2 = new ThreadLocal<DateFormat>() {
+		@Override
+		protected DateFormat initialValue() {
+			return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		}
+	};
 	public static Map<Integer, String> actionMap=new HashMap<Integer, String>(){{
 			put(1, "INSERT");
 			put(2, "UPDATE");
@@ -33,7 +53,7 @@ public class DataSynDeal {
 		return param;
 	}
 	//一个表是list中的一项 一项是个map 表面对应表记录集合
-	public static List<Map<String, List<?>>> mapToList(Map<String, List<?>> map) throws Exception{
+	public synchronized static List<Map<String, List<?>>> mapToList(Map<String, List<?>> map) throws Exception{
 		List<Map<String, List<?>>> list = new ArrayList<Map<String,List<?>>>();
 		Set<String> keys = map.keySet();
 		for(String key: keys){
@@ -42,7 +62,7 @@ public class DataSynDeal {
 				vList = to_FieldList(vList);
 				Map<String, List<?>> m = new HashMap<String, List<?>>();
 				m.put( key, vList );
-				list.add( m );	
+				list.add( m );
 			}
 		}
 		return list;
@@ -59,7 +79,7 @@ public class DataSynDeal {
 		return returnInt;
 	}
 	//像表记录的行集合
-	
+
 	@SuppressWarnings("unchecked")
 	private static List<Map<String, Object>> to_FieldList(List<?> vList) throws Exception{
 		List<Map<String, Object>> list = (List<Map<String, Object>>)vList;
@@ -83,19 +103,24 @@ public class DataSynDeal {
 						if(obj instanceof String){
 							String str=(String)obj ;
 							if(str.length()==10){
-								resultMap.put( vString, df.format(df1.parse(str) ) );
+								resultMap.put( vString, df.get().format(df1.get().parse(str) ) );
 							}else if(str.length()==19){
-								resultMap.put( vString, df.format(df2.parse(str) ) );
+								resultMap.put( vString, df.get().format(df2.get().parse(str) ) );
 							}else{
 								resultMap.put( vString, (String)obj );
 							}
 						}else{
 							Date d = (Date)map.get( key );
 							//System.out.println(JSON.toJSON("--String--"+map));
-							resultMap.put( vString, df.format( d ) );
+							resultMap.put( vString, df.get().format( d ) );
 						}
 					}
+
+				}else if (key.endsWith( "Time" ) &&  map.get( key ) instanceof  Date) {
+					Date d = (Date)map.get( key );
+					resultMap.put( vString, df.get().format( d ) );
 				}
+
 				//送给密集计算框架的需要包含executetime字段
 //				else if (key.equals( "executetime" )) {
 //					//Date d = (Date)map.get( key );
@@ -168,12 +193,12 @@ public class DataSynDeal {
 		if (!keys.contains( "action" )) {
 			throw new Exception(JSON.toJSONString( raw )+"没有actioin");
 		}
-		
+
 		for(String key : keys){
 			if (key.equals( "action" )) {
 				map.put( key, "act_id" );
 			}else if (key.equals( "ARCH_GRP_ID" ) || key.equals( "ORDER_ITEM_ID" )) {//去除这两个
-				
+
 			}else {
 				char[] cs = key.toCharArray();
 				StringBuilder builder = new StringBuilder();
@@ -190,7 +215,7 @@ public class DataSynDeal {
 		return map;
 	}
 
-	
+
 	private static Map<String, String> obtainRelation(Map<String, Object> raw) throws Exception{
 		Set<String> keys = raw.keySet();
 		if (!keys.contains( "action" )) {
@@ -225,14 +250,14 @@ public class DataSynDeal {
 	}
 	//组装消息
 	@SuppressWarnings("unchecked")
-	public static Msg buildMsg(List<?> table,Map<String, Object> params){
+	public synchronized static Msg buildMsg(List<?> table,Map<String, Object> params){
 		int cnt = obtainObjectCnt((List<Map<String, List<?>>>)table);
 		params.put( "object_count", cnt );
 		Msg msg = new Msg();
 		msg.setstorage_rs( table );
 		msg.merge( params );
-		System.out.println( "---------------------------------打印报文----------------------------------------------------" );
-		System.out.println( JSON.toJSON( msg.getMap() ).toString() );
+		logger.debug( "---------------------------------打印报文----------------------------------------------------" );
+		logger.debug( JSON.toJSON( msg.getMap() ).toString() );
 		return msg;
 	}
 	//-----------------------
@@ -243,8 +268,8 @@ public class DataSynDeal {
 	public static STATUS APIbuildSendMsg(List table,Map<String, Object> params) throws Exception{
 		Msg msg = buildMsg(table,params);
 		if (msg.check() == null) {
-			return CTGMqTool.send( params.get( "message_id" ).toString(), 
-					        params.get( "message_type" ).toString(), 
+			return CTGMqTool.send( params.get( "message_id" ).toString(),
+					        params.get( "message_type" ).toString(),
 					        JSON.toJSON( msg.getMap() ).toString() );
 		}
 		return STATUS.MSGCHECKERR;
@@ -263,27 +288,27 @@ public class DataSynDeal {
 	public static STATUS buildAndSendMsg(List<?> table,Map<String, Object> params) throws Exception{
 		Msg msg = buildMsg(table,params);
 		if (msg.check() == null) {
-			return CTGMqTool.send( params.get( "message_id" ).toString(), 
-					        params.get( "message_type" ).toString(), 
+			return CTGMqTool.send( params.get( "message_id" ).toString(),
+					        params.get( "message_type" ).toString(),
 					        JSON.toJSON( msg.getMap() ).toString() );
 		}
-		
+
 		return STATUS.MSGCHECKERR;
 	}
 	//调用组装和发送函数
 	public static int sendMsg(Msg msg) throws Exception{
 		STATUS result;
 		if (msg.check() == null) {
-			result=CTGMqTool.send( msg.getMap().get("message_id").toString(), 
-						msg.getMap().get("message_type").toString(), 
+			result=CTGMqTool.send( msg.getMap().get("message_id").toString(),
+						msg.getMap().get("message_type").toString(),
 						        JSON.toJSON( msg.getMap() ).toString() );
 		}else{
 			result=STATUS.MSGCHECKERR;
 		}
-		
+
 		return result.getCode();
-	}	
-	
+	}
+
 	//--------------HTTP-----------------------------------
 	private static Map<String, List<?>> opJsonString(String msg) throws Exception{
 		//String msg = FileUtils.readFileToString( new File("F:\\Document\\Tencent\\390291060\\FileRecv\\json") );
@@ -345,5 +370,5 @@ public class DataSynDeal {
 		list.add( map );
 		return list;
 	}
-	
+
 }

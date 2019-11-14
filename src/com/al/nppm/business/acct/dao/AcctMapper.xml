@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.al.nppm.business.acct.dao.AcctMapper" >
+
+    <insert id="insertInterPayToPlan" parameterType="map">
+        insert into INTER_PAY_TO_PLAN
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="interPlanId !=null">
+                INTER_PLAN_ID,
+            </if>
+            <if test="depositType !=null">
+                DEPOSIT_TYPE,
+            </if>
+            <if test="offerInstId !=null">
+                OFFER_INST_ID,
+            </if>
+            <if test="offerId !=null">
+                OFFER_ID,
+            </if>
+            <if test="acctId !=null">
+                ACCT_ID,
+            </if>
+            <if test="objectType !=null">
+                OBJECT_TYPE,
+            </if>
+            <if test="objectId !=null">
+                OBJECT_ID,
+            </if>
+            <if test="amount !=null">
+                AMOUNT,
+            </if>
+            <if test="operType !=null">
+                OPER_TYPE,
+            </if>
+            <if test="operState !=null">
+                OPER_STATE,
+            </if>
+            <if test="effDate !=null">
+                EFF_DATE,
+            </if>
+            <if test="orderDate !=null">
+                ORDER_DATE,
+            </if>
+            <if test="true">
+                CREATE_DATE,
+                OPER_DATE
+            </if>
+        </trim>
+        <trim prefix=" values (" suffix=")" suffixOverrides=",">
+            <if test="interPlanId !=null">
+                #{interPlanId},
+            </if>
+            <if test="depositType !=null">
+                #{depositType},
+            </if>
+            <if test="offerInstId !=null">
+                #{offerInstId},
+            </if>
+            <if test="offerId !=null">
+                #{offerId},
+            </if>
+            <if test="acctId !=null">
+                #{acctId},
+            </if>
+            <if test="objectType !=null">
+                #{objectType},
+            </if>
+            <if test="objectId !=null">
+                #{objectId},
+            </if>
+            <if test="amount !=null">
+                #{amount},
+            </if>
+            <if test="operType !=null">
+                #{operType},
+            </if>
+            <if test="operState !=null">
+                #{operState},
+            </if>
+            <if test="effDate !=null">
+                #{effDate},
+            </if>
+            <if test="orderDate !=null">
+                #{orderDate},
+            </if>
+            <if test="true">
+                sysdate(),
+                sysdate()
+            </if>
+        </trim>
+    </insert>
+    <insert id="insertaAcctOweState" parameterType="map" >
+        INSERT INTO a_acct_owe_state_${modValue}
+            (ACCT_ID,
+             T_Y,
+             ROUTE_ID)
+          VALUES
+            (#{acctId},
+             #{ty},
+             #{acctId})
+     </insert>
+    <insert id="insertTifChangeAcct" parameterType="map" >
+        insert into a_tif_change_acct
+        <trim prefix="(" suffix=")" suffixOverrides="," >
+            <if test="seqId != null" >
+                SEQ_ID,
+            </if>
+            <if test="areaCode != null" >
+                AREA_CODE,
+            </if>
+            <if test="serialnumber != null" >
+                SERIALNUMBER,
+            </if>
+            <if test="servId != null" >
+                SERV_ID,
+            </if>
+            <if test="orgAcctId != null" >
+                ORG_ACCT_ID,
+            </if>
+            <if test="dstAcctId != null" >
+                DST_ACCT_ID,
+            </if>
+            <if test="inputDate != null" >
+                INPUT_DATE,
+            </if>
+            <if test="procDate != null" >
+                PROC_DATE,
+            </if>
+            <if test="state != null" >
+                STATE,
+            </if>
+            <if test="notes != null" >
+                NOTES,
+            </if>
+            <if test="routeId != null" >
+                ROUTE_ID,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides="," >
+            <if test="seqId != null" >
+                #{seqId,jdbcType=BIGINT},
+            </if>
+            <if test="areaCode != null" >
+                #{areaCode,jdbcType=VARCHAR},
+            </if>
+            <if test="serialnumber != null" >
+                #{serialnumber,jdbcType=VARCHAR},
+            </if>
+            <if test="servId != null" >
+                #{servId,jdbcType=BIGINT},
+            </if>
+            <if test="orgAcctId != null" >
+                #{orgAcctId,jdbcType=BIGINT},
+            </if>
+            <if test="dstAcctId != null" >
+                #{dstAcctId,jdbcType=BIGINT},
+            </if>
+            <if test="inputDate != null" >
+                #{inputDate,jdbcType=DATE},
+            </if>
+            <if test="procDate != null" >
+                #{procDate,jdbcType=DATE},
+            </if>
+            <if test="state != null" >
+                #{state,jdbcType=CHAR},
+            </if>
+            <if test="notes != null" >
+                #{notes,jdbcType=VARCHAR},
+            </if>
+            <if test="routeId != null" >
+                #{routeId,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+    <select id="getAcctSeq" resultType="java.lang.Long" parameterType="map">
+	select ${seq_name}.nextval
+  </select>
+</mapper>

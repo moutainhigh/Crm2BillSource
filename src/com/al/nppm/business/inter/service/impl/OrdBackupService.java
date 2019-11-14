@@ -20,7 +20,7 @@ import java.util.*;
 public class OrdBackupService {
 	private static Logger logger = Logger.getLogger(OrdBackupService.class);
 
-	private static SimpleDateFormat sdf = new SimpleDateFormat("yyyyMM");
+//	private static SimpleDateFormat sdf = new SimpleDateFormat("yyyyMM");
 
 	private static final ResourceBundle bundle = java.util.ResourceBundle.getBundle("config/tableColumns");
 //	private static PropertiesUtil propertiesUtil=new PropertiesUtil("config/tableColumns.properties");
@@ -51,13 +51,15 @@ public class OrdBackupService {
 					queryMap.put("FINISH_DATE",ordmap.get("FINISH_DATE"));
 
 					//如果归档组下存在ONE_ITEM_RESULT.IF_CHARGE_OFF = 1且PROC_FLAG   != 1的数据，则不迁移,继续下一个归档组
-                    if(!checkOneItemResult(queryMap)){
-                        continue;
-                    }
+					if (!checkOneItemResult(queryMap)) {
+                        transactionManager.rollback(status);
+						continue;
+					}
 					//如果归档组下存在ORD_OFFER_INST是租机套餐，且STATUS_CD！=1的数据，则不迁移
-                    if(!checkOrdOfferInst(queryMap)){
-                        continue;
-                    }
+					if (!checkOrdOfferInst(queryMap)) {
+                        transactionManager.rollback(status);
+						continue;
+					}
 
 					backupOrdTable(queryMap);
 	                
@@ -114,34 +116,68 @@ public class OrdBackupService {
 	/**
 	 * 迁移OrdBillProdInst表
 	 */
+	/*
 	public int backupOrdBillProdInst(Map ordMap)
             throws Exception {
 		 ordBillHisMapper.insertOrdBillProdInstHis(ordMap);
 		 ordBillHisMapper.deleteOrdBillProdInst(ordMap);
 		 return 1;
 	}
-	
-	public int backupOrdTable(Map queryMap) throws Exception {
-		String month=sdf.format(queryMap.get("FINISH_DATE"));
-		queryMap.put("MONTH",month);
-		List<String> tableNames= Arrays.asList(bundle.getString("tableList").split(","));
-		if (tableNames.size() > 0) {
-			for(String table:tableNames){
-				System.out.println(table);
-				queryMap.put("TABLE_NAME",table);
+	*/
 
-				List<Map<String, Object>> list = ordBillHisMapper.selectOrdTable(queryMap);
+	public int backupOrdTable(Map queryMap) throws Exception {
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMM");
+		String month = sdf.format(queryMap.get("FINISH_DATE"));
+		queryMap.put("MONTH", month);
+//		List<String> tableNames = Arrays.asList(bundle.getString("tableList").split(","));
+//		if (tableNames.size() > 0) {
+//			for (String table : tableNames) {
+////				System.out.println(table);
+//				queryMap.put("TABLE_NAME", table);
+//				List<Map<String, Object>> list = ordBillHisMapper.selectOrdTable(queryMap);
+//				if (list.size() > 0) {
+//					for (int i = 0; i < list.size(); i++) {
+//						Map ordmap = (Map) list.get(i);
+//						ordmap.put("TABLE_NAME", queryMap.get("TABLE_NAME"));
+//						ordmap.put("MONTH", month);
+//						ordBillBackupMapper.insertOrdTableHis(ordmap);
+//						ordBillHisMapper.deleteOrdTable(ordmap);
+//					}
+//				}
+//			}
+//		}
+
+		//查询总控对象表
+		queryMap.put("tableName", "ORD_BILL_OBJ");
+		List<Map<String, Object>> list = ordBillHisMapper.selectOrdTable(queryMap);
+		if (list.size() > 0) {
+			for (int i = 0; i < list.size(); i++) {//遍历总控对象表来迁移
+				Map map=list.get(i);
+				backupSubTable(map,month);
+			}
+		}
+
+//		List<String> tableNames = Arrays.asList(bundle.getString("tableList").split(","));
+		List<String> tableNames =new ArrayList<String>();
+		tableNames.add("ORD_BILL");
+		tableNames.add("ORD_BILL_OBJ");
+		tableNames.add("ORD_BILL_PROD_INST");
+		tableNames.add("ONE_ITEM_RESULT");
+		if (tableNames.size() > 0) {
+			for (String table : tableNames) {
+//				System.out.println(table);
+				queryMap.put("tableName", table);
+				list = ordBillHisMapper.selectOrdTable(queryMap);
 				if (list.size() > 0) {
 					for (int i = 0; i < list.size(); i++) {
 						Map ordmap = (Map) list.get(i);
-						ordmap.put("TABLE_NAME", queryMap.get("TABLE_NAME"));
+						ordmap.put("tableName", queryMap.get("tableName"));
 						ordmap.put("MONTH", month);
 						ordBillBackupMapper.insertOrdTableHis(ordmap);
-						ordBillHisMapper.deleteOrdTable(ordmap);
+//						ordBillHisMapper.deleteOrdTable(ordmap);
 					}
+					ordBillHisMapper.deleteOrdTable((Map) list.get(0));
 				}
-
-
 			}
 		}
 
@@ -157,13 +193,36 @@ public class OrdBackupService {
 		return 1;
 	}
 
+	/**
+	 * 备份分表
+	 * @param queryMap
+	 * @param month
+	 * @return
+	 */
+	public int backupSubTable(Map queryMap, String month) {
+		queryMap.put("tableName",queryMap.get("TABLE_NAME"));
+		List<Map<String, Object>> list = ordBillHisMapper.selectOrdTable(queryMap);
+		if (list.size() > 0) {
+			for (int i = 0; i < list.size(); i++) {
+				Map ordmap = (Map) list.get(i);
+				ordmap.put("tableName", queryMap.get("TABLE_NAME"));
+				ordmap.put("MONTH", month);
+				ordBillBackupMapper.insertOrdTableHis(ordmap);
+			}
+			ordBillHisMapper.deleteOrdTable( (Map) list.get(0));
+		}
+		return 1;
+	}
+
+
+
 	private boolean checkOneItemResult(Map  queryMap){
         //如果归档组下存在ONE_ITEM_RESULT.IF_CHARGE_OFF = 1且PROC_FLAG   != 1的数据，则不迁移
         boolean flag=true;
         List<Map<String,Object>> oneItemResultList=ordBillHisMapper.selectOneItemResult(queryMap);
         if(oneItemResultList.size()>0){
             for(Map oneItemMap:oneItemResultList){
-                if(!"1".equals(oneItemMap.get("procFlag"))){
+                if(!"1".equals(oneItemMap.get("procFlag").toString())){
                     flag=false;
                     break;
                 }
@@ -185,7 +244,7 @@ public class OrdBackupService {
 //                }
                 //租机套餐配置在OFFER_CATALOG_LOCATION表中
 				List<Map<String,Object>> zjList = cpcDao.getCountFromOfferCatalogLocation(offerInstMap);
-                if (zjList.size()>0&&!"1".equals(offerInstMap.get("statusCd"))){
+                if (zjList.size()>0&&!"1".equals(offerInstMap.get("statusCd").toString())){
                     flag=false;
                     break;
                 }

@@ -14,16 +14,11 @@ public class OrdBillHisProvider {
 	public String selectOrdBill(Map map) {
 		String sql = "select ARCH_GRP_ID,CUST_ORDER_ID,REGION_ID,CREATE_ORG_ID,CREATE_STAFF,CREATE_DATE,FINISH_DATE," +
 				"PROC_FLAG,PROC_DATE,PROC_CNT,NOTES,CUST_ID from ord_bill " +
-				"where proc_flag=1 and PROC_DATE<date_sub(now(), interval 1 hour)" +
-				" and FINISH_DATE<date_sub(now(), interval 1 hour)"+
-				" order by FINISH_DATE";
+				"where proc_flag=1 and PROC_DATE<date_sub(now(), interval 48 hour) " +
+				" and FINISH_DATE<date_sub(now(), interval 48 hour) "+
+				" limit 0,1000 ";
 
-		//测试用
-//		String sql = "select ARCH_GRP_ID,CUST_ORDER_ID,REGION_ID,CREATE_ORG_ID,CREATE_STAFF,CREATE_DATE,FINISH_DATE," +
-//				"PROC_FLAG,PROC_DATE,PROC_CNT,NOTES,CUST_ID from ord_bill " +
-//				"where ARCH_GRP_ID=640000007078" +
-//
-//				" order by FINISH_DATE";
+
 		return sql;
 	}
 	
@@ -78,39 +73,48 @@ public class OrdBillHisProvider {
 	}
 	
 	public String selectOrdTable(Map map) {
-		String sql=ResourceUtil.selectSql.get(map.get("TABLE_NAME").toString());
+		String sql=ResourceUtil.selectSql.get(map.get("tableName").toString());
 		if(StringUtil.isEmpty(sql)){
-			sql="select %s from %s where ARCH_GRP_ID=#{ARCH_GRP_ID} ";
-			String columns=bundle.getString(map.get("TABLE_NAME").toString());
-			sql=String.format(sql, columns,map.get("TABLE_NAME").toString());
-			ResourceUtil.selectSql.put(map.get("TABLE_NAME").toString(),sql);
+			sql="select %s from %s where ARCH_GRP_ID=#{ARCH_GRP_ID} and ORDER_ITEM_ID=#{ORDER_ITEM_ID} ";
+			if("ORD_BILL".equals(map.get("tableName").toString())
+					||"ORD_BILL_OBJ".equals(map.get("tableName").toString())
+					||"ORD_BILL_PROD_INST".equals(map.get("tableName").toString())
+					|"ONE_ITEM_RESULT".equals(map.get("tableName").toString())){
+				sql="select %s from %s where ARCH_GRP_ID=#{ARCH_GRP_ID}  ";
+			}
+			String columns=bundle.getString(map.get("tableName").toString());
+			sql=String.format(sql, columns,map.get("tableName").toString());
+			ResourceUtil.selectSql.put(map.get("tableName").toString(),sql);
 		}
 		return sql;
 	}
 
-	/**
-	 * 写历史表的语句
-	 * @param map
-	 * @return
-	 */
+
 	public String insertOrdTableHis(Map map) {
-		String sql=ResourceUtil.insertSql.get(map.get("TABLE_NAME").toString());
+		String sql=ResourceUtil.insertSql.get(map.get("tableName").toString());
 		if(StringUtil.isEmpty(sql)){
 			sql="insert into TABLENAME(%s)  values(%s)";
-			String columns=bundle.getString(map.get("TABLE_NAME").toString());
+			String columns=bundle.getString(map.get("tableName").toString());
 			String values=formatValues(columns);
 			sql=String.format(sql, columns,values);
-			ResourceUtil.insertSql.put(map.get("TABLE_NAME").toString(),sql);
+			ResourceUtil.insertSql.put(map.get("tableName").toString(),sql);
 		}
 		return sql.replaceFirst("TABLENAME",
-				map.get("TABLE_NAME").toString()+"_"+map.get("MONTH").toString());
+				map.get("tableName").toString()+"_"+map.get("MONTH").toString());
 //		return sql.replaceFirst("TABLENAME",
 //				map.get("TABLE_NAME").toString());
 	}
 	
 	public String deleteOrdTable(Map map) {
-		String sql="delete from  "+map.get("TABLE_NAME").toString()+
-				" where ARCH_GRP_ID=#{ARCH_GRP_ID} ";
+		String sql="delete from  "+map.get("tableName").toString()+
+				" where ARCH_GRP_ID=#{ARCH_GRP_ID} and ORDER_ITEM_ID=#{ORDER_ITEM_ID}";
+		if("ORD_BILL".equals(map.get("tableName").toString())
+				||"ORD_BILL_OBJ".equals(map.get("tableName").toString())
+				||"ORD_BILL_PROD_INST".equals(map.get("tableName").toString())
+				|"ONE_ITEM_RESULT".equals(map.get("tableName").toString())){
+			sql="delete from  "+map.get("tableName").toString()+
+					" where ARCH_GRP_ID=#{ARCH_GRP_ID} ";
+		}
 		return sql;
 	}
 	

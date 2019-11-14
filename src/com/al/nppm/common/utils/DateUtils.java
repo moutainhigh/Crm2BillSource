@@ -131,7 +131,31 @@ public class DateUtils {
 		current.set( Calendar.SECOND, 59 );
 		return current;
 	}
+	
+	/**
+	 * 获取下个月第一天
+	 * @param date
+	 * @return
+	 */
+	public static Date getNextMonthFirstDay(Date date){
+        Calendar current = Calendar.getInstance();
+        current.setTime(date);
+        current.add( Calendar.MONTH, 1 );
+        current.set( Calendar.DAY_OF_MONTH, 1 );
+        return setPattern(current,0);
+    }
+	/**
+	 * 当前日期往后推迟几天
+	 * @param date
+	 * @return
+	 */
+	public static Date getNextSomeDay(Date date,int dayCnt){
+        Calendar current = Calendar.getInstance();
+        current.setTime(date);
+        current.add( Calendar.DAY_OF_MONTH, dayCnt );
+        return setPattern(current,0);
+    }
 	public static void main(String[] args) {
-		System.out.println(getBillingCycle(-1) );
+		System.out.println(getNextMonthFirstDay(new Date()) );
 	}
 }

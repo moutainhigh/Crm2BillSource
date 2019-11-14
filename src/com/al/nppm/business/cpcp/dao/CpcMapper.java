@@ -25,4 +25,6 @@ public interface CpcMapper {
     public Long getCountFromOfferCatalogLocation_hongbao(Map map);
     public Long getCountFromPOfferPayplanInfo(Map map);
     public Long getShareLevel(Map map);
+    public List<Map<String,Object>> selectPOfferPayplanInfo(Map map);
+
 }

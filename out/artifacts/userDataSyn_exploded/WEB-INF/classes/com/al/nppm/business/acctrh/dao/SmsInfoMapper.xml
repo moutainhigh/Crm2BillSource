@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.al.nppm.business.acctrh.dao.SmsInfoMapper" >
+
+    <insert id="insert" parameterType="com.al.nppm.model.SmsInfo">
+    insert into SMS_INFO (ID, MSISDN, FLAG,
+      MSG, STS, GET_DATE, PARA1,
+      PARA2, PARA3, SEND_DATE,
+      MSG_ID, PRI, ACC_ID,
+      RECV, SAVE_HIS_DATE)
+    values (#{id,jdbcType=DECIMAL}, #{msisdn,jdbcType=VARCHAR}, #{flag,jdbcType=VARCHAR},
+      #{msg,jdbcType=VARCHAR}, #{sts,jdbcType=CHAR}, #{getDate,jdbcType=TIMESTAMP}, #{para1,jdbcType=VARCHAR},
+      #{para2,jdbcType=VARCHAR}, #{para3,jdbcType=VARCHAR}, #{sendDate,jdbcType=TIMESTAMP},
+      #{msgId,jdbcType=VARCHAR}, #{pri,jdbcType=DECIMAL}, #{accId,jdbcType=DECIMAL},
+      #{recv,jdbcType=VARCHAR}, #{saveHisDate,jdbcType=DATE})
+  </insert>
+    <select id="getSeq" resultType="java.lang.Long" parameterType="map">
+	select ${seq_name}.nextval from dual
+  </select>
+</mapper>

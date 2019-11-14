@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.al.nppm.business.acct.dao.AElecInvContactMapper">
+  <resultMap id="BaseResultMap" type="com.al.nppm.business.acct.dao.vo.AElecInvContact">
+    <id column="contact_id" jdbcType="INTEGER" property="contactId" />
+    <result column="acct_id" jdbcType="BIGINT" property="acctId" />
+    <result column="acc_nbr" jdbcType="VARCHAR" property="accNbr" />
+    <result column="email" jdbcType="VARCHAR" property="email" />
+    <result column="state" jdbcType="VARCHAR" property="state" />
+    <result column="state_date" jdbcType="TIMESTAMP" property="stateDate" />
+    <result column="tax_payer_nbr" jdbcType="VARCHAR" property="taxPayerNbr" />
+    <result column="tax_payer_name" jdbcType="VARCHAR" property="taxPayerName" />
+    <result column="tax_payer_addr" jdbcType="VARCHAR" property="taxPayerAddr" />
+    <result column="tax_payer_bank" jdbcType="VARCHAR" property="taxPayerBank" />
+    <result column="send_flag" jdbcType="INTEGER" property="sendFlag" />
+    <result column="route_id" jdbcType="BIGINT" property="routeId" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    contact_id, acct_id, acc_nbr, email, `state`, state_date, tax_payer_nbr, tax_payer_name, 
+    tax_payer_addr, tax_payer_bank, send_flag, route_id
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from a_elec_inv_contact
+    where contact_id = #{contactId,jdbcType=INTEGER}
+  </select>
+
+  <insert id="insertAElecInvContact" parameterType="com.al.nppm.business.acct.dao.vo.AElecInvContact">
+    insert into a_elec_inv_contact
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="contactId != null">
+        contact_id,
+      </if>
+      <if test="acctId != null">
+        acct_id,
+      </if>
+      <if test="accNbr != null">
+        acc_nbr,
+      </if>
+      <if test="email != null">
+        email,
+      </if>
+      <if test="state != null">
+        `state`,
+      </if>
+      <if test="stateDate != null">
+        state_date,
+      </if>
+      <if test="taxPayerNbr != null">
+        tax_payer_nbr,
+      </if>
+      <if test="taxPayerName != null">
+        tax_payer_name,
+      </if>
+      <if test="taxPayerAddr != null">
+        tax_payer_addr,
+      </if>
+      <if test="taxPayerBank != null">
+        tax_payer_bank,
+      </if>
+      <if test="sendFlag != null">
+        send_flag,
+      </if>
+      <if test="routeId != null">
+        route_id,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="contactId != null">
+        #{contactId,jdbcType=INTEGER},
+      </if>
+      <if test="acctId != null">
+        #{acctId,jdbcType=BIGINT},
+      </if>
+      <if test="accNbr != null">
+        #{accNbr,jdbcType=VARCHAR},
+      </if>
+      <if test="email != null">
+        #{email,jdbcType=VARCHAR},
+      </if>
+      <if test="state != null">
+        #{state,jdbcType=VARCHAR},
+      </if>
+      <if test="stateDate != null">
+        #{stateDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="taxPayerNbr != null">
+        #{taxPayerNbr,jdbcType=VARCHAR},
+      </if>
+      <if test="taxPayerName != null">
+        #{taxPayerName,jdbcType=VARCHAR},
+      </if>
+      <if test="taxPayerAddr != null">
+        #{taxPayerAddr,jdbcType=VARCHAR},
+      </if>
+      <if test="taxPayerBank != null">
+        #{taxPayerBank,jdbcType=VARCHAR},
+      </if>
+      <if test="sendFlag != null">
+        #{sendFlag,jdbcType=INTEGER},
+      </if>
+      <if test="routeId != null">
+        #{routeId,jdbcType=BIGINT},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="generator.AElecInvContact">
+    update a_elec_inv_contact
+    <set>
+      <if test="acctId != null">
+        acct_id = #{acctId,jdbcType=BIGINT},
+      </if>
+      <if test="accNbr != null">
+        acc_nbr = #{accNbr,jdbcType=VARCHAR},
+      </if>
+      <if test="email != null">
+        email = #{email,jdbcType=VARCHAR},
+      </if>
+      <if test="state != null">
+        `state` = #{state,jdbcType=VARCHAR},
+      </if>
+      <if test="stateDate != null">
+        state_date = #{stateDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="taxPayerNbr != null">
+        tax_payer_nbr = #{taxPayerNbr,jdbcType=VARCHAR},
+      </if>
+      <if test="taxPayerName != null">
+        tax_payer_name = #{taxPayerName,jdbcType=VARCHAR},
+      </if>
+      <if test="taxPayerAddr != null">
+        tax_payer_addr = #{taxPayerAddr,jdbcType=VARCHAR},
+      </if>
+      <if test="taxPayerBank != null">
+        tax_payer_bank = #{taxPayerBank,jdbcType=VARCHAR},
+      </if>
+      <if test="sendFlag != null">
+        send_flag = #{sendFlag,jdbcType=INTEGER},
+      </if>
+      <if test="routeId != null">
+        route_id = #{routeId,jdbcType=BIGINT},
+      </if>
+    </set>
+    where contact_id = #{contactId,jdbcType=INTEGER}
+  </update>
+</mapper>

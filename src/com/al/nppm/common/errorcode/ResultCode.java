@@ -124,6 +124,7 @@ public class ResultCode {
     public static String PRODINST_U_ERROR_042 = "PRODINST_U_ERROR_042";
     public static String PRODINST_U_ERROR_043 = "PRODINST_U_ERROR_043";
     public static String PRODINST_U_ERROR_044 = "PRODINST_U_ERROR_044";
+    public static String PRODINST_U_ERROR_045 = "PRODINST_U_ERROR_045";
     //销户错误码
     public static String PRODINST_D_ERROR_001 = "PRODINST_D_ERROR_001";
     public static String PRODINST_D_ERROR_002 = "PRODINST_D_ERROR_002";
@@ -148,6 +149,8 @@ public class ResultCode {
     public static String PRODATTR_ERROR_007 = "PRODATTR_ERROR_007";
     public static String PRODATTR_ERROR_008 = "PRODATTR_ERROR_008";
     public static String PRODATTR_ERROR_009 = "PRODATTR_ERROR_009";
+    public static String PRODATTR_ERROR_010 = "PRODATTR_ERROR_010";
+    public static String PRODATTR_ERROR_011 = "PRODATTR_ERROR_011";
     //用户附属
     public static String PRODSUB_ERROR_001 = "PRODSUB_ERROR_001";
     public static String PRODSUB_ERROR_002 = "PRODSUB_ERROR_002";
@@ -213,6 +216,8 @@ public class ResultCode {
     public static String OFFERINS_I_ERROR_014 = "OFFERINS_I_ERROR_014";
     public static String OFFERINS_I_ERROR_015 = "OFFERINS_I_ERROR_015";
     public static String OFFERINS_I_ERROR_016 = "OFFERINS_I_ERROR_016";
+    public static String OFFERINS_I_ERROR_017 = "OFFERINS_I_ERROR_017";
+    public static String OFFERINS_I_ERROR_018 = "OFFERINS_I_ERROR_018";
     //成员变更
     public static String OFFERGROUP_ERROR_001 = "OFFERGROUP_ERROR_001";
     public static String OFFERGROUP_ERROR_002 = "OFFERGROUP_ERROR_002";
@@ -220,9 +225,12 @@ public class ResultCode {
     public static String OFFERGROUP_ERROR_004 = "OFFERGROUP_ERROR_004";
     public static String OFFERGROUP_ERROR_005 = "OFFERGROUP_ERROR_005";
     public static String OFFERGROUP_ERROR_006 = "OFFERGROUP_ERROR_006";
+    public static String OFFERGROUP_ERROR_007 = "OFFERGROUP_ERROR_007";
     //修改参数
     public static String OFFERATTR_ERROR_001 = "OFFERATTR_ERROR_001";
     public static String OFFERATTR_ERROR_002 = "OFFERATTR_ERROR_002";
+    public static String OFFERATTR_ERROR_003 = "OFFERATTR_ERROR_003";
+    public static String OFFERATTR_ERROR_004 = "OFFERATTR_ERROR_004";
 
     //退订
     public static String OFFERINS_D_ERROR_001 = "OFFERINS_D_ERROR_001";
@@ -239,23 +247,31 @@ public class ResultCode {
     public static String OFFERINS_D_ERROR_012 = "OFFERINS_D_ERROR_012";
     public static String OFFERINS_D_ERROR_013 = "OFFERINS_D_ERROR_013";
     public static String OFFERINS_D_ERROR_014 = "OFFERINS_D_ERROR_014";
+
+    public static String OFFERINS_U_ERROR_001 = "OFFERINS_U_ERROR_001";
+    public static String OFFERINS_U_ERROR_002 = "OFFERINS_U_ERROR_002";
+    public static String OFFERINS_U_ERROR_003 = "OFFERINS_U_ERROR_003";
+    public static String OFFERINS_U_ERROR_004 = "OFFERINS_U_ERROR_004";
+    public static String OFFERINS_U_ERROR_005 = "OFFERINS_U_ERROR_005";
+    public static String OFFERINS_U_ERROR_006 = "OFFERINS_U_ERROR_006";
+    public static String OFFERINS_U_ERROR_007 = "OFFERINS_U_ERROR_007";
     //party
     public static String PARTY_ERROR_001 = "PARTY_ERROR_001";
-    public static String PARTY_ERROR_002 = "PARTY_ERROR_001";
-    public static String PARTY_ERROR_003 = "PARTY_ERROR_001";
-    public static String PARTY_ERROR_004 = "PARTY_ERROR_001";
-    public static String PARTY_ERROR_005 = "PARTY_ERROR_001";
-    public static String PARTY_ERROR_006 = "PARTY_ERROR_001";
-    public static String PARTY_ERROR_007 = "PARTY_ERROR_001";
-    public static String PARTY_ERROR_008 = "PARTY_ERROR_001";
-    public static String PARTY_ERROR_009 = "PARTY_ERROR_001";
-    public static String PARTY_ERROR_010 = "PARTY_ERROR_001";
-    public static String PARTY_ERROR_011 = "PARTY_ERROR_001";
-    public static String PARTY_ERROR_012 = "PARTY_ERROR_001";
-    public static String PARTY_ERROR_013 = "PARTY_ERROR_001";
-    public static String PARTY_ERROR_014 = "PARTY_ERROR_001";
-    public static String PARTY_ERROR_015 = "PARTY_ERROR_001";
-    public static String PARTY_ERROR_016 = "PARTY_ERROR_001";
+    public static String PARTY_ERROR_002 = "PARTY_ERROR_002";
+    public static String PARTY_ERROR_003 = "PARTY_ERROR_003";
+    public static String PARTY_ERROR_004 = "PARTY_ERROR_004";
+    public static String PARTY_ERROR_005 = "PARTY_ERROR_005";
+    public static String PARTY_ERROR_006 = "PARTY_ERROR_006";
+    public static String PARTY_ERROR_007 = "PARTY_ERROR_007";
+    public static String PARTY_ERROR_008 = "PARTY_ERROR_008";
+    public static String PARTY_ERROR_009 = "PARTY_ERROR_009";
+    public static String PARTY_ERROR_010 = "PARTY_ERROR_010";
+    public static String PARTY_ERROR_011 = "PARTY_ERROR_011";
+    public static String PARTY_ERROR_012 = "PARTY_ERROR_012";
+    public static String PARTY_ERROR_013 = "PARTY_ERROR_013";
+    public static String PARTY_ERROR_014 = "PARTY_ERROR_014";
+    public static String PARTY_ERROR_015 = "PARTY_ERROR_015";
+    public static String PARTY_ERROR_016 = "PARTY_ERROR_016";
     //tax
     public static String TAX_ERROR_001 = "TAX_ERROR_001";
     public static String TAX_ERROR_002 = "TAX_ERROR_002";

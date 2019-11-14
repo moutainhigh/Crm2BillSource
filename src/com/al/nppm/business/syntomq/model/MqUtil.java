@@ -9,8 +9,8 @@ public class MqUtil {
 
     public static String createTopicKey(String topicName) {
         if (topicName != null && !topicName.isEmpty()) {
-            SimpleDateFormat formatDate = new SimpleDateFormat("yyyyMMdd");
-            String dateString = formatDate.format(new Date());
+            SimpleDateFormat formatDate = new SimpleDateFormat("yyyyMMddHHmmss");
+            String dateString = formatDate.format(new Date())+( int )(Math.random()*1000*1000*1000);
             return topicName + "Key" + dateString;
         } else {
             return topicName;
@@ -19,8 +19,8 @@ public class MqUtil {
 
     public static String createTopicTag(String topicName) {
         if (topicName != null && !topicName.isEmpty()) {
-            SimpleDateFormat formatDate = new SimpleDateFormat("yyyyMMdd");
-            String dateString = formatDate.format(new Date());
+            SimpleDateFormat formatDate = new SimpleDateFormat("yyyyMMddHHmmss");
+            String dateString = formatDate.format(new Date())+( int )(Math.random()*1000*1000*1000);
             return topicName + "Tag" + dateString;
         } else {
             return topicName;

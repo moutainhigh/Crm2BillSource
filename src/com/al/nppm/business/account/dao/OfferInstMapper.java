@@ -11,6 +11,10 @@ public interface OfferInstMapper {
 
 	public int insertOfferInst(Map map);
 	public int updateOfferInst(Map map);
+
+	public int updateOfferInstForUpdateDate(Map map);
+	public int updateOfferProdForUpdateDate(Map map);
+	public int updateOfferInstAttrForUpdateDate(Map map);
 	public int insertOfferInstAttr(Map map);
 	public int updateOfferInstAttr(Map map);
 	
@@ -45,9 +49,7 @@ public interface OfferInstMapper {
 	public List<Map<String, Object>> getOfferObjfromObjId(Map map);
 	public List<Map<String, Object>> selectOfferRoleId(@Param("offerId") long offerId,
 												 @Param("roleId") String routeId);
-
-	public List<Map<String, Object>> selectOfferId(@Param("offerId") long offerId);
-
+	public List<Map<String, Object>> selectOfferObjfromInstId(Map map);
 	public List<Map<String, Object>> selectOfferInstAttrIdFromInstId(@Param("offerInstId") long offerInstId,
 																	 @Param("routeId") long routeId,
 																	 @Param("expDate") String expDate);

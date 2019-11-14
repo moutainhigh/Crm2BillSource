@@ -45,28 +45,31 @@ public class ErrorDealService implements IErrorDealService {
         List<Map<String, Object>> orderList = ordBillMapperDao.selectOrdBillError("PRODACCT_ERROR_013");
         if (orderList.size() > 0) {
             for (Map<String, Object> orderMap : orderList) {
-                WebApplicationContext contextLoader = ContextLoader.getCurrentWebApplicationContext();
-                DataSourceTransactionManager transactionManager = (DataSourceTransactionManager) contextLoader.getBean("transactionManager");
-                DefaultTransactionDefinition def = new DefaultTransactionDefinition();
-                def.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRES_NEW); // 事物隔离级别，开启新事务，这样会比较安全些。
-                TransactionStatus status = transactionManager.getTransaction(def); // 获得事务状态
-                try {
-                    flag = doErrorDeal(orderMap, msg);
-                    String strResultmsgString;
-                    if (flag < 0) {
-                        // 回滚
+                long archGrpId = Long.parseLong(orderMap.get("ARCH_GRP_ID").toString());
+                long listCnt = ordBillMapperDao.selectOrdBillProdInstAcctRel(archGrpId);
+                if (listCnt > 0) {
+                    WebApplicationContext contextLoader = ContextLoader.getCurrentWebApplicationContext();
+                    DataSourceTransactionManager transactionManager = (DataSourceTransactionManager) contextLoader.getBean("transactionManager");
+                    DefaultTransactionDefinition def = new DefaultTransactionDefinition();
+                    def.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRES_NEW); // 事物隔离级别，开启新事务，这样会比较安全些。
+                    TransactionStatus status = transactionManager.getTransaction(def); // 获得事务状态
+                    try {
+                        flag = doErrorDeal(orderMap, msg);
+                        String strResultmsgString;
+                        if (flag < 0) {
+                            // 回滚
+                            transactionManager.rollback(status);
+                        } else {
+                            transactionManager.commit(status);
+                        }
+                        //}
+
+                    } catch (Exception e) {
+                        e.printStackTrace();
                         transactionManager.rollback(status);
-                    } else {
-                        transactionManager.commit(status);
+                        logger.error("处理失败：" + e.getMessage());
                     }
-                    //}
-
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    transactionManager.rollback(status);
-                    logger.error("处理失败：" + e.getMessage());
                 }
-
             }
 
         }

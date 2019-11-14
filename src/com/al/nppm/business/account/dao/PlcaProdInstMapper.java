@@ -22,9 +22,12 @@ public interface PlcaProdInstMapper {
 
     public List<Map<String, Object>> getOfferObjInstRel(Map map);
 
+    public List<Map<String, Object>> getOfferObjfromObjId(Map map);
+
     public int updateOfferObjInstRel(Map map);
 
     public int updateOfferInst(Map map);
+    public List<Map<String, Object>> getOfferInstId(Map map);
 
     public List<Map<String, Object>> getOfferInstAttr(Map map);
     public int updateOfferInstAttr(Map map);

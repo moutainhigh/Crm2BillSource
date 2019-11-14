@@ -1,0 +1,331 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="generator.AElecInvContactDao">
+  <resultMap id="BaseResultMap" type="generator.AElecInvContact">
+    <id column="contact_id" jdbcType="INTEGER" property="contactId" />
+    <result column="acct_id" jdbcType="BIGINT" property="acctId" />
+    <result column="acc_nbr" jdbcType="VARCHAR" property="accNbr" />
+    <result column="email" jdbcType="VARCHAR" property="email" />
+    <result column="state" jdbcType="VARCHAR" property="state" />
+    <result column="state_date" jdbcType="TIMESTAMP" property="stateDate" />
+    <result column="tax_payer_nbr" jdbcType="VARCHAR" property="taxPayerNbr" />
+    <result column="tax_payer_name" jdbcType="VARCHAR" property="taxPayerName" />
+    <result column="tax_payer_addr" jdbcType="VARCHAR" property="taxPayerAddr" />
+    <result column="tax_payer_bank" jdbcType="VARCHAR" property="taxPayerBank" />
+    <result column="send_flag" jdbcType="INTEGER" property="sendFlag" />
+    <result column="route_id" jdbcType="BIGINT" property="routeId" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    contact_id, acct_id, acc_nbr, email, `state`, state_date, tax_payer_nbr, tax_payer_name, 
+    tax_payer_addr, tax_payer_bank, send_flag, route_id
+  </sql>
+  <select id="selectByExample" parameterType="generator.AElecInvContactExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from a_elec_inv_contact
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+    <if test="limit != null">
+      <if test="offset != null">
+        limit ${offset}, ${limit}
+      </if>
+      <if test="offset == null">
+        limit ${limit}
+      </if>
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from a_elec_inv_contact
+    where contact_id = #{contactId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from a_elec_inv_contact
+    where contact_id = #{contactId,jdbcType=INTEGER}
+  </delete>
+  <delete id="deleteByExample" parameterType="generator.AElecInvContactExample">
+    delete from a_elec_inv_contact
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="generator.AElecInvContact">
+    insert into a_elec_inv_contact (contact_id, acct_id, acc_nbr, 
+      email, `state`, state_date, 
+      tax_payer_nbr, tax_payer_name, tax_payer_addr, 
+      tax_payer_bank, send_flag, route_id
+      )
+    values (#{contactId,jdbcType=INTEGER}, #{acctId,jdbcType=BIGINT}, #{accNbr,jdbcType=VARCHAR}, 
+      #{email,jdbcType=VARCHAR}, #{state,jdbcType=VARCHAR}, #{stateDate,jdbcType=TIMESTAMP}, 
+      #{taxPayerNbr,jdbcType=VARCHAR}, #{taxPayerName,jdbcType=VARCHAR}, #{taxPayerAddr,jdbcType=VARCHAR}, 
+      #{taxPayerBank,jdbcType=VARCHAR}, #{sendFlag,jdbcType=INTEGER}, #{routeId,jdbcType=BIGINT}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="generator.AElecInvContact">
+    insert into a_elec_inv_contact
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="contactId != null">
+        contact_id,
+      </if>
+      <if test="acctId != null">
+        acct_id,
+      </if>
+      <if test="accNbr != null">
+        acc_nbr,
+      </if>
+      <if test="email != null">
+        email,
+      </if>
+      <if test="state != null">
+        `state`,
+      </if>
+      <if test="stateDate != null">
+        state_date,
+      </if>
+      <if test="taxPayerNbr != null">
+        tax_payer_nbr,
+      </if>
+      <if test="taxPayerName != null">
+        tax_payer_name,
+      </if>
+      <if test="taxPayerAddr != null">
+        tax_payer_addr,
+      </if>
+      <if test="taxPayerBank != null">
+        tax_payer_bank,
+      </if>
+      <if test="sendFlag != null">
+        send_flag,
+      </if>
+      <if test="routeId != null">
+        route_id,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="contactId != null">
+        #{contactId,jdbcType=INTEGER},
+      </if>
+      <if test="acctId != null">
+        #{acctId,jdbcType=BIGINT},
+      </if>
+      <if test="accNbr != null">
+        #{accNbr,jdbcType=VARCHAR},
+      </if>
+      <if test="email != null">
+        #{email,jdbcType=VARCHAR},
+      </if>
+      <if test="state != null">
+        #{state,jdbcType=VARCHAR},
+      </if>
+      <if test="stateDate != null">
+        #{stateDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="taxPayerNbr != null">
+        #{taxPayerNbr,jdbcType=VARCHAR},
+      </if>
+      <if test="taxPayerName != null">
+        #{taxPayerName,jdbcType=VARCHAR},
+      </if>
+      <if test="taxPayerAddr != null">
+        #{taxPayerAddr,jdbcType=VARCHAR},
+      </if>
+      <if test="taxPayerBank != null">
+        #{taxPayerBank,jdbcType=VARCHAR},
+      </if>
+      <if test="sendFlag != null">
+        #{sendFlag,jdbcType=INTEGER},
+      </if>
+      <if test="routeId != null">
+        #{routeId,jdbcType=BIGINT},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="generator.AElecInvContactExample" resultType="java.lang.Long">
+    select count(*) from a_elec_inv_contact
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map">
+    update a_elec_inv_contact
+    <set>
+      <if test="record.contactId != null">
+        contact_id = #{record.contactId,jdbcType=INTEGER},
+      </if>
+      <if test="record.acctId != null">
+        acct_id = #{record.acctId,jdbcType=BIGINT},
+      </if>
+      <if test="record.accNbr != null">
+        acc_nbr = #{record.accNbr,jdbcType=VARCHAR},
+      </if>
+      <if test="record.email != null">
+        email = #{record.email,jdbcType=VARCHAR},
+      </if>
+      <if test="record.state != null">
+        `state` = #{record.state,jdbcType=VARCHAR},
+      </if>
+      <if test="record.stateDate != null">
+        state_date = #{record.stateDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.taxPayerNbr != null">
+        tax_payer_nbr = #{record.taxPayerNbr,jdbcType=VARCHAR},
+      </if>
+      <if test="record.taxPayerName != null">
+        tax_payer_name = #{record.taxPayerName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.taxPayerAddr != null">
+        tax_payer_addr = #{record.taxPayerAddr,jdbcType=VARCHAR},
+      </if>
+      <if test="record.taxPayerBank != null">
+        tax_payer_bank = #{record.taxPayerBank,jdbcType=VARCHAR},
+      </if>
+      <if test="record.sendFlag != null">
+        send_flag = #{record.sendFlag,jdbcType=INTEGER},
+      </if>
+      <if test="record.routeId != null">
+        route_id = #{record.routeId,jdbcType=BIGINT},
+      </if>
+    </set>
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update a_elec_inv_contact
+    set contact_id = #{record.contactId,jdbcType=INTEGER},
+      acct_id = #{record.acctId,jdbcType=BIGINT},
+      acc_nbr = #{record.accNbr,jdbcType=VARCHAR},
+      email = #{record.email,jdbcType=VARCHAR},
+      `state` = #{record.state,jdbcType=VARCHAR},
+      state_date = #{record.stateDate,jdbcType=TIMESTAMP},
+      tax_payer_nbr = #{record.taxPayerNbr,jdbcType=VARCHAR},
+      tax_payer_name = #{record.taxPayerName,jdbcType=VARCHAR},
+      tax_payer_addr = #{record.taxPayerAddr,jdbcType=VARCHAR},
+      tax_payer_bank = #{record.taxPayerBank,jdbcType=VARCHAR},
+      send_flag = #{record.sendFlag,jdbcType=INTEGER},
+      route_id = #{record.routeId,jdbcType=BIGINT}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="generator.AElecInvContact">
+    update a_elec_inv_contact
+    <set>
+      <if test="acctId != null">
+        acct_id = #{acctId,jdbcType=BIGINT},
+      </if>
+      <if test="accNbr != null">
+        acc_nbr = #{accNbr,jdbcType=VARCHAR},
+      </if>
+      <if test="email != null">
+        email = #{email,jdbcType=VARCHAR},
+      </if>
+      <if test="state != null">
+        `state` = #{state,jdbcType=VARCHAR},
+      </if>
+      <if test="stateDate != null">
+        state_date = #{stateDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="taxPayerNbr != null">
+        tax_payer_nbr = #{taxPayerNbr,jdbcType=VARCHAR},
+      </if>
+      <if test="taxPayerName != null">
+        tax_payer_name = #{taxPayerName,jdbcType=VARCHAR},
+      </if>
+      <if test="taxPayerAddr != null">
+        tax_payer_addr = #{taxPayerAddr,jdbcType=VARCHAR},
+      </if>
+      <if test="taxPayerBank != null">
+        tax_payer_bank = #{taxPayerBank,jdbcType=VARCHAR},
+      </if>
+      <if test="sendFlag != null">
+        send_flag = #{sendFlag,jdbcType=INTEGER},
+      </if>
+      <if test="routeId != null">
+        route_id = #{routeId,jdbcType=BIGINT},
+      </if>
+    </set>
+    where contact_id = #{contactId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="generator.AElecInvContact">
+    update a_elec_inv_contact
+    set acct_id = #{acctId,jdbcType=BIGINT},
+      acc_nbr = #{accNbr,jdbcType=VARCHAR},
+      email = #{email,jdbcType=VARCHAR},
+      `state` = #{state,jdbcType=VARCHAR},
+      state_date = #{stateDate,jdbcType=TIMESTAMP},
+      tax_payer_nbr = #{taxPayerNbr,jdbcType=VARCHAR},
+      tax_payer_name = #{taxPayerName,jdbcType=VARCHAR},
+      tax_payer_addr = #{taxPayerAddr,jdbcType=VARCHAR},
+      tax_payer_bank = #{taxPayerBank,jdbcType=VARCHAR},
+      send_flag = #{sendFlag,jdbcType=INTEGER},
+      route_id = #{routeId,jdbcType=BIGINT}
+    where contact_id = #{contactId,jdbcType=INTEGER}
+  </update>
+</mapper>

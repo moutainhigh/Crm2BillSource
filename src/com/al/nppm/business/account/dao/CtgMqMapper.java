@@ -18,7 +18,12 @@ public interface CtgMqMapper {
     public Map<String,Object> getProdInstPaymode(Map map);
     public Map<String,Object> getProdInstAttrSub(Map map);
 
-
+    public Map<String,Object> getTaxPayer(Map map);
+    public Map<String,Object> getPartyCert(Map map);
+    public Map<String,Object> getPaymentPlan(Map map);
+    public Map<String,Object> getExtAcct(Map map);
+    public Map<String,Object> getTifVpnGroup(Map map);
+    public Map<String,Object> getTifVpnMem(Map map);
 
 
 

@@ -1,13 +1,12 @@
 package com.al.nppm.business.account.dao;
-import java.util.List;
-import java.util.Map;
-
-import org.springframework.stereotype.Repository;
-
 import com.al.nppm.model.BillServiceLog;
 import com.al.nppm.model.CustAttr;
 import com.al.nppm.model.CustContactInfoRel;
 import com.al.nppm.model.PartyCert;
+import org.springframework.stereotype.Repository;
+
+import java.util.List;
+import java.util.Map;
 
 
 
@@ -139,7 +138,8 @@ public interface IAccountMapper {
 
 	public int insertPartyCert1(Map map);
 	public int updatePartyCert1(Map map);
-	
+
+	public List<Map<String, Object>> getPartyCert(Map map);
 
 	public int insertCustAttr1(Map map);
 	public int updateCustAttr(Map map);	

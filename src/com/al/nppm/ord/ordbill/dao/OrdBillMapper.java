@@ -16,6 +16,8 @@ public interface OrdBillMapper {
 
 	public List<Map<String, Object>> selectOrdBillObj(long archGrpId);
 
+	public List<Map<String, Object>> selectBillObject(Map map);
+
 	public List<Map<String, Object>> selectOrdCustomer(Map map);
 
 	/*add by wangbaoqiang*/
@@ -228,23 +230,31 @@ public interface OrdBillMapper {
 	//--------------------CRM预存----------------------------------
 	public List<Map<String, Object>> selectCrmRent(@Param("archGrpId") long archGrpId,
 												   @Param("orderItemId") long orderItemId,
-												   @Param("offerInstId") long offerInstId);
+												   @Param("offerInstId") long offerInstId,
+	                                               @Param("returnType") long returnType);
 
 	public List<Map<String, Object>> selectOneItemResult(@Param("archGrpId") long archGrpId,
 														 @Param("orderItemId") long orderItemId);
 
     public List<Map<String, Object>> selectTifObjectId(@Param("offerId") long offerId,
                                                  @Param("roleId") String roleId);
-
+	public List<Map<String, Object>> selectTifParamId(@Param("offerId") long offerId,
+													   @Param("attrId") String attrId);
 
 	public List<Map<String,Object>> selectServiceOfferContrast(String servcieOfferId);
 
 	public List<Map<String,Object>> selectOrdBillError(String errorNotes);
 
-	public List<Map<String,Object>> selectOrdBillProdInstAcctRel(@Param("archGrpId") long archGrpId);
+	public long selectOrdBillProdInstAcctRel(@Param("archGrpId") long archGrpId);
 
 	public int delOrdBillProdInstAcctRel(long archGrpId);
 
 	public List<Map<String,Object>> selectTifBreakDisct(@Param("offerId") long offerId);
+
+	public List<Map<String,Object>> selectTifPayPlanContrast(@Param("payPlanFlag") long payPlanFlag);
+
+	public int inserCustChange(Map map);
+
+	public List<Map<String,Object>> selectTifNoNeedOffer(@Param("offerId") long offerId);
 
 }

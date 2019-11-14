@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.al.nppm.business.bill.dao.BillMapper" >
+
+    <select id="getofferTypeBill"  resultType="java.lang.String" parameterType="map">
+     SELECT DEFAULT_VALUE
+            FROM OFFER_ATTR
+           WHERE ATTR_ID = #{attrId}
+             AND OFFER_ID = #{offerId}
+    </select>
+
+    <select id="getOfferObjRelId" resultType="java.lang.String" parameterType="map"  >
+	   SELECT OFFER_OBJ_REL_ID FROM OFFER_OBJ_REL
+                               WHERE OFFER_ID = #{offerId}
+	</select>
+
+    <select id="getProdCount" resultType="java.lang.Long" parameterType="map">
+        select count(*)
+        from PRODUCT
+        where prod_id=#{prodId}
+    </select>
+
+    <select id="getProductList"  resultType="java.util.HashMap" parameterType="map">
+        select PROD_ID prodId
+                from PRODUCT
+    </select>
+
+    <select id="selectOfferRoleId" resultType="java.util.Map">
+    SELECT  OFFER_OBJ_REL_ID, OFFER_ID, OBJ_TYPE, OBJ_ID, ROLE_ID, EFF_DATE, EXP_DATE, APPLY_REGION_ID,
+    STATUS_CD, CREATE_STAFF, UPDATE_STAFF, CREATE_DATE, STATUS_DATE, UPDATE_DATE, REMARK
+  FROM  OFFER_OBJ_REL
+  WHERE OFFER_ID=#{offerId}
+   and ROLE_ID=#{roleId}
+  </select>
+
+    <select id="selectOfferId" resultType="java.util.Map">
+      select OFFER_ID offerId,OFFER_NAME offerName
+      from offer
+      where OFFER_ID = #{offerId}
+    </select>
+
+    <select id="getofferAttrIdCnt"  resultType="java.lang.Long" >
+     SELECT count(1)
+            FROM OFFER_ATTR
+           WHERE  OFFER_ID = #{offerId}
+           and ATTR_ID = #{attrId}
+    </select>
+
+    <select id="dealExpDateOffer"  resultType="java.lang.Long" >
+    select count(1) from pricing_combine a ,event_pricing_strategy b
+    WHERE a.event_pricing_strategy_id = b.event_pricing_strategy_id
+    AND b.event_type_id = 3531
+    and a.PRICING_PLAN_ID = #{offerId}
+    </select>
+</mapper>

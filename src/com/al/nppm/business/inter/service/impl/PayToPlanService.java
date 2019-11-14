@@ -8,25 +8,19 @@ package com.al.nppm.business.inter.service.impl;/**
 
 import com.al.nppm.business.account.dao.IPayToPlanMapper;
 import com.al.nppm.business.account.dao.IProdInstMapper;
+import com.al.nppm.business.acct.dao.AcctMapper;
 import com.al.nppm.business.core.SynMapContextHolder;
 import com.al.nppm.business.cpcp.dao.CpcMapper;
 import com.al.nppm.business.inter.service.IPayToPlanService;
 import com.al.nppm.business.inter.service.IRouteService;
-import com.al.nppm.business.syntomq.model.InterPayToPlan;
-import com.al.nppm.business.syntomq.model.MqObject;
-import com.al.nppm.business.syntomq.model.MqUtil;
 import com.al.nppm.business.syntomq.tool.MqTool;
+import com.al.nppm.business.syntomq.tool.TopicType;
 import com.al.nppm.common.errorcode.ResultCode;
 import com.al.nppm.common.utils.StringUtil;
 import com.al.nppm.model.Message;
 import com.al.nppm.ord.ordbill.dao.OrdBillMapper;
 import com.al.nppm.ord.ordbill.dao.OrdPayMapper;
-import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.ctg.mq.api.IMQProducer;
-import com.ctg.mq.api.bean.MQMessage;
-import com.ctg.mq.api.bean.MQSendResult;
-import com.ctg.mq.api.bean.MQSendStatus;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
@@ -65,6 +59,8 @@ public class PayToPlanService implements IPayToPlanService {
     public IRouteService routeDao;
     @Autowired
     public OrdBillMapper ordBillDao;
+    @Autowired
+    public AcctMapper acctMapperDao;
     /**
      * @return void
      * @Author maozp3
@@ -80,7 +76,6 @@ public class PayToPlanService implements IPayToPlanService {
         int successCount = 0;//本次处理成功数
         //处理业务逻辑。  flag=1处理成功，其他失败
         int flag = -1;
-        Message msg = new Message();
         Map<String, Object> updateMap = new HashMap<String, Object>();
 
         Map queryMap = new HashMap();
@@ -94,6 +89,7 @@ public class PayToPlanService implements IPayToPlanService {
         List<Map<String, Object>> orderList = ordPayDao.selectOrderlist(queryMap);
         if (orderList.size() > 0) {
             for (Map<String, Object> orderMap : orderList) {
+                Message msg = new Message();
                 long startOperTime = System.currentTimeMillis();
                 SynMapContextHolder.init();
                 sumCount = orderList.size();
@@ -114,7 +110,9 @@ public class PayToPlanService implements IPayToPlanService {
                         transactionManager.rollback(status);
                         updateOrdOfferInst(updateMap, 2, strResultmsgString);
                     } else {
-                        msg.setMessage("处理成功");
+                        if(StringUtil.isEmpty(msg.getMessage())){
+                            msg.setMessage("处理成功");
+                        }
                         transactionManager.commit(status);
                         strResultmsgString = msg.getMessage() + "，处理时长" + (System.currentTimeMillis() - startOperTime) + "ms";
                         successCount++;
@@ -150,27 +148,14 @@ public class PayToPlanService implements IPayToPlanService {
     public int acctProDeposit(Map orderMap, Message msg) throws Exception {
         //共享级别，2-用户级，1-帐户级
         Long shareLevel = 1L;
-        Long depositType = 1L;
-        String amount;
+        Long depositType = 2L;
+        String amount= "";
         Long prodInstId = null;
         Long acctId = null;
         Long objectId;
         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        SimpleDateFormat d = new SimpleDateFormat("yyyyMMddHHmmss");
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMddHHmmss");
         Date date = new Date();
-        /*
-        if(StringUtil.isEmpty(orderMap.get("OFFER_INST_ID"))
-            || StringUtil.isEmpty(orderMap.get("OFFER_ID"))
-            || StringUtil.isEmpty(orderMap.get("ARCH_GRP_ID"))
-            || StringUtil.isEmpty(orderMap.get("EFF_DATE"))
-            || StringUtil.isEmpty(orderMap.get("OPER_TYPE"))
-            || StringUtil.isEmpty(orderMap.get("CREATE_DATE"))
-            || StringUtil.isEmpty(orderMap.get("ORDER_ITEM_ID"))
-        ){
-           msg.setMessage("取基础数据报错,请检查! ARCH_GRP_ID="+orderMap.get("ARCH_GRP_ID"));
-           return -1;
-        }
-        */
         try {
             String serviceOfferId = ordPayDao.getServiceOfferId(orderMap);
             if (StringUtil.isEmpty(serviceOfferId)) {
@@ -192,77 +177,32 @@ public class PayToPlanService implements IPayToPlanService {
         }
 
         try {
-            String flag="0";// flag=0 赠款 1红包金
-            // '-1064785','-1064786'  预存支付计划类销售品
-            List<Map<String,Object>> zjList = cpcDao.getCountFromOfferCatalogLocation(orderMap);
-            //红包金类销售品目录
-            if(zjList.size()>0){
-                if("-1064785".equals(zjList.get(0).get("catalogItemId").toString())){
-                    flag="0";
-                }else{
-                    flag="1";
-                }
-            // 是预存款目录的才处理
-            if(zjList.size() > 0) {
-                if ("1000".equals(orderMap.get("operType"))) {
-                    orderMap.put("jfOperType", "1");
-                } else if ("1100".equals(orderMap.get("operType"))) {
-                    orderMap.put("jfOperType", "3");
-                    if ("1".equals(flag)) {
-                        orderMap.put("jfOperType","4");//红包金退订填4
-                    }
+            List<Map<String,Object>> pOfferPayplanInfoList= cpcDao.selectPOfferPayplanInfo(orderMap);
+            if (pOfferPayplanInfoList.size() >=3) {
+                msg.setResultCode(ResultCode.PAYPLAN_ERROR_010);
+                msg.setMessage("CPCP配置表P_OFFER_PAYPLAN_INFO数据异常【offerId】：" + orderMap.get("offerId"));
+                return -1;
+            }
+                if (pOfferPayplanInfoList.size() > 0){
+                    Map map = new HashMap();
+                    map.put("conferFlag", 2);
+                    if ("1000".equals(orderMap.get("operType"))) {
+                        orderMap.put("jfOperType", "1");
+                    } else if ("1100".equals(orderMap.get("operType"))) {
+                        orderMap.put("jfOperType", "3");
+                        if (pOfferPayplanInfoList.contains(map)) {
+                            //红包金退订填4
+                            orderMap.put("jfOperType","4");
+                        }
+                    }else {
+                        msg.setResultCode(ResultCode.PAYPLAN_ERROR_007);
+                        msg.setMessage("OPER_TYPE=不是1000、1100的不处理");
+                        return 1;
                     }
                 } else {
-                    msg.setMessage("OPER_TYPE=不是1000、1100的不处理");
+                    msg.setMessage("非预存支付计划,不用处理!");
                     return 1;
                 }
-                Long counter = cpcDao.getCountFromPOfferPayplanInfo(orderMap);
-                if (counter > 0) {
-                    //取出余额级别
-                    shareLevel = cpcDao.getShareLevel(orderMap);
-                    //ICB销售品类型为1 吉林应该没有这个
-                    if ("109000000913".equals(orderMap.get("offerId"))
-                            || "349000007051".equals(orderMap.get("offerId"))
-                            || "349000007052".equals(orderMap.get("offerId"))
-                    ) {
-                        depositType = 1L;
-                        //ICB取CRM金额
-                        //新增才取金额
-                        try {
-                            if ("1000".equals(orderMap.get("operType"))) {
-                                amount = ordPayDao.getAttrValue(orderMap);
-                            } else {
-                                amount = null;
-                            }
-                        } catch (Exception e) {
-                            msg.setMessage("取销售品金额出错,请检查!");
-                            e.printStackTrace();
-                            throw e;
-                        }
-                    } else {
-                        depositType = 2L;
-                        if("1".equals(flag)){
-                            depositType = 10L;//红包金depositType为10其他逻辑和赠款一样
-                        }
-                        amount = null;
-                    }
-                } else {
-                    //预存款销售品
-                    depositType = 3L;
-                    //新增才取金额
-                    try {
-                        if ("1000".equals(orderMap.get("operType"))) {
-                            amount = ordPayDao.getAttrValue(orderMap);
-                        } else {
-                            amount = null;
-                        }
-                    } catch (Exception e) {
-                        msg.setMessage("取销售品金额出错,请检查!");
-                        e.printStackTrace();
-                        throw e;
-                    }
-                }
-            }
             try {
                 //用户级销售品
                 prodInstId = ordPayDao.getProdInstId(orderMap);
@@ -276,6 +216,7 @@ public class PayToPlanService implements IPayToPlanService {
                     }
                 }
             } catch (Exception e) {
+                msg.setResultCode(ResultCode.PAYPLAN_ERROR_008);
                 msg.setMessage("取用户级销售品对象表出错,请检查!");
                 e.printStackTrace();
                 throw e;
@@ -308,122 +249,34 @@ public class PayToPlanService implements IPayToPlanService {
                 return -1;
             }
 
-            if (shareLevel == 1) {
-                objectId = acctId;
-            } else {
-                //用户级预存
-                objectId = prodInstId;
+            objectId = acctId;
+            try {
+                Map sendMap=new HashMap();
+                Long seqInterPlanId = prodInstDao.getSeq("SEQ_INTER_PLAN_ID");
+                sendMap.put("interPlanID",seqInterPlanId);
+                sendMap.put("depositType",depositType);
+                sendMap.put("offerInstID",orderMap.get("offerInstId"));
+                sendMap.put("offerID",orderMap.get("offerId"));
+                sendMap.put("acctID",acctId);
+                sendMap.put("objectType",shareLevel);
+                sendMap.put("objectID",objectId);
+                sendMap.put("amount",amount);
+                sendMap.put("operType",orderMap.get("jfOperType"));
+                sendMap.put("operState",0);
+                sendMap.put("orderDate",dateFormat.format(orderMap.get("createDate")));
+                sendMap.put("effDate",dateFormat.format(orderMap.get("effDate")));
+                sendMap.put("createDate",dateFormat.format(new Date()));
+                sendMap.put("operDate",dateFormat.format(new Date()));
+                sendInterPayToPlanMsg(sendMap,msg);
+            } catch (Exception e) {
+                e.printStackTrace();
+                String exceptionMsg = "";
+                exceptionMsg = setErrorMsg(e.getMessage(), "预存消息构造失败");
+                msg.setResultCode(ResultCode.PAYPLAN_ERROR_009);
+                msg.setMessage(exceptionMsg);
+                return -1;
             }
-            //新增开始 0721  这个是吉林迎合2.0处理的逻辑，3.0要屏蔽掉
-            if ("1000".equals(orderMap.get("operType"))) {
-                orderMap.put("jfOperType", "1");
-            } else if ("1100".equals(orderMap.get("operType"))) {
-                orderMap.put("jfOperType", "3");
-            } else {
-                msg.setResultCode(ResultCode.PAYPLAN_ERROR_007);
-                msg.setMessage("OPER_TYPE=不是1000、1100的不处理");
-                return 1;
-            }
-            long archGrpId = Long.parseLong(orderMap.get("ARCH_GRP_ID").toString());
-            long orderItemId = Long.parseLong(orderMap.get("ORDER_ITEM_ID").toString());
-            long offerInstId = Long.parseLong(orderMap.get("offerInstId").toString());
-            //取crmRent表
-            List<Map<String, Object>> ordCrmRentList = ordBillDao.selectCrmRent(archGrpId, orderItemId, offerInstId);
-            for (Map<String, Object> ordCrmRentMap : ordCrmRentList) {
-                if ("1000".equals(orderMap.get("operType"))) {
-                    List<Map<String, Object>> oneItemResultList = ordBillDao.selectOneItemResult(archGrpId, orderItemId);
-                    if (oneItemResultList.size() == 0) {
-                        msg.setResultCode(ResultCode.PAYPLAN_ERROR_008);
-                        msg.setMessage("onItemResult表为空");
-                        return -1;
-                    }
-                    for (Map<String, Object> oneItemResultMap : oneItemResultList) {
 
-                        try {
-                            Map oneItem = new HashMap();
-                            Long seqInterPlanId = prodInstDao.getSeq("SEQ_INTER_PLAN_ID");
-                            oneItem.put("interPlanId", seqInterPlanId);
-                            oneItem.put("offerId", oneItemResultMap.get("OFFER_ID"));
-                            oneItem.put("offerInstId", oneItemResultMap.get("OFFER_INST_ID"));
-                            oneItem.put("depositType", depositType);
-                            oneItem.put("acctId", acctId);
-                            oneItem.put("objectType", shareLevel);
-                            oneItem.put("objectId", objectId);
-                            oneItem.put("amount", oneItemResultMap.get("PAID_IN_AMOUNT"));
-                            oneItem.put("operType", orderMap.get("jfOperType"));
-                            oneItem.put("operState", 0);
-                            oneItem.put("orderDate", orderMap.get("createDate"));
-                            oneItem.put("effDate", orderMap.get("effDate"));
-                            payToPlanDao.insertInterPayToPlan(oneItem);
-                            sendInterPayToPlanMsg(oneItem);
-
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                            String exceptionMsg = "";
-                            exceptionMsg = setErrorMsg(e.getMessage(), "活动订购增加预存款接口表出错");
-                            msg.setResultCode(ResultCode.PAYPLAN_ERROR_009);
-                            msg.setMessage(exceptionMsg);
-                            return -1;
-                        }
-                        updateOneItemResult(oneItemResultMap, 1, "预存活动处理成功");
-                    }
-
-                } else {
-                    try {
-                        Map oneItem = new HashMap();
-                        long interPlanId = prodInstDao.getSeq("SEQ_INTER_PLAN_ID");
-                        oneItem.put("interPlanId", interPlanId);
-                        oneItem.put("offerInstId", ordCrmRentMap.get("offerInstId"));
-                        oneItem.put("offerId", ordCrmRentMap.get("offerId"));
-                        oneItem.put("objectType", shareLevel);
-                        oneItem.put("objectId", ordCrmRentMap.get("prodInstId"));
-                        oneItem.put("acctId", acctId);
-                        oneItem.put("operType", orderMap.get("jfOperType"));
-                        oneItem.put("operState", 0);
-                        oneItem.put("createDate", df.format(date));
-                        oneItem.put("orderDate", orderMap.get("createDate"));
-                        oneItem.put("operDate", df.format(date));
-                        oneItem.put("effDate", orderMap.get("effDate"));
-                        oneItem.put("depositType", depositType);
-                        prodInstDao.insertPayToPlan(oneItem);
-                        sendInterPayToPlanMsg(oneItem);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                        String exceptionMsg = "";
-                        exceptionMsg = setErrorMsg(e.getMessage(), "活动退订增加预存款接口表出错");
-                        msg.setResultCode(ResultCode.PAYPLAN_ERROR_010);
-                        msg.setMessage(exceptionMsg);
-                        return -1;
-                    }
-                }
-
-
-            }//新增结束 0722
-           /* try {
-                    Long seqInterPlanId = prodInstDao.getSeq("SEQ_INTER_PLAN_ID");
-                    orderMap.put("interPlanId",seqInterPlanId);
-                    orderMap.put("depositType",depositType);
-                    orderMap.put("acctId",acctId);
-                    orderMap.put("objectType",shareLevel);
-                    orderMap.put("objectId",objectId);
-                    orderMap.put("amount",amount);
-                    orderMap.put("operType",orderMap.get("jfOperType"));
-                    orderMap.put("operState",0);
-                    orderMap.put("orderDate",orderMap.get("createDate"));
-//                    String dateTime = df.format(new Date());
-//                    Date date=new Date();
-//                    orderMap.put("createDate",date);
-//                    orderMap.put("operDate",date);
-                    payToPlanDao.insertInterPayToPlan(orderMap);
-                } catch (Exception e) {
-                    msg.setMessage("增加预存款接口表出错");
-                    e.printStackTrace();
-                    throw e;
-                }
-            }else {
-                msg.setMessage("非预存支付计划,不用处理!");
-                return 1;
-            }*/
         } catch (Exception e) {
             e.printStackTrace();
             String exceptionMsg = "";
@@ -450,7 +303,6 @@ public class PayToPlanService implements IPayToPlanService {
         int successCount = 0;//本次处理成功数
         //处理业务逻辑。  flag=1处理成功，其他失败
         int flag = -1;
-        Message msg = new Message();
         Map<String, Object> updateMap = new HashMap<String, Object>();
 
         Map queryMap = new HashMap();
@@ -465,12 +317,8 @@ public class PayToPlanService implements IPayToPlanService {
         List<Map<String, Object>> oneItemList = ordPayDao.selectOneItemList(queryMap);
         if (oneItemList.size() > 0) {
             for (Map<String, Object> oneItemMap : oneItemList) {
-                long archGrpId = Long.parseLong(oneItemMap.get("ARCH_GRP_ID").toString());
-                long ordItemId = Long.parseLong(oneItemMap.get("ORDER_ITEM_ID").toString());
-                long offerInstId = 0;
-                List<Map<String, Object>> crmRentList = ordBillDao.selectCrmRent(archGrpId, ordItemId, offerInstId);
-                if (crmRentList.size() == 0) {
                     long startOperTime = System.currentTimeMillis();
+                    Message msg = new Message();
                     SynMapContextHolder.init();
                     sumCount = oneItemList.size();
                     WebApplicationContext contextLoader = ContextLoader.getCurrentWebApplicationContext();
@@ -492,7 +340,9 @@ public class PayToPlanService implements IPayToPlanService {
                             transactionManager.rollback(status);
                             updateOneItemResult(updateMap, 2, strResultmsgString);
                         } else {
-                            msg.setMessage("处理成功");
+                            if(StringUtil.isEmpty(msg.getMessage())){
+                                msg.setMessage("处理成功");
+                            }
                             transactionManager.commit(status);
                             strResultmsgString = msg.getMessage() + ",处理时长" + (System.currentTimeMillis() - startOperTime) + "ms";
                             successCount++;
@@ -504,7 +354,6 @@ public class PayToPlanService implements IPayToPlanService {
                         logger.error("处理失败：" + e.getMessage());
                         updateOneItemResult(updateMap, 2, msg.getMessage());
                     }
-                }
             }
         }
         logger.debug("本次处理开始时间：" + sdf.format(date).toString() +
@@ -527,21 +376,7 @@ public class PayToPlanService implements IPayToPlanService {
         Long prodInstId;
         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         SimpleDateFormat d = new SimpleDateFormat("yyyyMMddHHmmss");
-               /*
-        if(StringUtil.isEmpty(oneItemMap.get("ARCH_GRP_ID"))
-            || StringUtil.isEmpty(oneItemMap.get("ORDER_ITEM_ID"))
-            || StringUtil.isEmpty(oneItemMap.get("BILL_ACCT_ITEM_TYPE_ID"))
-            || StringUtil.isEmpty(oneItemMap.get("ACCT_ID"))
-            || StringUtil.isEmpty(oneItemMap.get("PROD_INST_ID"))
-            || StringUtil.isEmpty(oneItemMap.get("CREATE_DATE"))
-            || StringUtil.isEmpty(oneItemMap.get("CHARGE_METHOD"))
-            || StringUtil.isEmpty(oneItemMap.get("PAID_IN_AMOUNT"))
-        ){
-            msg.setMessage("取基础数据报错,请检查! ARCH_GRP_ID="+oneItemMap.get("ARCH_GRP_ID"));
-            return -1;
-        }
-        */
-
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMddHHmmss");
         try {
             //转计费余额付费的一次性费用
             if ("6".equals(String.valueOf(oneItemMap.get("chargeMethod")))) {
@@ -568,7 +403,7 @@ public class PayToPlanService implements IPayToPlanService {
                     msg.setMessage(exceptionMsg);
                     return -1;
                 }
-            } else {
+            } else if ("63".equals(String.valueOf(oneItemMap.get("acctItemTypeId")))){
                 //一次性费用预存款
                 if (StringUtil.isEmpty(oneItemMap.get("acctId")) ||
                         Long.parseLong(oneItemMap.get("acctId").toString()) < 1) {
@@ -609,14 +444,16 @@ public class PayToPlanService implements IPayToPlanService {
                     oneItemMap.put("amount", oneItemMap.get("paidInAmount"));
                     oneItemMap.put("operType", "1");
                     oneItemMap.put("operState", "0");
-                    oneItemMap.put("effDate", oneItemMap.get("createDate"));
-                    oneItemMap.put("orderDate", oneItemMap.get("createDate"));
+                    oneItemMap.put("effDate", dateFormat.format(oneItemMap.get("createDate")));
+                    oneItemMap.put("orderDate", dateFormat.format(oneItemMap.get("createDate")));
+                    oneItemMap.put("operDate",dateFormat.format(new Date()));
+                    oneItemMap.put("createDate",dateFormat.format(new Date()));
                     oneItemMap.put("offerInstId", oneItemMap.get("ARCH_GRP_ID"));
 //                    String dateTime = df.format(new Date());
 //                    oneItemMap.put("createDate",dateTime);
 //                    oneItemMap.put("operDate",dateTime);
-                    payToPlanDao.insertInterPayToPlan(oneItemMap);
-                    sendInterPayToPlanMsg(oneItemMap);
+                    //acctMapperDao.insertInterPayToPlan(oneItemMap);
+                    sendInterPayToPlanMsg(oneItemMap,msg);
                 } catch (Exception e) {
                     e.printStackTrace();
                     String exceptionMsg = "";
@@ -692,7 +529,7 @@ public class PayToPlanService implements IPayToPlanService {
         return i;
     }
 
-    public void sendInterPayToPlanMsg(Map map) throws Exception {
+    /*public void sendInterPayToPlanMsg(Map map) throws Exception {
         InterPayToPlan mqEntity = new InterPayToPlan();
         mqEntity.setInterPlanID(Long.parseLong(map.get("interPlanId").toString()));
         mqEntity.setDepositType(Long.parseLong(map.get("depositType").toString()));
@@ -735,8 +572,22 @@ public class PayToPlanService implements IPayToPlanService {
         }
 
 
-    }
+    }*/
+    public void sendInterPayToPlanMsg(Map sendMap,Message msg) throws Exception{
+        Map msgMap =new HashMap();
+        msgMap.put("methodName","depositPayPlan");
+        JSONObject parameterJson=new JSONObject();
+        parameterJson.put("interPayToPlan",sendMap);
+        msgMap.put("parameter",parameterJson);
+        msgMap.put("parameterName","com.asiainfo.account.model.domain.InterPayToPlan");
+        if(MqTool.send(TopicType.zfjh,msgMap,msg)!=1){
+            logger.error("发送预存支付计划消息队列数据异常！！" + JSONObject.toJSONString(sendMap));
+            throw new Exception();
+        }else{
+            msg.setMessage("处理成功，消息key："+msg.getMessage());
+        }
 
+    }
     /**
      * @param errorMsg
      * @param constrantString
