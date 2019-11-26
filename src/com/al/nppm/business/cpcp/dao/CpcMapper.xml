@@ -29,7 +29,7 @@
 	where  OFFER_ID = #{offerId}
   </select>
     <select id="selectPOfferPayplanInfo" resultType="java.util.HashMap" parameterType="map" >
-    select confer_flag conferFlag
+    select confer_flag conferFlag,OFFER_ID offerId
     from P_OFFER_PAYPLAN_INFO
 	where  OFFER_ID = #{offerId}
   </select>

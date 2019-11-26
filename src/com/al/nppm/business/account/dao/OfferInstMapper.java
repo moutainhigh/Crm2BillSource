@@ -28,6 +28,8 @@ public interface OfferInstMapper {
 
 	public List<Map<String,Object>> getOfferObjInstId(Map map);
 
+	public List<Map<String,Object>> selectOfferObjInstId(Map map);
+
 	public List<Map<String, Object>> getOfferObjInstIdForObjectId(Map map);
 
 	public List<Map<String,Object>> getOfferRoleId(Map map);

@@ -238,12 +238,15 @@ public interface OrdBillMapper {
 
     public List<Map<String, Object>> selectTifObjectId(@Param("offerId") long offerId,
                                                  @Param("roleId") String roleId);
+	public List<Map<String, Object>> selectTifDisctIdContrast(@Param("offerId") long offerId);
 	public List<Map<String, Object>> selectTifParamId(@Param("offerId") long offerId,
 													   @Param("attrId") String attrId);
 
 	public List<Map<String,Object>> selectServiceOfferContrast(String servcieOfferId);
 
 	public List<Map<String,Object>> selectOrdBillError(String errorNotes);
+
+	public List<Map<String,Object>> selectOrdBillCommonError(String errorNotes);
 
 	public long selectOrdBillProdInstAcctRel(@Param("archGrpId") long archGrpId);
 
@@ -256,5 +259,11 @@ public interface OrdBillMapper {
 	public int inserCustChange(Map map);
 
 	public List<Map<String,Object>> selectTifNoNeedOffer(@Param("offerId") long offerId);
+
+	public List<Map<String,Object>> selectTifNoActiveUser(@Param("prodInstId") long prodInstId);
+
+	public int updateTifNoActiveUse(Map map);
+
+	public List<Map<String,Object>> selectTifActiveUser(@Param("remark") String remark);
 
 }

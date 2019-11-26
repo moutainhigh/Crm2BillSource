@@ -125,6 +125,7 @@ public class ResultCode {
     public static String PRODINST_U_ERROR_043 = "PRODINST_U_ERROR_043";
     public static String PRODINST_U_ERROR_044 = "PRODINST_U_ERROR_044";
     public static String PRODINST_U_ERROR_045 = "PRODINST_U_ERROR_045";
+    public static String PRODINST_U_ERROR_046 = "PRODINST_U_ERROR_046";
     //销户错误码
     public static String PRODINST_D_ERROR_001 = "PRODINST_D_ERROR_001";
     public static String PRODINST_D_ERROR_002 = "PRODINST_D_ERROR_002";
@@ -196,6 +197,7 @@ public class ResultCode {
     public static String PRODACCT_ERROR_013 = "PRODACCT_ERROR_013";
     public static String PRODACCT_ERROR_014 = "PRODACCT_ERROR_014";
     public static String PRODACCT_ERROR_015 = "PRODACCT_ERROR_015";
+    public static String PRODACCT_ERROR_016 = "PRODACCT_ERROR_016";
     //销售品实例
     public static String OFFERINS_ERROR_001 = "OFFERINS_ERROR_001";
     public static String OFFERINS_ERROR_002 = "OFFERINS_ERROR_002";
@@ -226,6 +228,7 @@ public class ResultCode {
     public static String OFFERGROUP_ERROR_005 = "OFFERGROUP_ERROR_005";
     public static String OFFERGROUP_ERROR_006 = "OFFERGROUP_ERROR_006";
     public static String OFFERGROUP_ERROR_007 = "OFFERGROUP_ERROR_007";
+    public static String OFFERGROUP_ERROR_008 = "OFFERGROUP_ERROR_008";
     //修改参数
     public static String OFFERATTR_ERROR_001 = "OFFERATTR_ERROR_001";
     public static String OFFERATTR_ERROR_002 = "OFFERATTR_ERROR_002";
@@ -300,6 +303,7 @@ public class ResultCode {
     public static String PAYPLAN_ERROR_014 = "PAYPLAN_ERROR_014";
     public static String PAYPLAN_ERROR_015 = "PAYPLAN_ERROR_015";
     public static String PAYPLAN_ERROR_016 = "PAYPLAN_ERROR_016";
+    public static String PAYPLAN_ERROR_017 = "PAYPLAN_ERROR_017";
 
 
 

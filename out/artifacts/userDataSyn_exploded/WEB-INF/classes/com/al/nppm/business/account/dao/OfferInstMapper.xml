@@ -86,6 +86,14 @@ WHERE OFFER_OBJ_inst_REL_ID = #{offerObjInstRelId,jdbcType=BIGINT}
 AND OFFER_INST_ID = #{offerInstId,jdbcType=BIGINT}
 and route_id = #{routeId,jdbcType=BIGINT}
 </select>
+
+  <select id="selectOfferObjInstId" resultType="java.util.HashMap" parameterType="map"  >
+SELECT  OFFER_OBJ_INST_REL_ID offerObjInstRelId, OFFER_INST_ID offerInstId, OBJ_TYPE objType, OBJ_ID objId, OFFER_OBJ_REL_ID offerObjRelId, ROLE_ID roleId,
+    EFF_DATE effDate, EXP_DATE expDate, STATUS_CD statusCd, CREATE_STAFF createStaff, UPDATE_STAFF updateStaff, CREATE_DATE createDate, STATUS_DATE statusDate,
+    UPDATE_DATE updateDate, LAST_ORDER_ITEM_ID lastOrderItemId, REMARK remark, ROUTE_ID routeId
+FROM OFFER_OBJ_inst_REL
+WHERE OFFER_OBJ_inst_REL_ID = #{offerObjInstRelId,jdbcType=BIGINT}
+</select>
   <select id="getOfferObjInstIdForObjectId" resultType="java.util.HashMap" parameterType="map"  >
 SELECT  OFFER_OBJ_INST_REL_ID offerObjInstRelId, OFFER_INST_ID offerInstId, OBJ_TYPE ObjType, OBJ_ID objId, OFFER_OBJ_REL_ID offerObjRelId, ROLE_ID roleId,
     EFF_DATE effDate, EXP_DATE expDate, STATUS_CD statusCd, CREATE_STAFF createStaff, UPDATE_STAFF updateStaff, CREATE_DATE createDate, STATUS_DATE statusDate,

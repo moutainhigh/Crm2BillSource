@@ -362,6 +362,9 @@
       <!--<if test="statusDate != null" >
         STATUS_DATE = #{statusDate,jdbcType=DATE},
       </if>-->
+      <if test="remark != null" >
+        remark = #{remark,jdbcType=VARCHAR},
+      </if>
       <if test="extAcctId != null" >
         EXT_ACCT_ID = #{extAcctId,jdbcType=VARCHAR}
       </if>   

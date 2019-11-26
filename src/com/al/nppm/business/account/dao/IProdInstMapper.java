@@ -65,6 +65,9 @@ public interface IProdInstMapper {
 	public List<Map<String,Object>> selectProdInstSubMap(Map map); //add by wangbaoqiang   
 	public List<Map<String,Object>> getProdInstAccNumFor1000(Map map); //add by wangbaoqiang
 	public Map<String,Object> getProdInstIdFromAcctRel(Map map); //add by wangbaoqiang
+
+	public List<Map<String,Object>> selectProdInstIdFromAcctRel(Map map);
+
 	public List<Map<String,Object>> getProdInstAcctRelIdFromRelId(Map map); // add by wangbaoqiang
 	public List<Map<String,Object>> getProdInstRelId(Map map);
 
@@ -146,7 +149,7 @@ public interface IProdInstMapper {
 	public List<Map<String, Object>> getProdInstPaymode(Map map);
 	//add by wangbaoqiang 
 	public List<Long> getProdInstPaymode_1(Map map);
-	public Map<String, Object> selectProdInstStateExt(Map map);
+	public List<Map<String, Object>> selectProdInstStateExt(Map map);
 	public String getEffDatefromStateExt(Map map);
 	public Map<String, Object> selectProdInstAccNum(Map map);
 	public Map<String, Object> selectProdInstAccNum2(Map map);

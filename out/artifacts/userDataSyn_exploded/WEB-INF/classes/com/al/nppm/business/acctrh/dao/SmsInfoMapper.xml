@@ -17,4 +17,27 @@
     <select id="getSeq" resultType="java.lang.Long" parameterType="map">
 	select ${seq_name}.nextval from dual
   </select>
+    <select id="getCrmOfferInstInfo"  resultType="java.util.HashMap" >
+  select a.offer_inst_id "offerInstId",
+       a.offer_id      "offerId",
+       a.owner_cust_id "ownerCustId",
+       acct_id         "routeId",
+       a.exp_date      "expDate",
+       a.offer_type    "offerType",
+       a.status_cd    "statusCd",
+       a.region_Id    "regionId",
+       a.create_org_id "createOrgId"
+  from inst.offer_inst@db_crm_rh          a,
+       inst.offer_prod_inst_rel@db_crm_rh b,
+       inst.prod_inst_acct_rel@db_crm_rh  c
+ where a.offer_inst_id = b.offer_inst_id
+   and b.role_id = 90000
+   and a.offer_inst_id = #{offerInstId}
+   and b.prod_inst_id = c.prod_inst_id
+    </select>
+    <select id="getCrmProdInstInfo"  resultType="java.util.HashMap" >
+  select prod_inst_id
+  from inst.prod_inst@db_crm_rh
+ where  prod_inst_id = #{prodInstId}
+    </select>
 </mapper>

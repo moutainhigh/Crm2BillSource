@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.al.nppm.ord.ordbill.dao.OrdBillMapper" >
-<!--   <resultMap id="BaseResultMap" type="com.al.nppm.model.ord_bill" > -->
+<!--   <resultMap id="BaseResultMap" type="com.al.nppm.model.updateord_bill" > -->
 <!--     <result column="ARCH_GRP_ID" property="archGrpId" jdbcType="BIGINT" /> -->
 <!--     <result column="CUST_ORDER_ID" property="custOrderId" jdbcType="BIGINT" /> -->
 <!--     <result column="REGION_ID" property="regionId" jdbcType="BIGINT" /> -->
@@ -1075,6 +1075,8 @@ select
       <choose>
           <when test="proc_flag =='2'.toString()">
               and notes not like '%PRODACCT_ERROR_013%'
+              and NOTES not like '%OFFERGROUP_ERROR_007%'
+              and NOTES not like '%OFFERINS_ERROR_001%'
               and PROC_CNT &lt; 200 ORDER BY FINISH_DATE, ARCH_GRP_ID  limit 0, 5000
           </when>
           <otherwise>
@@ -1399,6 +1401,7 @@ VER_NUM verNum,ATTR_VALUE_ID attrValueId
       select count(1)
       from ord_bill_obj
       where  ARCH_GRP_ID=#{ARCH_GRP_ID}
+      and obj_id = #{offerInstId}
       and STATUS_CD='N'
 </select>
 
@@ -1629,6 +1632,11 @@ WHERE ARCH_GRP_ID = #{ARCH_GRP_ID,jdbcType=BIGINT}
         and DISCT_OBJECT_ID_97 = #{roleId,jdbcType=VARCHAR}
     </select>
 
+    <select id="selectTifDisctIdContrast" resultType="java.util.Map">
+        select  DISCT_ID_97,DISCT_NAME_97,DISCT_ID_BILL,DISCT_NAME_BILL
+        from tif_disct_id_contrast
+        where DISCT_ID_97 = #{offerId,jdbcType=BIGINT}
+    </select>
     <select id="selectTifParamId" resultType="java.util.Map">
         select
         DISCT_ID_97　disctId97, DISCT_PARAM_ID_97　disctParamId97　, DISCT_PARAM_NAME_97　disctParamName97, DISCT_PARAM_ID_BILL　disctParamIdBill,
@@ -1654,7 +1662,15 @@ WHERE ARCH_GRP_ID = #{ARCH_GRP_ID,jdbcType=BIGINT}
 	NOTES like  CONCAT('%',#{errorNotes},'%')
 	and proc_flag = '2'
   </select>
-
+    <select id="selectOrdBillCommonError" resultType="java.util.Map"  >
+    select
+     ARCH_GRP_ID, CUST_ORDER_ID, REGION_ID regionId, CREATE_ORG_ID, CREATE_STAFF, CREATE_DATE,
+    FINISH_DATE, PROC_FLAG, PROC_DATE, PROC_CNT, NOTES notes,CUST_ID custId
+    from ord_bill
+    where
+	NOTES like  CONCAT('%',#{errorNotes},'%')
+	and proc_flag = '2'
+  </select>
     <select id="selectOrdBillProdInstAcctRel" resultType="java.lang.Long"  >
     select
      count(1)
@@ -1726,5 +1742,29 @@ WHERE ARCH_GRP_ID = #{ARCH_GRP_ID,jdbcType=BIGINT}
     from tif_offer_bill_no_need
     where
       OFFER_ID = #{offerId}
+  </select>
+    <select id="selectTifNoActiveUser" resultType="java.util.Map"  >
+    select
+      prod_inst_id prodInstId
+    from tif_old_noactive_user
+    where
+      prod_inst_id = #{prodInstId,jdbcType=BIGINT}
+  </select>
+
+
+    <update id="updateTifNoActiveUse" parameterType="map" >
+        update tif_old_noactive_user
+        set
+            remark = #{remark},
+            proc_date = now()
+        where prod_inst_id = #{prodInstId,jdbcType=BIGINT}
+    </update>
+
+    <select id="selectTifActiveUser" resultType="java.util.Map"  >
+    select
+      prod_inst_id prodInstId,remark remark
+    from tif_old_noactive_user
+    where
+      remark = 'END' limit 10
   </select>
 </mapper>

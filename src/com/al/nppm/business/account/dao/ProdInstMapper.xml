@@ -2213,6 +2213,7 @@ and route_id = #{routeId,jdbcType=BIGINT}
             BEGIN_RENT_DATE = #{beginRentDate},
             REMARK = #{remark},
             ACT_DATE = #{activateDate},
+            create_date = #{createDate}
         </set>
         where PROD_INST_ID = #{prodInstId}
         AND STATUS_CD NOT IN ('110001', '110002','110000')
@@ -2370,6 +2371,14 @@ and route_id = #{routeId,jdbcType=BIGINT}
         and status_cd = 1
         and route_id = #{routeId,jdbcType=BIGINT}
     </select>
+    <select id="selectProdInstIdFromAcctRel" resultType="java.util.Map" parameterType="java.util.HashMap">
+        select PROD_INST_ID prodInstId
+        from prod_inst_acct_rel A
+        WHERE A.ACCT_ID=#{acctId}
+        <!-- AND A.EXP_DATE>#{statusDate,jdbcType=DATE} -->
+        and status_cd = 1
+        and route_id = #{routeId,jdbcType=BIGINT}
+    </select>
     <select id="getCntProdInstIdFromAcctRel" resultType="java.lang.Long" parameterType="java.util.HashMap">
         select count(1)
         from prod_inst_acct_rel A
@@ -2411,7 +2420,6 @@ and route_id = #{routeId,jdbcType=BIGINT}
        WHERE PROD_INST_ID = #{prodInstId}
          AND EXP_DATE >#{statusDate}
          and route_id = #{routeId,jdbcType=BIGINT}
-         order by exp_date,PROD_INST_STATE_ID desc
   </select>
 
     <select id="getForAccNumCount" resultType="java.lang.Long" parameterType="java.util.HashMap">
@@ -2446,10 +2454,8 @@ and route_id = #{routeId,jdbcType=BIGINT}
     <select id="selectProdInstStateExt" resultType="java.util.Map" parameterType="java.util.HashMap">
  	SELECT  STOP_TYPE, EFF_DATE
     FROM PROD_INST_STATE_EXT
-    where PROD_INST_ID=#{prodInstId}
-    and state = "120000"
-    and STOP_TYPE IN(150001,150002)
-    and EXP_DATE>='2039/01/01'
+    where PROD_INST_ID=#{prodInstId,jdbcType=BIGINT}
+    and state = #{state,jdbcType=VARCHAR}
     and route_id = #{routeId,jdbcType=BIGINT}
   </select>
 

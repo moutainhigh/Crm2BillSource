@@ -7,4 +7,6 @@ public class TopicType {
     public static String smzjh="2";
     //修改账务关系
     public static String xgzwjh="3";
+    //激活
+    public static String yhjh="4";
 }

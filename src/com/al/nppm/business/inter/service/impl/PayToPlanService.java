@@ -147,7 +147,7 @@ public class PayToPlanService implements IPayToPlanService {
      **/
     public int acctProDeposit(Map orderMap, Message msg) throws Exception {
         //共享级别，2-用户级，1-帐户级
-        Long shareLevel = 1L;
+        Long shareLevel = 2L;
         Long depositType = 2L;
         String amount= "";
         Long prodInstId = null;
@@ -236,6 +236,11 @@ public class PayToPlanService implements IPayToPlanService {
                         return -1;
                     }
                     acctId = payToPlanDao.getAcctId(map);
+                    if (StringUtil.isEmpty(acctId)) {
+                        msg.setResultCode(ResultCode.PAYPLAN_ERROR_017);
+                        msg.setMessage("获取acctId为空，产品实例prod_inst_id为：" + prodInstId);
+                        return -1;
+                    }
 //                        if(StringUtil.isEmpty(acctId)){
 //                            acctId = 0L;
 //                        }
@@ -250,6 +255,9 @@ public class PayToPlanService implements IPayToPlanService {
             }
 
             objectId = acctId;
+            logger.info("预存活动信息【acctId】：" + objectId + ",【prodInstId】：" + prodInstId
+                    + "，【archGrpId】：" + orderMap.get("ARCH_GRP_ID")
+                    + "，【offerInstId】：" + orderMap.get("offerInstId"));
             try {
                 Map sendMap=new HashMap();
                 Long seqInterPlanId = prodInstDao.getSeq("SEQ_INTER_PLAN_ID");
@@ -259,7 +267,7 @@ public class PayToPlanService implements IPayToPlanService {
                 sendMap.put("offerID",orderMap.get("offerId"));
                 sendMap.put("acctID",acctId);
                 sendMap.put("objectType",shareLevel);
-                sendMap.put("objectID",objectId);
+                sendMap.put("objectID",prodInstId);
                 sendMap.put("amount",amount);
                 sendMap.put("operType",orderMap.get("jfOperType"));
                 sendMap.put("operState",0);
@@ -373,7 +381,7 @@ public class PayToPlanService implements IPayToPlanService {
     @Override
     public int oneTimesCharge(Map oneItemMap, Message msg) throws Exception {
         Long objectId;
-        Long prodInstId;
+        Long prodInstId= null;
         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         SimpleDateFormat d = new SimpleDateFormat("yyyyMMddHHmmss");
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMddHHmmss");
@@ -440,7 +448,7 @@ public class PayToPlanService implements IPayToPlanService {
                     oneItemMap.put("depositType", "4");
                     oneItemMap.put("objectType", "1");
                     oneItemMap.put("acctId", objectId);
-                    oneItemMap.put("objectId", objectId);
+                    oneItemMap.put("objectId", prodInstId);
                     oneItemMap.put("amount", oneItemMap.get("paidInAmount"));
                     oneItemMap.put("operType", "1");
                     oneItemMap.put("operState", "0");
