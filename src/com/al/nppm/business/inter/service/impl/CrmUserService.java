@@ -1551,6 +1551,10 @@ public class CrmUserService {
             String expNextFlag = "";
             //判断是否为优惠销售品,如果是当月失效，就延期到下个月
             long cntOffer = billMapperDao.dealExpDateOffer(offerId);
+            //勇哥的语句有遗漏的，另外加个接口表
+            if (cntOffer == 0) {
+                cntOffer = ordBillDao.selectTifOfferExpDateExtend(offerId);
+            }
             if(cntOffer > 0){
                 //取当月第一天
                 Date firstDate = DateUtils.getMonthFirstDay(0, 0);

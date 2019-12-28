@@ -1789,4 +1789,9 @@ WHERE ARCH_GRP_ID = #{ARCH_GRP_ID,jdbcType=BIGINT}
     where
       remark = 'END' limit 1000
   </select>
+    <select id="selectTifOfferExpDateExtend" resultType="java.lang.Long"  >
+    select count(1) from tif_offer_exp_date_extend
+    where
+      offer_id = #{offerId}
+  </select>
 </mapper>

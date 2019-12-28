@@ -269,4 +269,6 @@ public interface OrdBillMapper {
 
 	public List<Map<String,Object>> selectTifActiveUser(@Param("remark") String remark);
 
+	public long selectTifOfferExpDateExtend(@Param("offerId") long offerId);
+
 }
