@@ -918,6 +918,22 @@ select
 	</choose>
       -->
 </select>
+
+    <select id="selectOrdProdInstAll" resultType="java.util.Map" parameterType="map"  >
+        SELECT
+        ARCH_GRP_ID, ORDER_ITEM_ID, PROD_INST_ID prodInstId, PROD_ID prodId, ACC_PROD_INST_ID accProdInstId, PROD_USE_TYPE prodUseType,
+        ACC_NUM accNum, ACCOUNT account, PAYMENT_MODE_CD paymentModeCd, ADDRESS_DESC addressDesc, OWNER_CUST_ID ownerCustId, PROD_INST_PWD prodInstPwd, EXCH_ID exchId,
+        ADDRESS_ID addressId, REGION_ID regionId, LAN_ID lanId, ACT_DATE actDate, BEGIN_RENT_DATE beginRentDate, STOP_RENT_DATE stopRentDate, CREATE_ORG_ID createOrgId,
+        FIRST_FINISH_DATE firstFinishDate, BUSI_MOD_DATE busiModDate, USE_CUST_ID useCustId, ROW_ID rowId, OLD_ROW_ID oldRowId, OPER_TYPE operType, STATUS_CD statusCd,
+        STATUS_DATE statusDate, CREATE_STAFF createStaff, CREATE_DATE createDate, UPDATE_STAFF updateStaff, UPDATE_DATE updateDate, REMARK remark, PROD_FUNC_TYPE prodFuncType,
+        RECORD_STATUS_CD recordStatusCd, VER_NUM verNum, EXT_PROD_INST_ID extProdInstId, POINT_OWNER_ID pointOwnerId, OWNER_CUST_NAME ownerCustName, USE_CUST_NAME useCustName,
+        POINT_OWNER_NAME pointOwnerName, ACC_PROD_ID accProdId, ACC_PROD_NAME accProdName, OUTER_PROD_INST_ID outerProdInstId, CDMA_IMSI cdmaImsi, GSM_IMSI gsmImsi,
+        LTE_IMSI lteImsi, GRP_PROD_NBR grpProdNbr
+        FROM ORD_PROD_INST
+        WHERE ARCH_GRP_ID = #{ARCH_GRP_ID,jdbcType=BIGINT}
+        AND  ORDER_ITEM_ID = #{ORDER_ITEM_ID,jdbcType=BIGINT}
+        AND PROD_USE_TYPE = 1000
+    </select>
 <select id="selectOrdProdInst1300" resultType="java.util.Map" parameterType="map"  >
     SELECT 
     ARCH_GRP_ID, ORDER_ITEM_ID, PROD_INST_ID prodInstId, PROD_ID prodId, ACC_PROD_INST_ID accProdInstId, PROD_USE_TYPE prodUseType, 
@@ -1071,7 +1087,7 @@ select
               and SUBSTR(REGION_ID,1,5) = #{regionId}
           </when>
       </choose>
-       <!--and ARCH_GRP_ID = '310033831567' -->
+       <!-- and ARCH_GRP_ID = '390036382386' -->
       <choose>
           <when test="proc_flag =='2'.toString()">
               and notes not like '%PRODACCT_ERROR_013%'
@@ -1404,7 +1420,13 @@ VER_NUM verNum,ATTR_VALUE_ID attrValueId
       and obj_id = #{offerInstId}
       and STATUS_CD='N'
 </select>
-
+<select id="getOrdBillObjCj" resultType="java.util.Map" >
+      select OBJ_ID objId
+      from ord_bill_obj
+      where  ARCH_GRP_ID=#{archGrpId}
+      and table_name = 'ORD_PROD_INST'
+      and SERVICE_OFFER_ID in ('4020100000','4020300003')
+</select>
     <select id="selectBillObject" resultType="java.util.Map" parameterType="map"  >
       select ARCH_GRP_ID, SEQ_NO, ORDER_ITEM_ID, SERVICE_OFFER_ID, OBJ_ID, TABLE_NAME, CREATE_DATE,
     SERVICE_OFFER_NAME, OBJ_SPEC, OBJ_SPEC_NAME
@@ -1765,6 +1787,6 @@ WHERE ARCH_GRP_ID = #{ARCH_GRP_ID,jdbcType=BIGINT}
       prod_inst_id prodInstId,remark remark
     from tif_old_noactive_user
     where
-      remark = 'END' limit 10
+      remark = 'END' limit 1000
   </select>
 </mapper>

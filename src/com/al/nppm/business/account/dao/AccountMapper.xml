@@ -61,6 +61,13 @@
      and route_id = #{routeId,jdbcType=BIGINT}
 </select>
 
+  <select id="selectExtAcctID" resultType="map" parameterType="map"  >
+    select EXT_ACCT_ID extAcctId, CUST_ID custId, PAY_CHANNEL payChannel, PAY_ACCT_CODE payAcctCode, PAY_ACCT_NAME payAcctName, ACCT_OWNER_ORG acctOwnerOrg,
+    ACCT_OWNER_ORG_BRANCH acctOwnerOrgBranch, EFF_DATE effDate, EXP_DATE expDate, IF_CONTRACT_QUICK_PAY ifContractQuickPay, STATUS_CD statusCd, STATUS_DATE statusDate,
+    CREATE_STAFF createStaff, CREATE_DATE createDate, UPDATE_STAFF updateStaff, UPDATE_DATE updateDate, commision_agreement_id commisionAgreementId, ROUTE_ID routeId
+     from ext_acct
+     where route_id = #{routeId,jdbcType=BIGINT}
+</select>
  <update id="updateExtAcct" parameterType="map" >
     update ext_acct
     <set >

@@ -166,6 +166,15 @@ and route_id = #{routeId,jdbcType=BIGINT}
     and route_id = #{routeId,jdbcType=BIGINT}
 
 </select>
+    <select id="selectProdInstAcctRel" resultType="java.util.Map" parameterType="map">
+    SELECT PROD_INST_ACCT_REL_ID prodInstAcctRelId,PROD_INST_ID prodInstId,  acct_id acctId,ROUTE_ID routeId,
+    EFF_DATE effDate,EXP_DATE expDate,STATUS_DATE statusDate,ACCT_ITEM_GROUP_ID acctItemGroupId
+    from PROD_INST_ACCT_REL
+    where  STATUS_CD = '1'
+    and prod_inst_id = #{prodInstId,jdbcType=BIGINT}
+    and route_id = #{routeId,jdbcType=BIGINT}
+
+</select>
     <select id="getProdInstAcctIdForNull" resultType="java.util.Map" parameterType="map">
     SELECT   IFNULL(acct_id,0) acctId
     from PROD_INST_ACCT_REL
@@ -2420,6 +2429,7 @@ and route_id = #{routeId,jdbcType=BIGINT}
        WHERE PROD_INST_ID = #{prodInstId}
          AND EXP_DATE >#{statusDate}
          and route_id = #{routeId,jdbcType=BIGINT}
+         order by exp_date desc
   </select>
 
     <select id="getForAccNumCount" resultType="java.lang.Long" parameterType="java.util.HashMap">
@@ -2938,6 +2948,7 @@ and route_id = #{routeId,jdbcType=BIGINT}
     from PROD_INST_ATTR
      WHERE PROD_INST_ID = #{accProdInstId}
      and ATTR_ID = #{attrId}
+     <!--and attr_value = #{attrValue}-->
      and EXP_DATE>#{expDate}
      and route_id = #{routeId,jdbcType=BIGINT}
   </select>

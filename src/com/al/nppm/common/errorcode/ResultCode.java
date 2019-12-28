@@ -126,6 +126,8 @@ public class ResultCode {
     public static String PRODINST_U_ERROR_044 = "PRODINST_U_ERROR_044";
     public static String PRODINST_U_ERROR_045 = "PRODINST_U_ERROR_045";
     public static String PRODINST_U_ERROR_046 = "PRODINST_U_ERROR_046";
+    public static String PRODINST_U_ERROR_047 = "PRODINST_U_ERROR_047";
+    public static String PRODINST_U_ERROR_048 = "PRODINST_U_ERROR_048";
     //销户错误码
     public static String PRODINST_D_ERROR_001 = "PRODINST_D_ERROR_001";
     public static String PRODINST_D_ERROR_002 = "PRODINST_D_ERROR_002";

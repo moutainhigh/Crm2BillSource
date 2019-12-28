@@ -5,6 +5,11 @@ import com.al.nppm.ord.ordbill.dao.OrdBillMapper;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 /**
  * @author WangBaoQiang
  * @ClassName: sanmu
@@ -51,9 +56,18 @@ public class sanmu {
         }catch (Exception ex){
             logger.error("调用接口失败，返回码："+ex.getMessage());
         }*/
-        String str = "OFFERINS_ERROR_001=取商品实例路由表失败【offerInstId】:304121160660。处理时长33ms";
-        int pos = str.indexOf("。");
-        String offerInstId = str.substring(43, pos);
-        System.out.println(offerInstId);
+        Map checkOldAcctMap = new HashMap<>();
+        checkOldAcctMap.put("prodInstId", 123);
+        checkOldAcctMap.put("acctId", 3333);
+        List<Map<String, Object>> pOfferPayplanInfoList = new ArrayList<>();
+        pOfferPayplanInfoList.add(checkOldAcctMap);
+        Map temp = new HashMap();
+        temp.put("prodInstId", 123);
+        temp.put("acctId", 3333);
+        if (pOfferPayplanInfoList.contains(temp)) {
+            //红包金退订填4
+            System.out.println("包含");
+        }
+        logger.info(checkOldAcctMap);
     }
 }

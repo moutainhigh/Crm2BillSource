@@ -56,7 +56,8 @@
         PAID_IN_AMOUNT paidInAmount,
         ORG_ID orgId,
         OFFER_INST_ID offerInstId,
-        OFFER_ID offerId
+        OFFER_ID offerId,
+        ONE_ACCT_ITEM_ID oneAcctItemId
         FROM ONE_ITEM_RESULT
         WHERE
         IF_CHARGE_OFF = 1
@@ -65,7 +66,7 @@
         </if>
         AND PROC_FLAG IN ('0', '2')
         AND CREATE_DATE > DATE_SUB(SYSDATE(),INTERVAL 30 day)
-        <!--and ARCH_GRP_ID = '310008069033'-->
+        <!-- and ARCH_GRP_ID = '310035555617' -->
         ORDER BY ARCH_GRP_ID, ORDER_ITEM_ID
     </select>
 
@@ -79,6 +80,7 @@
         </set>
         where ARCH_GRP_ID = #{ARCH_GRP_ID}
         and ORDER_ITEM_ID = #{ORDER_ITEM_ID}
+        and ONE_ACCT_ITEM_ID = #{oneAcctItemId}
     </update>
     <select id="selectOrderlist" resultType="java.util.HashMap" parameterType="map" >
         select

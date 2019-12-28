@@ -100,22 +100,22 @@
 	<bean id="fileTaskJob" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
 		<property name="targetObject">
 <!-- 			指定要定时执行的方法所在类，将定时任务定义成bean -->
-<!--			<ref bean="crmUserService" /> -->
+			<ref bean="crmUserService" />
 <!--			<ref bean="billMsgBackupService" /> -->
 <!--			<ref bean="payToPlanService"/>	-->
 			<!--<ref bean="bill2ctgmqService"/>-->
             <!--<ref bean="ordBackupService"/>-->
-					<ref bean="ordBackupService"/>
+					<!--<ref bean="ordBackupService"/>-->
                     </property>
                     <property name="targetMethod">
             <!-- 			指定定时执行的方法 -->
-		<!--	<value>runTask</value> -->
+			<value>runTask</value>
 		<!--		<value>backupData</value> -->
 		<!--		<value>acctProDepositTask</value> -->
 		<!--		<value>oneTimesChargeTask</value> -->
 						<!--		<value>scanUserInfoBill2ctgmq</value> -->
                         <!--		<value>backupData</value> -->
-				<value>backupData</value>
+				<!--<value>backupData</value>-->
             </property>
             <!--
             <property name="group">

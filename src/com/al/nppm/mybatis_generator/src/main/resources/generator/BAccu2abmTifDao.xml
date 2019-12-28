@@ -1,0 +1,236 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="generator.BAccu2abmTifDao">
+  <resultMap id="BaseResultMap" type="generator.BAccu2abmTif">
+    <id column="tif_seq" jdbcType="INTEGER" property="tifSeq" />
+    <id column="instance_id" jdbcType="BIGINT" property="instanceId" />
+    <result column="instance_type" jdbcType="BIGINT" property="instanceType" />
+    <result column="insert_date" jdbcType="TIMESTAMP" property="insertDate" />
+    <result column="state_date" jdbcType="TIMESTAMP" property="stateDate" />
+    <result column="state" jdbcType="INTEGER" property="state" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    tif_seq, instance_id, instance_type, insert_date, state_date, `state`
+  </sql>
+  <select id="selectByExample" parameterType="generator.BAccu2abmTifExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from b_accu2abm_tif
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+    <if test="limit != null">
+      <if test="offset != null">
+        limit ${offset}, ${limit}
+      </if>
+      <if test="offset == null">
+        limit ${limit}
+      </if>
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" parameterType="generator.BAccu2abmTifKey" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from b_accu2abm_tif
+    where tif_seq = #{tifSeq,jdbcType=INTEGER}
+      and instance_id = #{instanceId,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="generator.BAccu2abmTifKey">
+    delete from b_accu2abm_tif
+    where tif_seq = #{tifSeq,jdbcType=INTEGER}
+      and instance_id = #{instanceId,jdbcType=BIGINT}
+  </delete>
+  <delete id="deleteByExample" parameterType="generator.BAccu2abmTifExample">
+    delete from b_accu2abm_tif
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="generator.BAccu2abmTif">
+    insert into b_accu2abm_tif (tif_seq, instance_id, instance_type, 
+      insert_date, state_date, `state`
+      )
+    values (#{tifSeq,jdbcType=INTEGER}, #{instanceId,jdbcType=BIGINT}, #{instanceType,jdbcType=BIGINT}, 
+      #{insertDate,jdbcType=TIMESTAMP}, #{stateDate,jdbcType=TIMESTAMP}, #{state,jdbcType=INTEGER}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="generator.BAccu2abmTif">
+    insert into b_accu2abm_tif
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="tifSeq != null">
+        tif_seq,
+      </if>
+      <if test="instanceId != null">
+        instance_id,
+      </if>
+      <if test="instanceType != null">
+        instance_type,
+      </if>
+      <if test="insertDate != null">
+        insert_date,
+      </if>
+      <if test="stateDate != null">
+        state_date,
+      </if>
+      <if test="state != null">
+        `state`,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="tifSeq != null">
+        #{tifSeq,jdbcType=INTEGER},
+      </if>
+      <if test="instanceId != null">
+        #{instanceId,jdbcType=BIGINT},
+      </if>
+      <if test="instanceType != null">
+        #{instanceType,jdbcType=BIGINT},
+      </if>
+      <if test="insertDate != null">
+        #{insertDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="stateDate != null">
+        #{stateDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="state != null">
+        #{state,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="generator.BAccu2abmTifExample" resultType="java.lang.Long">
+    select count(*) from b_accu2abm_tif
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map">
+    update b_accu2abm_tif
+    <set>
+      <if test="record.tifSeq != null">
+        tif_seq = #{record.tifSeq,jdbcType=INTEGER},
+      </if>
+      <if test="record.instanceId != null">
+        instance_id = #{record.instanceId,jdbcType=BIGINT},
+      </if>
+      <if test="record.instanceType != null">
+        instance_type = #{record.instanceType,jdbcType=BIGINT},
+      </if>
+      <if test="record.insertDate != null">
+        insert_date = #{record.insertDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.stateDate != null">
+        state_date = #{record.stateDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.state != null">
+        `state` = #{record.state,jdbcType=INTEGER},
+      </if>
+    </set>
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update b_accu2abm_tif
+    set tif_seq = #{record.tifSeq,jdbcType=INTEGER},
+      instance_id = #{record.instanceId,jdbcType=BIGINT},
+      instance_type = #{record.instanceType,jdbcType=BIGINT},
+      insert_date = #{record.insertDate,jdbcType=TIMESTAMP},
+      state_date = #{record.stateDate,jdbcType=TIMESTAMP},
+      `state` = #{record.state,jdbcType=INTEGER}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="generator.BAccu2abmTif">
+    update b_accu2abm_tif
+    <set>
+      <if test="instanceType != null">
+        instance_type = #{instanceType,jdbcType=BIGINT},
+      </if>
+      <if test="insertDate != null">
+        insert_date = #{insertDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="stateDate != null">
+        state_date = #{stateDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="state != null">
+        `state` = #{state,jdbcType=INTEGER},
+      </if>
+    </set>
+    where tif_seq = #{tifSeq,jdbcType=INTEGER}
+      and instance_id = #{instanceId,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="generator.BAccu2abmTif">
+    update b_accu2abm_tif
+    set instance_type = #{instanceType,jdbcType=BIGINT},
+      insert_date = #{insertDate,jdbcType=TIMESTAMP},
+      state_date = #{stateDate,jdbcType=TIMESTAMP},
+      `state` = #{state,jdbcType=INTEGER}
+    where tif_seq = #{tifSeq,jdbcType=INTEGER}
+      and instance_id = #{instanceId,jdbcType=BIGINT}
+  </update>
+</mapper>

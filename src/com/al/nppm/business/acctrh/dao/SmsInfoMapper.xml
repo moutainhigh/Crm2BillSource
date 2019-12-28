@@ -40,4 +40,17 @@
   from inst.prod_inst@db_crm_rh
  where  prod_inst_id = #{prodInstId}
     </select>
+
+    <select id="getBillProdInstInfo"  resultType="java.util.HashMap" >
+  select prod_inst_id
+  from prod_inst
+ where  prod_inst_id = #{prodInstId}
+    </select>
+
+    <select id="selectProdInst2hx" resultType="java.lang.Long" parameterType="java.util.HashMap">
+ 	SELECT count(*)
+    from PROD_INST
+    where   STATUS_CD  IN ('110000', '110001', '110002')
+       AND PROD_INST_ID = #{objId}
+  </select>
 </mapper>

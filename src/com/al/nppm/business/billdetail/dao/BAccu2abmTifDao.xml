@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.al.nppm.business.billdetail.dao.BAccu2abmTifDao">
+
+  <insert id="insertBAccu2abmTif" parameterType="map">
+    insert into b_accu2abm_tif
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="tifSeq != null">
+        tif_seq,
+      </if>
+      <if test="instanceId != null">
+        instance_id,
+      </if>
+      <if test="instanceType != null">
+        instance_type,
+      </if>
+      <if test="insertDate != null">
+        insert_date,
+      </if>
+      <if test="stateDate != null">
+        state_date,
+      </if>
+      <if test="state != null">
+        state,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="tifSeq != null">
+        #{tifSeq,jdbcType=INTEGER},
+      </if>
+      <if test="instanceId != null">
+        #{instanceId,jdbcType=BIGINT},
+      </if>
+      <if test="instanceType != null">
+        #{instanceType,jdbcType=BIGINT},
+      </if>
+      <if test="insertDate != null">
+        #{insertDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="stateDate != null">
+        #{stateDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="state != null">
+        #{state,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+
+  <select id="getSeq" resultType="java.lang.Long" parameterType="map">
+	select ${seq_name}.nextval
+  </select>
+</mapper>

@@ -99,7 +99,8 @@ public interface IAccountMapper {
 	
 	///route_id
 	public List<Map<String,Object>> getExtAcctID(Map map);
-	
+
+	public List<Map<String,Object>> selectExtAcctID(Map map);
 	//	-------------------------- 参与人相关F_INSERT_PARTY开始   -------------------------
 
 	public long getCountPartyById(Map map);

@@ -109,6 +109,7 @@ public class ErrorDealService implements IErrorDealService {
         if (offergroupError007.size() > 0) {
             for (Map<String, Object> orderMap : offergroupError007) {
                 long archGrpId = Long.parseLong(orderMap.get("ARCH_GRP_ID").toString());
+                long procCnt = Long.parseLong(String.valueOf(orderMap.get("PROC_CNT")));
                 String notes = String.valueOf(orderMap.get("notes"));
                 int pos = notes.indexOf("。");
                 String offerInstId = notes.substring(46, pos);
@@ -123,7 +124,7 @@ public class ErrorDealService implements IErrorDealService {
                     try {
                         for (Map<String, Object> crmMap : crmOfferList) {
                             crmMap.put("archGrpId", archGrpId);
-                        flag = doOfferGroupErrorDeal(crmMap, msg);
+                             flag = doOfferGroupErrorDeal(crmMap, msg);
                             if (flag ==1) {
                                 logger.info("计费错单【OFFERGROUP_ERROR_007】处理补录商品实例成功【offerInstId】：" + offerInstId);
                             }
@@ -134,16 +135,19 @@ public class ErrorDealService implements IErrorDealService {
                         } else {
                             Map map = new HashMap();
                             map.put("archGrpId", orderMap.get("ARCH_GRP_ID"));
-                            map.put("procFlag", 0);
+                            if (procCnt < 199) {
+                                map.put("procFlag", 0);
+                                ordBillMapperDao.updateOrdBill(map);
+                            }
                             transactionManager.commit(status);
-                            ordBillMapperDao.updateOrdBill(map);
+
                         }
                         //}
 
                     } catch (Exception e) {
                         e.printStackTrace();
                         transactionManager.rollback(status);
-                        logger.error("处理失败：" + e.getMessage());
+                        logger.error("处理失败【archGrpId】：" + archGrpId + "," + e.getMessage());
                     }
             }
 
@@ -154,6 +158,7 @@ public class ErrorDealService implements IErrorDealService {
         if (offerinsError001.size() > 0) {
             for (Map<String, Object> orderMap : offerinsError001) {
                 long archGrpId = Long.parseLong(orderMap.get("ARCH_GRP_ID").toString());
+                long procCnt = Long.parseLong(String.valueOf(orderMap.get("PROC_CNT")));
                 String notes = String.valueOf(orderMap.get("notes"));
                 int pos = notes.indexOf("。");
                 String offerInstId = notes.substring(43, pos);
@@ -179,58 +184,66 @@ public class ErrorDealService implements IErrorDealService {
                     } else {
                         Map map = new HashMap();
                         map.put("archGrpId", orderMap.get("ARCH_GRP_ID"));
-                        map.put("procFlag", 0);
+                        if (procCnt < 199) {
+                            map.put("procFlag", 0);
+                            ordBillMapperDao.updateOrdBill(map);
+                        }
                         transactionManager.commit(status);
-                        ordBillMapperDao.updateOrdBill(map);
+
                     }
                     //}
 
                 } catch (Exception e) {
                     e.printStackTrace();
                     transactionManager.rollback(status);
-                    logger.error("处理失败：" + e.getMessage());
+                    logger.error("处理失败【archGrpId】：" + + archGrpId + "," +  e.getMessage());
                 }
             }
 
         }
     }
     public int doOfferGroupErrorDeal(Map itemMap, Message msg) throws Exception {
-        long routeId;
-        long offerInstId = Long.parseLong(String.valueOf(itemMap.get("offerInstId")));
-        routeId = routeMapperDao.getOfferInstRoute(offerInstId);
-        if (StringUtil.isEmpty(String.valueOf(routeId))) {
-            if (routeMapperDao.insertOfferInstRoute(itemMap) < 1 ) {
-                logger.error("错单处理插入商品路由失败" + itemMap.get("offerInstId"));
-                return -1;
+        try {
+            Long routeId = null;
+            long offerInstId = Long.parseLong(String.valueOf(itemMap.get("offerInstId")));
+            routeId = routeMapperDao.getOfferInstRoute(offerInstId);
+            if (StringUtil.isEmpty(String.valueOf(routeId))) {
+                if (routeMapperDao.insertOfferInstRoute(itemMap) < 1 ) {
+                    logger.error("错单处理插入商品路由失败" + itemMap.get("offerInstId"));
+                    return -1;
+                }
             }
-        }
-        itemMap.put("effDate", new Date());
-        itemMap.put("remark", "计费错单补录销售品实例");
-        SynMapContextHolder.remove();
-        SynMapContextHolder.init();
-        Map<String, List<?>> synMap = new HashMap<String, List<?>>();
-        SynMapContextHolder.initSynMap(synMap);
-        SynMapContextHolder.put("archGrpId", itemMap.get("archGrpId"));
-        List<Map<String, Object>> regionList = ordBillMapperDao.selectTifOrgContrast(itemMap);
-        if (regionList.size() > 0) {
-            Map regionMap = new HashMap();
-            regionMap = regionList.get(0);
-            String areaCode = regionMap.get("areaCode").toString();
-            String lanId = areaCode.substring(1, 4);
-            itemMap.put("regionId",regionMap.get("orgIdBill").toString());
-            itemMap.put("lanId", lanId);
+            itemMap.put("effDate", new Date());
+            itemMap.put("remark", "计费错单补录销售品实例");
+            SynMapContextHolder.remove();
+            SynMapContextHolder.init();
+            Map<String, List<?>> synMap = new HashMap<String, List<?>>();
+            SynMapContextHolder.initSynMap(synMap);
+            SynMapContextHolder.put("archGrpId", itemMap.get("archGrpId"));
+            List<Map<String, Object>> regionList = ordBillMapperDao.selectTifOrgContrast(itemMap);
+            if (regionList.size() > 0) {
+                Map regionMap = new HashMap();
+                regionMap = regionList.get(0);
+                String areaCode = regionMap.get("areaCode").toString();
+                String lanId = areaCode.substring(1, 4);
+                itemMap.put("regionId",regionMap.get("orgIdBill").toString());
+                itemMap.put("lanId", lanId);
 
-        }
-        List<Map<String,Object>> offerList = offerInstMapperDao.getOfferInstId(itemMap);
-        if (offerList.size() == 0){
-            if (offerInstMapperDao.insertOfferInst(itemMap) < 1) {
-                logger.error("错单处理插入商品实例失败" + itemMap.get("offerInstId"));
-                return -1;
             }
-            SynMapContextHolder.put("routeCustId", itemMap.get("ownerCustId").toString());
-            itemMap.put("action", 1);
-            addMap("offerInstobjList1", itemMap);
-            addMsg(synMap);
+            List<Map<String,Object>> offerList = offerInstMapperDao.getOfferInstId(itemMap);
+            if (offerList.size() == 0){
+                if (offerInstMapperDao.insertOfferInst(itemMap) < 1) {
+                    logger.error("错单处理插入商品实例失败" + itemMap.get("offerInstId"));
+                    return -1;
+                }
+                SynMapContextHolder.put("routeCustId", itemMap.get("ownerCustId").toString());
+                itemMap.put("action", 1);
+                addMap("offerInstobjList1", itemMap);
+                addMsg(synMap);
+            }
+        } catch (Exception e) {
+            logger.error("错单处理群成员失败" + itemMap.get("offerInstId"));
+            return -1;
         }
         return 1;
     }
@@ -324,11 +337,13 @@ public class ErrorDealService implements IErrorDealService {
                 return -1;
             }
             JSONArray array = json.getJSONObject("stdCcaQueryServRes").getJSONArray("stdCcaQueryServList");
-            JSONObject resultJson = array.getJSONObject(0);
-            String abmState = resultJson.getString("servState");
-            if ("0".equals(abmState)
-                    ||"2".equals(abmState)) {
-                 flag = true;
+            if (array.size() > 0) {
+                JSONObject resultJson = array.getJSONObject(0);
+                String abmState = resultJson.getString("servState");
+                if ("0".equals(abmState)
+                        ||"2".equals(abmState)) {
+                    flag = true;
+                }
             }
         }catch (Exception ex){
             logger.error("调用接口失败，返回码："+ex.getMessage());

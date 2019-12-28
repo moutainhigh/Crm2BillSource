@@ -17,4 +17,8 @@ public interface SmsInfoMapper {
     public List<Map<String, Object>> getCrmOfferInstInfo(@Param("offerInstId") long offerInstId);
 
     public List<Map<String, Object>> getCrmProdInstInfo(@Param("prodInstId") long prodInstId);
+
+    public List<Map<String, Object>> getBillProdInstInfo(@Param("prodInstId") long prodInstId);
+
+    public long selectProdInst2hx(Map map);
 }

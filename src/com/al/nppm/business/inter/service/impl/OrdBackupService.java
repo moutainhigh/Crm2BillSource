@@ -243,7 +243,7 @@ public class OrdBackupService {
 //                    break;
 //                }
                 //租机套餐配置在OFFER_CATALOG_LOCATION表中
-				List<Map<String,Object>> zjList = cpcDao.getCountFromOfferCatalogLocation(offerInstMap);
+				List<Map<String,Object>> zjList = cpcDao.selectPOfferPayplanInfo(offerInstMap);
                 if (zjList.size()>0&&!"1".equals(offerInstMap.get("statusCd").toString())){
                     flag=false;
                     break;

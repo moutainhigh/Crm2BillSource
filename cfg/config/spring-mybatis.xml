@@ -271,6 +271,27 @@
           class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
         <property name="dataSource" ref="cpcpDataSource" />
     </bean>
+
+    <!--清单库数据源-->
+    <bean id="billdetailDataSource" parent="parentSource" >
+        <property name="connectionProperties"  value="password=${jdbc.billdetail.password}"/>
+        <property name="passwordCallback" ref="dbPasswordCallback"/>
+        <property name="url" value="${jdbc.billdetail.url}" />
+        <property name="username" value="${jdbc.billdetail.username}" />
+    </bean>
+    <bean id="sqlSessionFactory_billdetail" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <property name="dataSource" ref="billdetailDataSource" />
+        <property name="mapperLocations" value="classpath*:com/al/nppm/business/billdetail/dao/*.xml"></property>
+        <property name="configLocation"  value="classpath:config/mybatis-config.xml"/>
+    </bean>
+    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <property name="basePackage" value="com.al.nppm.business.billdetail.dao" />
+        <property name="sqlSessionFactoryBeanName" value="sqlSessionFactory_billdetail"></property>
+    </bean>
+    <bean id="transactionManager_billdetail"
+          class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="billdetailDataSource" />
+    </bean>
 	<!--账务融合库数据源-->
 	<bean id="orderDataSource" parent="parentSource" >
 		<property name="driverClassName" value="oracle.jdbc.driver.OracleDriver" />

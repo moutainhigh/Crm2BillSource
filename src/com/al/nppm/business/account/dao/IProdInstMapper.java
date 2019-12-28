@@ -45,6 +45,7 @@ public interface IProdInstMapper {
 	
 	
 	public List<Map<String,Object>> getProdInstAcctId(Map map);
+	public List<Map<String,Object>> selectProdInstAcctRel(Map map);
     public List<Map<String,Object>> getProdInstAcctIdForNull(Map map);
     public long getProdInstAcctCnt(Map map);
 	public long getProdInstAcctInvalidCnt(Map map);

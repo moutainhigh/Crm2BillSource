@@ -8,6 +8,7 @@ import com.al.nppm.business.acct.dao.vo.AElecInvContact;
 import com.al.nppm.business.acctrh.dao.SmsInfoMapper;
 import com.al.nppm.business.bill.dao.BTrunkBillingMapper;
 import com.al.nppm.business.bill.dao.BillMapper;
+import com.al.nppm.business.billdetail.dao.BAccu2abmTifDao;
 import com.al.nppm.business.core.SynMapContextHolder;
 import com.al.nppm.business.cpcp.dao.CpcMapper;
 import com.al.nppm.business.inter.http.state.statePublic;
@@ -92,6 +93,8 @@ public class CrmUserService {
     AElecInvContactMapper aElecInvContactMapperDao;
     @Autowired
     SmsInfoMapper smsInfoMapperDao;
+    @Autowired
+    BAccu2abmTifDao bAccu2abmTifDao;
     // @Autowired
     // public ProdOfferMapper prodOfferDao;
 
@@ -194,6 +197,7 @@ public class CrmUserService {
 //					iCount = tranManager(id, "");
 
                     long startOperTime = System.currentTimeMillis();
+
                     // 2.处理业务逻辑  flag=1处理成功、其他失败
                     flag = CrmUserTable(map, msg, userMap);
                     // 3.发消息
@@ -588,6 +592,16 @@ public class CrmUserService {
         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         SimpleDateFormat d = new SimpleDateFormat("yyyyMMddHHmmss");
         SimpleDateFormat df1 = new SimpleDateFormat("yyyy-MM-dd");
+        //crm会送重复拆机的数据过来，做以下过滤
+        /*List<Map<String,Object>> prodInstCjList = ordBillDao.getOrdBillObjCj(archGrpId);
+        if (prodInstCjList.size() == 1) {
+            Map prodInstCjMap = prodInstCjList.get(0);
+            long cntProd2hx =   smsInfoMapperDao.selectProdInst2hx(prodInstCjMap);
+            if (cntProd2hx > 0) {
+                logger.error("计费产品产品实例已经拆机【prodInstId】：" + prodInstCjMap.get("objId"));
+                return 1;
+            }
+        }*/
         List<Map<String, Object>> ordObjlist = ordBillDao
                 .selectOrdBillObj(archGrpId);
         if (ordObjlist.size() == 0) {
@@ -1242,9 +1256,10 @@ public class CrmUserService {
                 return 1;
             }
             if (strExpDate.compareTo(strEffDate) < 0) {
-                msg.setResultCode(ResultCode.OFFERINS_I_ERROR_002);
-                msg.setMessage("新建套餐的失效时间必须大于生效时间");
-                return -1;
+                logger.error("新建套餐的失效时间小于生效时间【offerInstId】：" + ordOfferInstMap.get("offerInstId"));
+                /*msg.setResultCode(ResultCode.OFFERINS_I_ERROR_002);
+                msg.setMessage("新建套餐的失效时间必须大于生效时间");*/
+                return 1;
             }
             // 处理时间问题 23:59:59 改为第二天
             int index = strExpDate.indexOf(" ");
@@ -2197,9 +2212,15 @@ public class CrmUserService {
                         return -1;
                     }
                 }else {
-                    msg.setResultCode(ResultCode.OFFERGROUP_ERROR_007);
-                    msg.setMessage("成员变更未找到商品实例【offerinstId】:" + map.get("offerInstId"));
-                    return -1;
+                    List<Map<String, Object>> tifContrastofferList = ordBillDao.selectTifDisctIdContrast(offerId);
+                    if (tifContrastofferList.size() > 0) {
+                        Map tifContrastMap = tifContrastofferList.get(0);
+                        offerId = Long.parseLong(String.valueOf(tifContrastMap.get("DISCT_ID_BILL")));
+                    } /*else {
+                        msg.setResultCode(ResultCode.OFFERGROUP_ERROR_007);
+                        msg.setMessage("成员变更未找到商品实例【offerinstId】:" + map.get("offerInstId"));
+                        return -1;
+                    }*/
                 }
             }
             List<Map<String, Object>> offerProdInstRelList = ordBillDao
@@ -2255,6 +2276,11 @@ public class CrmUserService {
                     }
                     if (operType.equals("1000")) {
                         // 取历史旧的，做判断是否存在
+                        if (offerProdInstList.size() == 0) {
+                            msg.setResultCode(ResultCode.OFFERGROUP_ERROR_007);
+                            msg.setMessage("成员变更未找到商品实例【offerinstId】:" + map.get("offerInstId"));
+                            return -1;
+                        }
                         offerProdInstMap.put("offerObjInstRelId",
                                 offerProdInstMap.get("offerProdInstRelId"));// 主键
                         List<Map<String, Object>> oldOfferProdInstList = offerinstDao
@@ -2788,370 +2814,409 @@ public class CrmUserService {
 
     public int doProdInstAcctRel(Map itemMap, Map userMap, Message msg, Long serviceOfferId)
             throws Exception {
-            SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            SimpleDateFormat d = new SimpleDateFormat("yyyyMMddHHmmss");
-            SimpleDateFormat dfm = new SimpleDateFormat("yyyyMM");
-            Map acctRelMap = itemMap;
+        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        SimpleDateFormat d = new SimpleDateFormat("yyyyMMddHHmmss");
+        SimpleDateFormat dfm = new SimpleDateFormat("yyyyMM");
+        Map acctRelMap = itemMap;
+        String checkOldAcct = "";
+        List<Map<String, Object>> prodInstAcctRelList = ordBillDao
+                .selectOrdProdInstAcctRel(acctRelMap);
 
-            List<Map<String, Object>> prodInstAcctRelList = ordBillDao
-                    .selectOrdProdInstAcctRel(acctRelMap);
+        List<Map<String, Object>> ordProdInstAcctRelAttrList = new ArrayList<Map<String, Object>>();
+        if (prodInstAcctRelList.size() > 0) {
+            for (int i = 0; i < prodInstAcctRelList.size(); i++) {
 
-            List<Map<String, Object>> ordProdInstAcctRelAttrList = new ArrayList<Map<String, Object>>();
-            if (prodInstAcctRelList.size() > 0) {
-                for (int i = 0; i < prodInstAcctRelList.size(); i++) {
+                Map servAcctMap = new HashMap();
+                servAcctMap = prodInstAcctRelList.get(i);
+                String acctId = servAcctMap.get("acctId").toString();
+                long prodInstId = Long.parseLong(servAcctMap.get("prodInstId").toString());
+                servAcctMap.put("routeId", acctId);
+                long acctCnt = accountDao.getAccountById(servAcctMap);
+                if (acctCnt == 0) {
+                    msg.setResultCode(ResultCode.PRODACCT_ERROR_001);
+                    msg.setMessage("用户(" + prodInstId + ")的支付账户(" + acctId + ")在计费不存在");
+                    return -1;
+                }
+                if (StringUtil.isEmpty(servAcctMap.get("statusDate"))) {
+                    servAcctMap.put("executetime", d.format(new Date()));
+                } else {
+                    servAcctMap.put("executetime", d.format(df
+                            .parse(servAcctMap.get("statusDate").toString())));
+                }
 
-                    Map servAcctMap = new HashMap();
-                    servAcctMap = prodInstAcctRelList.get(i);
-                    String acctId = servAcctMap.get("acctId").toString();
-                    long prodInstId = Long.parseLong(servAcctMap.get("prodInstId").toString());
-                    servAcctMap.put("routeId", acctId);
-                    long acctCnt = accountDao.getAccountById(servAcctMap);
-                    if (acctCnt == 0) {
-                        msg.setResultCode(ResultCode.PRODACCT_ERROR_001);
-                        msg.setMessage("用户(" + prodInstId + ")的支付账户(" + acctId + ")在计费不存在");
-                        return -1;
-                    }
-                    if (StringUtil.isEmpty(servAcctMap.get("statusDate"))) {
-                        servAcctMap.put("executetime", d.format(new Date()));
-                    } else {
-                        servAcctMap.put("executetime", d.format(df
-                                .parse(servAcctMap.get("statusDate").toString())));
-                    }
-
-                    long operType = Long.parseLong(servAcctMap.get("operType")
-                            .toString());
-                    ordProdInstAcctRelAttrList = ordBillDao.getOrdProdInstAcctRelAttr(servAcctMap);
-                    //取接口表ord_prod_inst表，判断是否为组合产品，组合产品不加账务关系
-                    List<Map<String, Object>> ordProdInstList = ordBillDao.selectOrdProdInst(servAcctMap);
+                long operType = Long.parseLong(servAcctMap.get("operType")
+                        .toString());
+                ordProdInstAcctRelAttrList = ordBillDao.getOrdProdInstAcctRelAttr(servAcctMap);
+                //取接口表ord_prod_inst表，判断是否为组合产品，组合产品不加账务关系
+                List<Map<String, Object>> ordProdInstList = ordBillDao.selectOrdProdInst(servAcctMap);
+                if (ordProdInstList.size() == 0) {
+                    ordProdInstList = ordBillDao.selectOrdProdInst1300(servAcctMap);
                     if (ordProdInstList.size() == 0) {
-                        ordProdInstList = ordBillDao.selectOrdProdInst1300(servAcctMap);
+                        ordProdInstList = ordBillDao.selectOrdProdInstAll(servAcctMap);
                         if (ordProdInstList.size() != 1) {
                             msg.setResultCode(ResultCode.PRODACCT_ERROR_002);
                             msg.setMessage("取用户接口表ord_prod_inst数据时出错");
                             return -1;
                         }
-                    } else if (ordProdInstList.size() != 1) {
-                        msg.setResultCode(ResultCode.PRODACCT_ERROR_003);
-                        msg.setMessage("取用户接口表ord_prod_inst数据时出错");
+
+                    }
+                } else if (ordProdInstList.size() != 1) {
+                    msg.setResultCode(ResultCode.PRODACCT_ERROR_003);
+                    msg.setMessage("取用户接口表ord_prod_inst数据时出错");
+                    return -1;
+                }
+                Map ordProdInstMap = ordProdInstList.get(0);
+                long archGrpId = Long.parseLong(servAcctMap.get("ARCH_GRP_ID").toString());
+                long orderItemId = Long.parseLong(servAcctMap.get("ORDER_ITEM_ID").toString());
+                long routeId = 0;
+                //routeId = routeMapperDao.getProdInstRoute(prodInstId);
+                routeId = routeServiceDao.getRouteIdForProdInst(archGrpId, orderItemId, prodInstId, msg);
+                if (routeId <= 0) {
+                    msg.setResultCode(ResultCode.PRODACCT_ERROR_004);
+                    msg.setMessage("取用户的routeId失败【prodInstId】:" + prodInstId);
+                    return -1;
+                }
+                servAcctMap.put("routeId", routeId);
+                List<Map<String, Object>> tifProdList = ordBillDao.selectTifProdContrast(ordProdInstMap);
+                if (tifProdList.size() == 1) {
+                    Map prodConMap = new HashMap();
+                    prodConMap = tifProdList.get(0);
+                    if ("10C".equals(prodConMap.get("prodType"))
+                            || "10D".equals(prodConMap.get("prodType"))) {
+                        return 1;
+                    }
+                }//取接口表ord_prod_inst表，判断是否为组合产品，组合产品不加账务关系 end
+                if (operType == 1000)// 直接插入账务关系
+                {
+                    List<Map<String, Object>> prodInstMapList = prodinstDao.getProdInstOBJ(servAcctMap);
+                    if (prodInstMapList.size() != 1) {
+                        msg.setResultCode(ResultCode.PRODACCT_ERROR_005);
+                        msg.setMessage("取对应的用户编码时出错，不允许增加账务关系【prodInstId】：" + servAcctMap.get("prodInstId"));
                         return -1;
                     }
-                    Map ordProdInstMap = ordProdInstList.get(0);
-                    long archGrpId = Long.parseLong(servAcctMap.get("ARCH_GRP_ID").toString());
-                    long orderItemId = Long.parseLong(servAcctMap.get("ORDER_ITEM_ID").toString());
-                    long routeId = 0;
-                    //routeId = routeMapperDao.getProdInstRoute(prodInstId);
-                    routeId = routeServiceDao.getRouteIdForProdInst(archGrpId, orderItemId, prodInstId, msg);
-                    if (routeId <= 0) {
-                        msg.setResultCode(ResultCode.PRODACCT_ERROR_004);
-                        msg.setMessage("取用户的routeId失败【prodInstId】:" + prodInstId);
-                        return -1;
+                    Map prodInstMap = prodInstMapList.get(0);
+                    String areaCode = "";
+                    if (!StringUtil.isEmpty(prodInstMap.get("regionId"))) {
+                        areaCode = prodInstMap.get("regionId").toString();
+                        areaCode = "0" + areaCode.substring(0, 3);
+                    } else {
+                        areaCode = "0431";
                     }
-                    servAcctMap.put("routeId", routeId);
-                    List<Map<String, Object>> tifProdList = ordBillDao.selectTifProdContrast(ordProdInstMap);
-                    if (tifProdList.size() == 1) {
-                        Map prodConMap = new HashMap();
-                        prodConMap = tifProdList.get(0);
-                        if ("10C".equals(prodConMap.get("prodType"))
-                                || "10D".equals(prodConMap.get("prodType"))) {
-                            return 1;
-                        }
-                    }//取接口表ord_prod_inst表，判断是否为组合产品，组合产品不加账务关系 end
-                    if (operType == 1000)// 直接插入账务关系
-                    {
-                        List<Map<String, Object>> prodInstMapList = prodinstDao.getProdInstOBJ(servAcctMap);
-                        if (prodInstMapList.size() != 1) {
-                            msg.setResultCode(ResultCode.PRODACCT_ERROR_005);
-                            msg.setMessage("取对应的用户编码时出错，不允许增加账务关系【prodInstId】：" + servAcctMap.get("prodInstId") );
-                            return -1;
-                        }
-                        Map prodInstMap = prodInstMapList.get(0);
-                        String areaCode = "";
-                        if (!StringUtil.isEmpty(prodInstMap.get("regionId"))) {
-                            areaCode = prodInstMap.get("regionId").toString();
-                            areaCode = "0" + areaCode.substring(0, 3);
-                        } else {
-                            areaCode = "0431";
-                        }
 
 						/*long prodInstPayModeID = selectPaymodeId(servAcctMap);
 						if (prodInstPayModeID == -1) {
 							msg.setMessage("取用户的付费类型出错，不允许增加账务关系");
 							return -1;
 						}*/
-                        Map mapExpDateMap = new HashMap();
-                        List<Map<String, Object>> ordPordInstAccrelList = ordBillDao.selectOrdProdInstAcctRel1100(servAcctMap);
-                        if (ordPordInstAccrelList.size() > 0) {
-                            List<Map<String, Object>> ordBillexpDateList = ordBillDao.queryOrdBillExpDate(servAcctMap);
-                            mapExpDateMap = ordBillexpDateList.get(0);
-                            if (mapExpDateMap.get("finishDate") == null
-                                    || "".equals(mapExpDateMap.get("finishDate"))) {
-                                msg.setResultCode(ResultCode.PRODACCT_ERROR_006);
-                                msg.setMessage("取工单竣工时间出错");
-                                return -1;
-                            }
+                    Map mapExpDateMap = new HashMap();
+                    List<Map<String, Object>> ordPordInstAccrelList = ordBillDao.selectOrdProdInstAcctRel1100(servAcctMap);
+                    if (ordPordInstAccrelList.size() > 0) {
+                        List<Map<String, Object>> ordBillexpDateList = ordBillDao.queryOrdBillExpDate(servAcctMap);
+                        mapExpDateMap = ordBillexpDateList.get(0);
+                        if (mapExpDateMap.get("finishDate") == null
+                                || "".equals(mapExpDateMap.get("finishDate"))) {
+                            msg.setResultCode(ResultCode.PRODACCT_ERROR_006);
+                            msg.setMessage("取工单竣工时间出错");
+                            return -1;
                         }
-                        long prodInstPayModeID = Long.parseLong(ordProdInstMap.get("paymentModeCd").toString());
-                        // ad by wangbaoqiang 如果没有帐户代表号,则增加  1默认 -1否
+                    }
+                    long prodInstPayModeID = Long.parseLong(ordProdInstMap.get("paymentModeCd").toString());
+                    // ad by wangbaoqiang 如果没有帐户代表号,则增加  1默认 -1否
 //						if ("1".equals(servAcctMap.get("ifDefaultAcctId").toString())) {
-                        servAcctMap.put("routeId", acctId);
-                        List<Map<String, Object>> accountMapList = accountDao.getAccout(servAcctMap);
-                        for (Iterator iterator = accountMapList.iterator(); iterator
-                                .hasNext(); ) {
-                            Map<String, Object> map = (Map<String, Object>) iterator
-                                    .next();
-                            acctCnt = 0;
-                            long prodInstIdTemp = Long.parseLong(StringUtil.isEmpty(map.get("prodInstId"))?"0":String.valueOf(map.get("prodInstId")));
-                            long deputyInstRoute =  routeServiceDao.getProdInstRoute(prodInstIdTemp, msg);
-                            map.put("routeId", deputyInstRoute);
-                            if (prodInstIdTemp > 0) {
+                    servAcctMap.put("routeId", acctId);
+                    List<Map<String, Object>> accountMapList = accountDao.getAccout(servAcctMap);
+                    for (Iterator iterator = accountMapList.iterator(); iterator
+                            .hasNext(); ) {
+                        Map<String, Object> map = (Map<String, Object>) iterator
+                                .next();
+                        acctCnt = 0;
+                        long prodInstIdTemp = Long.parseLong(StringUtil.isEmpty(map.get("prodInstId")) ? "0" : String.valueOf(map.get("prodInstId")));
+                        long deputyInstRoute = routeServiceDao.getProdInstRoute(prodInstIdTemp, msg);
+                        map.put("routeId", deputyInstRoute);
+                        if (prodInstIdTemp > 0) {
 									/*long routeIdTemp = routeServiceDao.getRouteIdForProdInst(archGrpId, orderItemId, prodInstIdTemp, msg);
 									map.put("routeId", routeIdTemp);*/
-                                acctCnt = prodinstDao.getProdInstCount2Ha(map);
-                                if (acctCnt == 0) {
-                                    try {
-                                        map.put("routeId", acctId);
-                                        hisService.insertAccountHis(map);
-                                        Map mapTemp = new HashMap();
-                                        map.put("prodInstId", prodInstId);
-                                        map.put("acctId", acctId);
-                                        map.put("routeId", acctId);
-                                        map.put("remark", "增加用户账务关系修改代表号码1");
-                                        accountDao.updateAccount(map);
-                                        map.put("action", 2);
-                                        map.put("executetime", servAcctMap.get("executetime"));
-                                        SynMapContextHolder.addMap("acctobjList1", map);
-                                    } catch (Exception e) {
-                                        e.printStackTrace();
-                                        String exceptionMsg = "";
-                                        msg.setResultCode(ResultCode.PRODACCT_ERROR_007);
-                                        exceptionMsg = setErrorMsg(e.getMessage(),"修改账户代表号码失败");
-                                        msg.setMessage(exceptionMsg);
-                                        return -1;
-                                    }
-                                }
-                            }else{
-                                //更新账户代表号码
+                            acctCnt = prodinstDao.getProdInstCount2Ha(map);
+                            if (acctCnt == 0) {
                                 try {
                                     map.put("routeId", acctId);
-                                    Map updateMap = new HashMap();
-                                    updateMap.put("acctId", acctId);
-                                    updateMap.put("routeId", acctId);
-                                    updateMap.put("prodInstId", servAcctMap.get("prodInstId"));
-                                    Map oldAcountMap = accountDao.getAccout(updateMap).get(0);
                                     hisService.insertAccountHis(map);
-                                    updateMap.put("remark", "增加用户账务关系修改代表号码");
-                                    accountDao.updateAccount(updateMap);
-                                    oldAcountMap.put("action", 2);
-                                    oldAcountMap.put("prodInstId", prodInstId);
-                                    oldAcountMap.put("executetime", servAcctMap.get("executetime"));
-                                    SynMapContextHolder.addMap("acctobjList1", oldAcountMap);
+                                    Map mapTemp = new HashMap();
+                                    map.put("prodInstId", prodInstId);
+                                    map.put("acctId", acctId);
+                                    map.put("routeId", acctId);
+                                    map.put("remark", "增加用户账务关系修改代表号码1");
+                                    accountDao.updateAccount(map);
+                                    map.put("action", 2);
+                                    map.put("executetime", servAcctMap.get("executetime"));
+                                    SynMapContextHolder.addMap("acctobjList1", map);
                                 } catch (Exception e) {
+                                    e.printStackTrace();
                                     String exceptionMsg = "";
-                                    msg.setResultCode(ResultCode.PRODACCT_ERROR_012);
-                                    exceptionMsg = setErrorMsg(e.getMessage(),"修改账户代表号码失败");
+                                    msg.setResultCode(ResultCode.PRODACCT_ERROR_007);
+                                    exceptionMsg = setErrorMsg(e.getMessage(), "修改账户代表号码失败");
                                     msg.setMessage(exceptionMsg);
                                     return -1;
                                 }
                             }
-                        }
-                        acctCnt = 0;
-                        servAcctMap.put("routeId", routeId);
-                        acctCnt = prodinstDao.getCntProdInstIdFromAcctRel(servAcctMap);
-                        if (acctCnt == 0) {
-                            long prodInstAcctRelId = prodinstDao
-                                    .seqProdInstAcctRelId();
-                            servAcctMap.put("prodInstAcctRelId", prodInstAcctRelId);
-                            servAcctMap.put("acctItemGroupId", 1);
-                            servAcctMap.put("action", 1);
-                            servAcctMap.put("statusCd", 1);
-                            if (!"".equals(mapExpDateMap.get("finishDate"))
-                                    && mapExpDateMap.get("finishDate") != null) {
-                                servAcctMap.put("effDate", mapExpDateMap.get("finishDate"));
-                            }
+                        } else {
+                            //更新账户代表号码
                             try {
-                                prodinstDao.insertProdInstAcctRel(servAcctMap);
+                                map.put("routeId", acctId);
+                                Map updateMap = new HashMap();
+                                updateMap.put("acctId", acctId);
+                                updateMap.put("routeId", acctId);
+                                updateMap.put("prodInstId", servAcctMap.get("prodInstId"));
+                                Map oldAcountMap = accountDao.getAccout(updateMap).get(0);
+                                hisService.insertAccountHis(map);
+                                updateMap.put("remark", "增加用户账务关系修改代表号码");
+                                accountDao.updateAccount(updateMap);
+                                oldAcountMap.put("action", 2);
+                                oldAcountMap.put("prodInstId", prodInstId);
+                                oldAcountMap.put("executetime", servAcctMap.get("executetime"));
+                                SynMapContextHolder.addMap("acctobjList1", oldAcountMap);
                             } catch (Exception e) {
-                                e.printStackTrace();
                                 String exceptionMsg = "";
-                                exceptionMsg = setErrorMsg(e.getMessage(), "增加帐务关系时出错");
-                                msg.setResultCode(ResultCode.PRODACCT_ERROR_008);
+                                msg.setResultCode(ResultCode.PRODACCT_ERROR_012);
+                                exceptionMsg = setErrorMsg(e.getMessage(), "修改账户代表号码失败");
                                 msg.setMessage(exceptionMsg);
                                 return -1;
                             }
-                            SynMapContextHolder.addMap("prodInstAcctRelobjList1", servAcctMap);
-                        } else {
-                            msg.setResultCode(ResultCode.PRODACCT_ERROR_009);
-                            msg.setMessage("存在相同的账户:prod_inst_id=" + prodInstId + ";ACCT_ID=" + acctId + "请检查");
-                            return -1;
                         }
-                        //增加过户插入过户中间表  paymodecd = 2100 ocs用户
-
-                        try {
-                            List<Map<String, Object>> ordPordInstAcctReList = ordBillDao.selectOrdProdInstAcctRel1100(servAcctMap);
-                            for (Map<String, Object> map : ordPordInstAcctReList) {
-                                String oldAcctId = map.get("acctId").toString();
-                                if (oldAcctId.equals(acctId)) {//过户的时候新老账户已经一致就不在处理
-                                    logger.error("过户的时候新老账户一致");
-                                    return 1;
-                                }
-                                map.put("routeId", routeId);
-                                //插入计费过户表
-                                Map servAcctChang = new HashMap();
-                                long seqNum = prodinstDao.getSeq("SEQ_B2M_CHANGE_ACCT");
-                                long transId = prodinstDao.getSeq("SEQ_B2M_SERV_ACCT_CHANGE");
-                                servAcctChang.put("transId", transId);
-                                servAcctChang.put("seqNum", seqNum);
-                                servAcctChang.put("prodInstId", servAcctMap.get("prodInstId"));
-                                servAcctChang.put("oldAcctId", oldAcctId);
-                                servAcctChang.put("newAcctId", acctId);
-                                if ("1200".equals(prodInstPayModeID) || "1201".equals(prodInstPayModeID)) {
-                                    //肯定还要put，之前已经有过接口过来的、put进去的
-                                    servAcctChang.put("serOcsType", 0);
-                                    prodinstDao.insertServAcctChange(servAcctChang);
-                                } else {
-                                    //肯定还要put
-                                    servAcctChang.put("serOcsType", 1);
-                                    prodinstDao.insertServAcctChange(servAcctChang);
-                                }
-                                //插入过户账务topic
-                                Map sendMap=new HashMap();
-                                sendMap.put("areaCode", areaCode);
-                                sendMap.put("createDate", d.format(new Date()));
-                                sendMap.put("dealDate", d.format(new Date()));
-                                sendMap.put("destAcctId", acctId);
-                                sendMap.put("prodInstId", map.get("prodInstId"));
-                                sendMap.put("routeId", dfm.format(new Date()));
-                                sendMap.put("serialNumber", map.get("ARCH_GRP_ID"));
-                                sendMap.put("sourceAcctId", oldAcctId);
-                                sendMap.put("state", "0");
-                                sendChangeAcctMsg(sendMap,msg);
-                                logger.info("用户【prodInstId】：" + map.get("prodInstId") + "过户用户级【key】：" + msg.getMessage());
+                    }
+                    acctCnt = 0;
+                    servAcctMap.put("routeId", routeId);
+                    acctCnt = prodinstDao.getCntProdInstIdFromAcctRel(servAcctMap);
+                    Map checkOldAcctMap = new HashMap();
+                    if (acctCnt == 0) {
+                        //crm有时没有送修改动作过来，导致计费一个用户有多个账户，做一下处理
+                        List<Map<String, Object>> prodInstRelList = prodinstDao.selectProdInstAcctRel(servAcctMap);
+                        if (prodInstRelList.size() > 0) {
+                            Map oldAcctMap = prodInstRelList.get(0);
+                            oldAcctMap.put("action", 2);
+                            oldAcctMap.put("statusCd", 2);
+                            if (StringUtil.isEmpty(servAcctMap.get("statusDate"))) {
+                                oldAcctMap.put("expDate", oldAcctMap.get("effDate"));
+                            } else {
+                                oldAcctMap.put("expDate",
+                                        servAcctMap.get("statusDate"));
                             }
-
+                            oldAcctMap.put("statusDate", servAcctMap.get("statusDate"));
+                            prodinstDao.updateProdInstAcctRel(oldAcctMap);
+                            SynMapContextHolder.addMap("prodInstAcctRelobjList1", oldAcctMap);
+                            checkOldAcct = "1";
+                            checkOldAcctMap.put("prodInstId", servAcctMap.get("prodInstId"));
+                            checkOldAcctMap.put("ARCH_GRP_ID", servAcctMap.get("ARCH_GRP_ID"));
+                            checkOldAcctMap.put("acctId", oldAcctMap.get("acctId"));
+                            logger.info("crm没有修改账户动作，计费侧做失效处理【acctId】：" + oldAcctMap.get("acctId")
+                            + "，【prodInstId】：" + servAcctMap.get("prodInstId") +
+                                    "，【prodInstAcctRelId】：" + oldAcctMap.get("prodInstAcctRelId"));
+                        }
+                        long prodInstAcctRelId = prodinstDao
+                                .seqProdInstAcctRelId();
+                        servAcctMap.put("prodInstAcctRelId", prodInstAcctRelId);
+                        servAcctMap.put("acctItemGroupId", 1);
+                        servAcctMap.put("action", 1);
+                        servAcctMap.put("statusCd", 1);
+                        if (!"".equals(mapExpDateMap.get("finishDate"))
+                                && mapExpDateMap.get("finishDate") != null) {
+                            servAcctMap.put("effDate", mapExpDateMap.get("finishDate"));
+                        }else if(!StringUtil.isEmpty(servAcctMap.get("statusDate"))){
+                            servAcctMap.put("effDate", servAcctMap.get("statusDate"));
+                        }
+                        try {
+                            prodinstDao.insertProdInstAcctRel(servAcctMap);
                         } catch (Exception e) {
                             e.printStackTrace();
                             String exceptionMsg = "";
-                            exceptionMsg = setErrorMsg(e.getMessage(), "增加过户中间表出错");
-                            msg.setResultCode(ResultCode.PRODACCT_ERROR_010);
+                            exceptionMsg = setErrorMsg(e.getMessage(), "增加帐务关系时出错");
+                            msg.setResultCode(ResultCode.PRODACCT_ERROR_008);
                             msg.setMessage(exceptionMsg);
                             return -1;
-
                         }
+                        SynMapContextHolder.addMap("prodInstAcctRelobjList1", servAcctMap);
+                    } else {
+                        msg.setResultCode(ResultCode.PRODACCT_ERROR_009);
+                        msg.setMessage("存在相同的账户:prod_inst_id=" + prodInstId + ";ACCT_ID=" + acctId + "请检查");
+                        return -1;
+                    }
+                    //增加过户插入过户中间表  paymodecd = 2100 ocs用户
+
+                    try {
+                        List<Map<String, Object>> ordPordInstAcctReList = ordBillDao.selectOrdProdInstAcctRel1100(servAcctMap);
+                        if (ordPordInstAcctReList.size() > 0 || "1".equals(checkOldAcct)) {
+                            Map<String, Object> map = new HashMap<>();
+                            if (ordPordInstAcctReList.size() > 0) {
+                                map = ordPordInstAcctReList.get(0);
+                            } else {
+                                map = checkOldAcctMap;
+                                logger.info("特殊处理过户信息：" + map);
+                            }
+
+                            //for (Map<String, Object> map : ordPordInstAcctReList) {
+                            String oldAcctId = map.get("acctId").toString();
+                            if (oldAcctId.equals(acctId)) {//过户的时候新老账户已经一致就不在处理
+                                logger.error("过户的时候新老账户一致");
+                                return 1;
+                            }
+                            map.put("routeId", routeId);
+                            //插入计费过户表
+                            Map servAcctChang = new HashMap();
+                            long seqNum = prodinstDao.getSeq("SEQ_B2M_CHANGE_ACCT");
+                            long transId = prodinstDao.getSeq("SEQ_B2M_SERV_ACCT_CHANGE");
+                            servAcctChang.put("transId", transId);
+                            servAcctChang.put("seqNum", seqNum);
+                            servAcctChang.put("prodInstId", servAcctMap.get("prodInstId"));
+                            servAcctChang.put("oldAcctId", oldAcctId);
+                            servAcctChang.put("newAcctId", acctId);
+                            if ("1200".equals(prodInstPayModeID) || "1201".equals(prodInstPayModeID)) {
+                                //肯定还要put，之前已经有过接口过来的、put进去的
+                                servAcctChang.put("serOcsType", 0);
+                                prodinstDao.insertServAcctChange(servAcctChang);
+                            } else {
+                                //肯定还要put
+                                servAcctChang.put("serOcsType", 1);
+                                prodinstDao.insertServAcctChange(servAcctChang);
+                            }
+                            //插入过户账务topic
+                            Map sendMap = new HashMap();
+                            sendMap.put("areaCode", areaCode);
+                            sendMap.put("createDate", d.format(new Date()));
+                            sendMap.put("dealDate", d.format(new Date()));
+                            sendMap.put("destAcctId", acctId);
+                            sendMap.put("prodInstId", map.get("prodInstId"));
+                            sendMap.put("routeId", dfm.format(new Date()));
+                            sendMap.put("serialNumber", map.get("ARCH_GRP_ID"));
+                            sendMap.put("sourceAcctId", oldAcctId);
+                            sendMap.put("state", "0");
+                            sendChangeAcctMsg(sendMap, msg);
+                            logger.info("用户【prodInstId】：" + map.get("prodInstId") + "过户用户级【key】：" + msg.getMessage());
+                            // }
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        String exceptionMsg = "";
+                        exceptionMsg = setErrorMsg(e.getMessage(), "增加过户中间表出错");
+                        msg.setResultCode(ResultCode.PRODACCT_ERROR_010);
+                        msg.setMessage(exceptionMsg);
+                        return -1;
+
+                    }
 //						}//add end;
 
 
-                        //帐务定制关系附加属性
-                        for (Map<String, Object> ordProdInstAcctRelAttrMap : ordProdInstAcctRelAttrList) {
-                            //ordProdInstAcctRelAttrMap.put("PROD_INST_ACCT_REL_ID", prodInstAcctRelId);
-                            if (prodinstDao.getForProdInstAcctRelId(ordProdInstAcctRelAttrMap) == null) {
-                                ordProdInstAcctRelAttrMap.put("routeId", routeId);
-                                ordProdInstAcctRelAttrMap.put("STATUS_CD", 1000);
-                                prodinstDao.insertProdInstAcctRelAttr(ordProdInstAcctRelAttrMap);
-                                //SynMapContextHolder.addMap("prodInstAcctRelobjList1", ordProdInstAcctRelAttrMap);
-                            }
-
+                    //帐务定制关系附加属性
+                    for (Map<String, Object> ordProdInstAcctRelAttrMap : ordProdInstAcctRelAttrList) {
+                        //ordProdInstAcctRelAttrMap.put("PROD_INST_ACCT_REL_ID", prodInstAcctRelId);
+                        if (prodinstDao.getForProdInstAcctRelId(ordProdInstAcctRelAttrMap) == null) {
+                            ordProdInstAcctRelAttrMap.put("routeId", routeId);
+                            ordProdInstAcctRelAttrMap.put("STATUS_CD", 1000);
+                            prodinstDao.insertProdInstAcctRelAttr(ordProdInstAcctRelAttrMap);
+                            //SynMapContextHolder.addMap("prodInstAcctRelobjList1", ordProdInstAcctRelAttrMap);
                         }
 
+                    }
 
-                    } else if (operType == 1100)// 修改
-                    {
-                        // TODO: 2019/6/26 过户的结束时间取得是工单的竣工时间，这个到时候还得确认一下
-                        List<Map<String, Object>> ordBillexpDateList = ordBillDao.queryOrdBillExpDate(servAcctMap);
-                        Map mapExpDateMap = ordBillexpDateList.get(0);
-                        if (mapExpDateMap.get("finishDate") == null) {
-                            msg.setResultCode(ResultCode.PRODACCT_ERROR_011);
-                            msg.setMessage("取工单竣工时间出错");
-                            return -1;
-                        }
-                        //增加账务关系判断
+
+                } else if (operType == 1100)// 修改
+                {
+                    // TODO: 2019/6/26 过户的结束时间取得是工单的竣工时间，这个到时候还得确认一下
+                    List<Map<String, Object>> ordBillexpDateList = ordBillDao.queryOrdBillExpDate(servAcctMap);
+                    Map mapExpDateMap = ordBillexpDateList.get(0);
+                    if (mapExpDateMap.get("finishDate") == null) {
+                        msg.setResultCode(ResultCode.PRODACCT_ERROR_011);
+                        msg.setMessage("取工单竣工时间出错");
+                        return -1;
+                    }
+                    //增加账务关系判断
                        /* long prodInstCnt = prodinstDao.getProdInstAcctCnt(servAcctMap);
                         if (prodInstCnt <= 0) {
                             msg.setResultCode(ResultCode.PRODACCT_ERROR_012);
                             msg.setMessage("产品实例帐务关系在计费不存在【prodInstid】：" + servAcctMap.get("prodInstId"));
                             return -1;
                         }*/
-                        List<Map<String, Object>> oldProdInstAcctRelList = new ArrayList<Map<String, Object>>();
-                        oldProdInstAcctRelList = prodinstDao
-                                .getProdInstAcctRelId(servAcctMap);
-                        if (oldProdInstAcctRelList.size() > 0) {
-                            Map oldAcctMap = oldProdInstAcctRelList.get(0);
-                            servAcctMap.put("action", 2);
-                            servAcctMap.put("statusCd", 2);
+                    List<Map<String, Object>> oldProdInstAcctRelList = new ArrayList<Map<String, Object>>();
+                    oldProdInstAcctRelList = prodinstDao
+                            .getProdInstAcctRelId(servAcctMap);
+                    if (oldProdInstAcctRelList.size() > 0) {
+                        Map oldAcctMap = oldProdInstAcctRelList.get(0);
+                        servAcctMap.put("action", 2);
+                        servAcctMap.put("statusCd", 2);
 							/*servAcctMap.put("expDate",
 									servAcctMap.get("statusDate"));*/
-                            servAcctMap.put("expDate",
-                                    mapExpDateMap.get("finishDate"));
-                            servAcctMap.put("prodInstAcctRelId",
-                                    oldAcctMap.get("PROD_INST_ACCT_REL_ID"));
-                            servAcctMap.put("routeId",
-                                    oldAcctMap.get("ROUTE_ID"));
-                            prodinstDao.updateProdInstAcctRel(servAcctMap);
-                            SynMapContextHolder.addMap("prodInstAcctRelobjList1", servAcctMap);
-                        } else {
-                            long cntProdInst = prodinstDao.getForCountByProdInstId(servAcctMap);
-                            if (cntProdInst == 0) {
-                                logger.error("计费没有有效的用户，修改账务关系不处理【prodInstId】：" +
-                                        servAcctMap.get("prodInstId"));
-                                return 1;
-                            }
-                            msg.setResultCode(ResultCode.PRODACCT_ERROR_013);
-                            msg.setMessage("产品实例帐务关系在计费不存在【prodInstId】:"
-                                    + servAcctMap.get("prodInstId") + ",【acctId】："
-                                    + servAcctMap.get("acctId"));
-                            return -1;
+                        servAcctMap.put("expDate",
+                                mapExpDateMap.get("finishDate"));
+                        servAcctMap.put("prodInstAcctRelId",
+                                oldAcctMap.get("PROD_INST_ACCT_REL_ID"));
+                        servAcctMap.put("routeId",
+                                oldAcctMap.get("ROUTE_ID"));
+                        prodinstDao.updateProdInstAcctRel(servAcctMap);
+                        SynMapContextHolder.addMap("prodInstAcctRelobjList1", servAcctMap);
+                    } else {
+                        long cntProdInst = prodinstDao.getForCountByProdInstId(servAcctMap);
+                        if (cntProdInst == 0) {
+                            logger.error("计费没有有效的用户，修改账务关系不处理【prodInstId】：" +
+                                    servAcctMap.get("prodInstId"));
+                            return 1;
                         }
-                        // 修改账户代表号码 取账户下最小号码
-                        try {
-                            Map updateMap = new HashMap();
-                            updateMap.put("acctId", servAcctMap.get("acctId"));
-                            updateMap.put("routeId", servAcctMap.get("acctId"));
-                            updateMap.put("prodInstId", servAcctMap.get("prodInstId"));
-                            List<Map<String, Object>> accountMapList = accountDao
-                                    .getAccoutForAccNum(updateMap);
+                        msg.setResultCode(ResultCode.PRODACCT_ERROR_013);
+                        msg.setMessage("产品实例帐务关系在计费不存在【prodInstId】:"
+                                + servAcctMap.get("prodInstId") + ",【acctId】："
+                                + servAcctMap.get("acctId"));
+                        return -1;
+                    }
+                    // 修改账户代表号码 取账户下最小号码
+                    try {
+                        Map updateMap = new HashMap();
+                        updateMap.put("acctId", servAcctMap.get("acctId"));
+                        updateMap.put("routeId", servAcctMap.get("acctId"));
+                        updateMap.put("prodInstId", servAcctMap.get("prodInstId"));
+                        List<Map<String, Object>> accountMapList = accountDao
+                                .getAccoutForAccNum(updateMap);
 //							if ("1".equals(servAcctMap.get("ifDefaultAcctId").toString())) {
-                            //看该用户是否为该账户的代表号码
-                            long cntProdInst = accountDao.getCntAccoutFromProdInstId(updateMap);
-                            if (cntProdInst  > 0) {
-                                List<Map<String, Object>> prodInstRelMapList = prodinstDao
-                                        .selectProdInstIdFromAcctRel(updateMap);
-                                //prodInstRelMap.put("routeId", routeId);
-                                //如果该账户下有多个在用用户则取最小代表号码，如果没有保持不变
-                               // List<Map<String, Object>> acctLists = accountDao.getAccoutFromProdInstId(servAcctMap);
-                                if (prodInstRelMapList.size() > 0) {
-                                    Map prodInstRelMap = prodInstRelMapList.get(0);
-                                    Map accountMap = new HashMap();
-                                    accountMap = accountMapList.get(0);
-                                    accountMap.put("prodInstId", prodInstRelMap.get("prodInstId"));
-                                    accountMap.put("action", 2);
-                                    accountMap.put("remark", "修改账务关系修改账户代表号码");
-                                    accountDao.updateAccount(accountMap);
-                                    accountMap.put("executetime", d.format(df
-                                            .parse(servAcctMap.get("statusDate").toString())));
-                                    SynMapContextHolder.addMap("acctobjList1", accountMap);
-
-                                }
+                        //看该用户是否为该账户的代表号码
+                        long cntProdInst = accountDao.getCntAccoutFromProdInstId(updateMap);
+                        if (cntProdInst > 0) {
+                            List<Map<String, Object>> prodInstRelMapList = prodinstDao
+                                    .selectProdInstIdFromAcctRel(updateMap);
+                            //prodInstRelMap.put("routeId", routeId);
+                            //如果该账户下有多个在用用户则取最小代表号码，如果没有保持不变
+                            // List<Map<String, Object>> acctLists = accountDao.getAccoutFromProdInstId(servAcctMap);
+                            if (prodInstRelMapList.size() > 0) {
+                                Map prodInstRelMap = prodInstRelMapList.get(0);
+                                Map accountMap = new HashMap();
+                                accountMap = accountMapList.get(0);
+                                accountMap.put("prodInstId", prodInstRelMap.get("prodInstId"));
+                                accountMap.put("action", 2);
+                                accountMap.put("remark", "修改账务关系修改账户代表号码");
+                                accountDao.updateAccount(accountMap);
+                                accountMap.put("executetime", d.format(df
+                                        .parse(servAcctMap.get("statusDate").toString())));
+                                SynMapContextHolder.addMap("acctobjList1", accountMap);
 
                             }
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                            String exceptionMsg = "";
-                            exceptionMsg = setErrorMsg(e.getMessage(), "过户修改账户代表号码出错");
-                            msg.setResultCode(ResultCode.PRODACCT_ERROR_014);
-                            msg.setMessage(exceptionMsg);
-                            return -1;
-                        }
-                        //修改账务定制关系
-                        //ordProdInstAcctRelAttrList = ordBillDao.getOrdProdInstAcctRelAttr(servAcctMap);
-                        for (Map<String, Object> ordProdInstAcctRelAttrMap : ordProdInstAcctRelAttrList) {
-                            ordProdInstAcctRelAttrMap.put("routeId", routeId);
-                            prodinstDao.updateProdInstAcctRelAttr(ordProdInstAcctRelAttrMap);
-                            //SynMapContextHolder.addMap("prodInstAcctRelobjList1", ordProdInstAcctRelAttrMap);
-                        }
 
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        String exceptionMsg = "";
+                        exceptionMsg = setErrorMsg(e.getMessage(), "过户修改账户代表号码出错");
+                        msg.setResultCode(ResultCode.PRODACCT_ERROR_014);
+                        msg.setMessage(exceptionMsg);
+                        return -1;
+                    }
+                    //修改账务定制关系
+                    //ordProdInstAcctRelAttrList = ordBillDao.getOrdProdInstAcctRelAttr(servAcctMap);
+                    for (Map<String, Object> ordProdInstAcctRelAttrMap : ordProdInstAcctRelAttrList) {
+                        ordProdInstAcctRelAttrMap.put("routeId", routeId);
+                        prodinstDao.updateProdInstAcctRelAttr(ordProdInstAcctRelAttrMap);
+                        //SynMapContextHolder.addMap("prodInstAcctRelobjList1", ordProdInstAcctRelAttrMap);
                     }
 
                 }
+
             }
+        }
         return 1;
     }
 
@@ -3537,15 +3602,21 @@ public class CrmUserService {
                     }
                     //处理主产皮实例属性 begin
                     if (lFlag == 0) {
-                        if (operType.equals("1000"))// 先判断，是否存在，不存在旧新增
+                        if ("1000".equals(operType))// 先判断，是否存在，不存在旧新增
                         {
                             instAttrMap.put("expDate", instAttrMap.get("statusDate"));
-                            List<Map<String, Object>> oldProdAttrList = prodinstDao
-                                    .getProdInstAttrId(instAttrMap);
+                            /*List<Map<String, Object>> oldProdAttrList = prodinstDao
+                                    .getProdInstAttrId(instAttrMap);*/
                             long prodAttrId = 0;
-                            if (oldProdAttrList.size() == 0) {
+                           // if (oldProdAttrList.size() == 0) {
                                 prodAttrId = prodinstDao.getForProdInstAttrId(instAttrMap);
                                 if (prodAttrId == 0) {
+                                    List<Map<String, Object>> oldProdAttrList = prodinstDao
+                                            .getProdInstAttrId(instAttrMap);
+                                    if (oldProdAttrList.size() > 0) {
+                                        long seqProdInstAttrId = prodinstDao.getSeq("SEQ_PROD_INST_ATTR_ID");
+                                        instAttrMap.put("prodInstAttrId", seqProdInstAttrId);
+                                    }
                                     try {
                                         instAttrMap.put("action", 1);
                                         instAttrMap.put("statusCd", 1000);
@@ -3596,14 +3667,13 @@ public class CrmUserService {
                                     }
 
                                 }
-                            }
+                            //}
 
-                        } else if (operType.equals("1100")) {
+                        } else if ("1100".equals(operType)) {
                             instAttrMap.put("expDate", instAttrMap.get("statusDate"));
-                            List<Map<String, Object>> oldProdAttrList = prodinstDao
-                                    .getProdInstAttrId(instAttrMap);
+                            List<Map<String, Object>> oldProdAttrList = new ArrayList<>();//prodinstDao.getProdInstAttrId(instAttrMap);
 
-                            if (oldProdAttrList.size() == 0) {
+                            //if (oldProdAttrList.size() == 0) {
                                 oldProdAttrList = prodinstDao.getProdInstAttrIdFromAttrId(instAttrMap);
                                 // TODO: 2019/6/28 先验证sql，以后不用做校验
                                 if (oldProdAttrList.size() == 0) {
@@ -3614,7 +3684,7 @@ public class CrmUserService {
                                             ",【attrId】：" + instAttrMap.get("attrId"));*/
                                     return 1;
                                 }
-                            }
+                            //}
                             try {
                                 Map attrMap = oldProdAttrList.get(0);
                                 instAttrMap.put("action", 2);
@@ -3638,7 +3708,7 @@ public class CrmUserService {
                     }//end
 
                     if (lFlag == 1) {//处理附属产品实例属性 begin
-                        if (operType.equals("1000"))// 先判断，是否存在，不存在旧新增
+                        if ("1000".equals(operType))// 先判断，是否存在，不存在旧新增
                         {
                             List<Map<String, Object>> oldProdAttrList = prodinstDao
                                     .getProdInstAttrIdForSub(instAttrMap);
@@ -3654,10 +3724,9 @@ public class CrmUserService {
                                 instAttrMap.put("expDate", statePublic.expDate);
                                 prodinstDao.insertProdInstAttrSub(instAttrMap);
                                 SynMapContextHolder.addMap("prodInstAttrSubobjList1", instAttrMap);
-                        } else if (operType.equals("1100")) {
-                            List<Map<String, Object>> oldProdAttrList = prodinstDao
-                                    .getProdInstAttrIdForSub(instAttrMap);
-                            if (oldProdAttrList.size() == 0) {
+                        } else if ("1100".equals(operType)) {
+                            List<Map<String, Object>> oldProdAttrList = new ArrayList<>();//prodinstDao.getProdInstAttrIdForSub(instAttrMap);
+                           // if (oldProdAttrList.size() == 0) {
                                 instAttrMap.put("effDate",
                                         instAttrMap.get("statusDate"));
                                 List<Map<String, Object>> oldProdSubList = prodinstDao.selectProdInstSubMap(instAttrMap);
@@ -3680,7 +3749,7 @@ public class CrmUserService {
                                     return 1;
                                 }
 
-                            }
+                            //}
                             Map attrMap = oldProdAttrList.get(0);
                             instAttrMap.put("expDate",
                                     instAttrMap.get("statusDate"));
@@ -3830,7 +3899,8 @@ public class CrmUserService {
             String prodInstStatus = prodInstMapTemp.get("statusCd").toString();
             String prodInstAccNum = prodInstMapTemp.get("accNum").toString();
             if ("110001".equals(prodInstStatus)
-                    || "110002".equals(prodInstStatus)) {
+                    || "110002".equals(prodInstStatus)
+                    ||"110000".equals(prodInstStatus)) {
                 logger.error("用户【" + prodInstMap.get("prodInstId") + "】已经是拆机状态");
                 return 1;
             }// 计费侧如果是拆机状态的话不处理 end
@@ -4080,7 +4150,11 @@ public class CrmUserService {
                     && !"4060201002".equals(service_offer_id)
                     && !"4070100002".equals(service_offer_id)
                     && "1300".equals(itemMap.get("oper_type"))) {
-                return 1;
+                //有的时候crm修改用户状态的动作也是1300，真是坑。做以下处理
+                List<Map<String,Object>> serviceOfferCheckList = ordBillDao.selectServiceOfferContrast(service_offer_id);
+                if (serviceOfferCheckList.size() == 0) {
+                    return 1;
+                }
             }//end
 
             String oldPaymode = "";
@@ -4182,6 +4256,13 @@ public class CrmUserService {
             orderItemId = Long.parseLong(prodInstMap.get("ORDER_ITEM_ID").toString());
             routeId = routeServiceDao.getRouteIdForProdInst(archGrpId, orderItemId, prodInstId, msg);
             if (routeId <= 0) {
+                if ("4020201001".equals(service_offer_id)) {
+                   List<Map<String,Object>> billProdInstList =  smsInfoMapperDao.getBillProdInstInfo(prodInstId);
+                    if (billProdInstList.size() == 0) {
+                        logger.error("预存机用户在计费不存在【prodInstId】：" + prodInstId);
+                        return 1;
+                    }
+                }
                 msg.setResultCode(ResultCode.PRODINST_U_ERROR_007);
                 msg.setMessage("取用户的routetId失败【prodInstId】：" + prodInstId);
                 return -1;
@@ -4248,13 +4329,17 @@ public class CrmUserService {
 
 							  });*/
 
-                List<Map<String, Object>> prodInstSateExtList = prodinstDao.getProdInstStateExtFromStateExt(oldProdInst);
+                List<Map<String, Object>> prodInstSateExtList = prodinstDao.getProdInstStateExtFromStateExt(prodInstMap);
                 if (prodInstSateExtList.size() == 0) {
                     msg.setResultCode(ResultCode.PRODINST_U_ERROR_010);
                     msg.setMessage("老的主产品状态为空【prodInstId】：" + prodInstId);
                     return -1;
-                }
-                Map<String, Object> prodInstStateExtFromStateMap = prodinstDao.getProdInstStateExtFromStateExt(oldProdInst).get(0);
+                } /*else if(prodInstSateExtList.size() > 1) {
+                    msg.setResultCode(ResultCode.PRODINST_U_ERROR_048);
+                    msg.setMessage("老的主产品状态为多条：" + prodInstId);
+                    return -1;
+                }*/
+                Map<String, Object> prodInstStateExtFromStateMap = prodInstSateExtList.get(0);
                 oldStopType = prodInstStateExtFromStateMap.get("stopType").toString();
                 oldStateCd = prodInstStateExtFromStateMap.get("state").toString();
             } catch (Exception e) {
@@ -4409,6 +4494,31 @@ public class CrmUserService {
             }
             //
             //从配置表取订单的服务对应的状态
+            if ("4060200001".equals(service_offer_id)) {
+                remark = "实名制违章单停不修改用户状态";
+            }
+            if ("4060201003".equals(service_offer_id)) {
+                remark = "一证超五卡不合规单停不修改用户状态";
+            }
+            try {
+                if ("4070101004".equals(service_offer_id)) {
+                    Map abmMap = new HashMap();
+                    long tifseq = bAccu2abmTifDao.getSeq("SEQ_ACCU2ABMTIF");
+                    abmMap.put("tifSeq", tifseq);
+                    abmMap.put("instanceId", prodInstId);
+                    abmMap.put("instanceType", 100000);
+                    abmMap.put("insertDate", new Date());
+                    //abmMap.put("state", 0);
+                    bAccu2abmTifDao.insertBAccu2abmTif(abmMap);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                String exceptionMsg = "";
+                exceptionMsg = setErrorMsg(e.getMessage(), "插入计费量本表出错");
+                msg.setResultCode(ResultCode.PRODINST_U_ERROR_047);
+                msg.setMessage(exceptionMsg);
+                return -1;
+            }
             List<Map<String,Object>> serviceOfferList = ordBillDao.selectServiceOfferContrast(service_offer_id);
             if (serviceOfferList.size() > 0) {
                 Map serviceOfferMap = serviceOfferList.get(0);
@@ -4516,47 +4626,50 @@ public class CrmUserService {
                 if (prodInstAccNumMap2 != null && !prodInstAccNumMap2.isEmpty()) {
                     oldAccNumId = prodInstAccNumMap2.get("prodInstAccNumId").toString();
                     oldGsmImsi = prodInstAccNumMap2.get("accNum").toString();
+                } else{
+                    oldAccNumId = null;
+                    oldGsmImsi = null;
                 }
 
-                //老旧都有
-                if (!StringUtil.isEmpty(prodInstMap.get("gsmImsi"))
-                        && !oldGsmImsi.equals(prodInstMap.get("gsmImsi"))
-                        && !StringUtil.isEmpty(oldAccImsi)) {
-                    prodInstMap.put("prodInstAccNumId", oldAccNumId);
-                    prodInstMap.put("statusCd", "1100");
-                    prodInstMap.put("expDate", prodInstMap.get("statusDate"));
-                    if (prodinstDao.updateProdInstAccNum(prodInstMap) <= 0) {
-                        msg.setResultCode(ResultCode.PRODINST_U_ERROR_024);
-                        msg.setMessage("GSM_IMSI号码更新失败");
-                        return -1;
-                    }
-                    prodInstMap.put("action", 2);
-                    SynMapContextHolder.addMap("prodInstAccNumobjList1", prodInstMap);
-                    try {
-                        //增加G网IMSI
-                        Long prodInstAccNumId = prodinstDao.getSeq("SEQ_PROD_INST_ACC_NUM_ID"); //统一序列
-                        prodInstMap.put("prodInstAccNumId", prodInstAccNumId);//需要处理主键prodInstRegionId
-                        prodInstMap.put("accNumType", "2000");
-                        String gsmImsi = prodInstMap.get("gsmImsi").toString();
-                        prodInstMap.put("accNum", gsmImsi);
-                        prodInstMap.put("applyRegionId", "1");
-                        prodInstMap.put("statusCd", "1000");
-                        prodInstMap.put("platId", "1");
-                        prodInstMap.put("expDate", statePublic.expDate);
-                        prodinstDao.insertProdInstAccNum(prodInstMap);
-                        prodInstMap.put("action", 1);
+                    //老旧都有
+                    if (!StringUtil.isEmpty(prodInstMap.get("gsmImsi"))
+                            && !StringUtil.isEmpty(oldGsmImsi)
+                            && !oldGsmImsi.equals(prodInstMap.get("gsmImsi"))) {
+                        prodInstMap.put("prodInstAccNumId", oldAccNumId);
+                        prodInstMap.put("statusCd", "1100");
+                        prodInstMap.put("expDate", prodInstMap.get("statusDate"));
+                        if (prodinstDao.updateProdInstAccNum(prodInstMap) <= 0) {
+                            msg.setResultCode(ResultCode.PRODINST_U_ERROR_024);
+                            msg.setMessage("GSM_IMSI号码更新失败");
+                            return -1;
+                        }
+                        prodInstMap.put("action", 2);
                         SynMapContextHolder.addMap("prodInstAccNumobjList1", prodInstMap);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                        String exceptionMsg = "";
-                        exceptionMsg = setErrorMsg(e.getMessage(), "增加主产品GSM_IMSI号码时出错");
-                        msg.setResultCode(ResultCode.PRODINST_U_ERROR_025);
-                        msg.setMessage(exceptionMsg);
-                        return -1;
+                        try {
+                            //增加G网IMSI
+                            Long prodInstAccNumId = prodinstDao.getSeq("SEQ_PROD_INST_ACC_NUM_ID"); //统一序列
+                            prodInstMap.put("prodInstAccNumId", prodInstAccNumId);//需要处理主键prodInstRegionId
+                            prodInstMap.put("accNumType", "2000");
+                            String gsmImsi = prodInstMap.get("gsmImsi").toString();
+                            prodInstMap.put("accNum", gsmImsi);
+                            prodInstMap.put("applyRegionId", "1");
+                            prodInstMap.put("statusCd", "1000");
+                            prodInstMap.put("platId", "1");
+                            prodInstMap.put("expDate", statePublic.expDate);
+                            prodinstDao.insertProdInstAccNum(prodInstMap);
+                            prodInstMap.put("action", 1);
+                            SynMapContextHolder.addMap("prodInstAccNumobjList1", prodInstMap);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            String exceptionMsg = "";
+                            exceptionMsg = setErrorMsg(e.getMessage(), "增加主产品GSM_IMSI号码时出错");
+                            msg.setResultCode(ResultCode.PRODINST_U_ERROR_025);
+                            msg.setMessage(exceptionMsg);
+                            return -1;
+                        }
                     }
-                }
                 //老无新有
-                if (StringUtil.isEmpty(oldAccImsi) && !StringUtil.isEmpty(prodInstMap.get("gsmImsi"))) {
+                if (StringUtil.isEmpty(oldGsmImsi) && !StringUtil.isEmpty(prodInstMap.get("gsmImsi"))) {
                     try {
                         Long prodInstAccNumId = prodinstDao.getSeq("SEQ_PROD_INST_ACC_NUM_ID"); //统一序列
                         prodInstMap.put("prodInstAccNumId", prodInstAccNumId);  //需要处理主键prodInstRegionId
@@ -4584,7 +4697,7 @@ public class CrmUserService {
                 //System.out.println("测试"+ prodInstMap.get("gsmImsi").equals(""));
                 //System.out.println("测试"+ prodInstMap.get("gsmImsi")=="");
                 //System.out.println("测试"+ prodInstMap.get("gsmImsi1"));
-                if (!StringUtil.isEmpty(oldAccImsi) && StringUtil.isEmpty(prodInstMap.get("gsmImsi")) ) {
+                if (!StringUtil.isEmpty(oldGsmImsi) && StringUtil.isEmpty(prodInstMap.get("gsmImsi")) ) {
                     prodInstMap.put("prodInstAccNumId", oldAccNumId);
                     prodInstMap.put("statusCd", "1100");
                     prodInstMap.put("expDate", prodInstMap.get("statusDate"));
@@ -4611,47 +4724,50 @@ public class CrmUserService {
                 if (prodInstAccNumMap3 != null && !prodInstAccNumMap3.isEmpty()) {
                     oldAccNumId = prodInstAccNumMap3.get("prodInstAccNumId").toString();
                     oldLteImsi = prodInstAccNumMap3.get("accNum").toString();
+                } else{
+                    oldAccNumId = null;
+                    oldLteImsi = null;
                 }
-                //老旧都有
-                if (!"".equals(prodInstMap.get("lteImsi"))
-                        && !oldLteImsi.equals(prodInstMap.get("lteImsi"))
-                        && !StringUtil.isEmpty(oldAccImsi)) {
-                    prodInstMap.put("prodInstAccNumId", oldAccNumId);
-                    prodInstMap.put("statusCd", "1100");
-                    prodInstMap.put("expDate", prodInstMap.get("statusDate"));
-                    if (prodinstDao.updateProdInstAccNum(prodInstMap) <= 0) {
-                        msg.setResultCode(ResultCode.PRODINST_U_ERROR_029);
-                        msg.setMessage("LTE_IMSI号码更新失败");
-                        return -1;
-                    }
-                    prodInstMap.put("action", 2);
-                    SynMapContextHolder.addMap("prodInstAccNumobjList1", prodInstMap);
-
-                    //增加4G到IMSI
-                    try {
-                        Long ProdInstAccNumId = prodinstDao.getSeq("SEQ_PROD_INST_ACC_NUM_ID"); //统一序列
-                        prodInstMap.put("prodInstAccNumId", ProdInstAccNumId); //需要处理主键prodInstRegionId
-                        prodInstMap.put("accNumType", "5000");
-                        String lteImsi = prodInstMap.get("lteImsi").toString();
-                        prodInstMap.put("accNum", lteImsi);
-                        prodInstMap.put("applyRegionId", "1");
-                        prodInstMap.put("statusCd", "1000");
-                        prodInstMap.put("platId", "1");
-                        prodInstMap.put("expDate", statePublic.expDate);
-                        prodinstDao.insertProdInstAccNum(prodInstMap);
-                        prodInstMap.put("action", 1);
+                    //老旧都有
+                    if (!StringUtil.isEmpty(prodInstMap.get("lteImsi"))
+                            && !StringUtil.isEmpty(oldLteImsi)
+                            && !oldLteImsi.equals(prodInstMap.get("lteImsi"))) {
+                        prodInstMap.put("prodInstAccNumId", oldAccNumId);
+                        prodInstMap.put("statusCd", "1100");
+                        prodInstMap.put("expDate", prodInstMap.get("statusDate"));
+                        if (prodinstDao.updateProdInstAccNum(prodInstMap) <= 0) {
+                            msg.setResultCode(ResultCode.PRODINST_U_ERROR_029);
+                            msg.setMessage("LTE_IMSI号码更新失败");
+                            return -1;
+                        }
+                        prodInstMap.put("action", 2);
                         SynMapContextHolder.addMap("prodInstAccNumobjList1", prodInstMap);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                        String exceptionMsg = "";
-                        exceptionMsg = setErrorMsg(e.getMessage(), "增加主产品LTE_IMSI号码时出错");
-                        msg.setResultCode(ResultCode.PRODINST_U_ERROR_030);
-                        msg.setMessage(exceptionMsg);
-                        return -1;
+
+                        //增加4G到IMSI
+                        try {
+                            Long ProdInstAccNumId = prodinstDao.getSeq("SEQ_PROD_INST_ACC_NUM_ID"); //统一序列
+                            prodInstMap.put("prodInstAccNumId", ProdInstAccNumId); //需要处理主键prodInstRegionId
+                            prodInstMap.put("accNumType", "5000");
+                            String lteImsi = prodInstMap.get("lteImsi").toString();
+                            prodInstMap.put("accNum", lteImsi);
+                            prodInstMap.put("applyRegionId", "1");
+                            prodInstMap.put("statusCd", "1000");
+                            prodInstMap.put("platId", "1");
+                            prodInstMap.put("expDate", statePublic.expDate);
+                            prodinstDao.insertProdInstAccNum(prodInstMap);
+                            prodInstMap.put("action", 1);
+                            SynMapContextHolder.addMap("prodInstAccNumobjList1", prodInstMap);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            String exceptionMsg = "";
+                            exceptionMsg = setErrorMsg(e.getMessage(), "增加主产品LTE_IMSI号码时出错");
+                            msg.setResultCode(ResultCode.PRODINST_U_ERROR_030);
+                            msg.setMessage(exceptionMsg);
+                            return -1;
+                        }
                     }
-                }
                 //老无新有  (代码：逻辑问题，如果oldAccImsi为空，则取值时就返回)
-                if (StringUtil.isEmpty(oldAccImsi) && !StringUtil.isEmpty(prodInstMap.get("lteImsi"))) {
+                if (StringUtil.isEmpty(oldLteImsi) && !StringUtil.isEmpty(prodInstMap.get("lteImsi"))) {
                     try {
                         Long prodInstAccNumId = prodinstDao.getSeq("SEQ_PROD_INST_ACC_NUM_ID"); //统一序列
                         prodInstMap.put("prodInstAccNumId", prodInstAccNumId);  //需要处理主键prodInstRegionId
@@ -4675,7 +4791,7 @@ public class CrmUserService {
                     }
                 }
                 //老有新无
-                if (!StringUtil.isEmpty(oldAccImsi) && StringUtil.isEmpty(prodInstMap.get("lteImsi"))) {
+                if (!StringUtil.isEmpty(oldLteImsi) && StringUtil.isEmpty(prodInstMap.get("lteImsi"))) {
                     prodInstMap.put("prodInstAccNumId", oldAccNumId);
                     prodInstMap.put("statusCd", "1100");
                     prodInstMap.put("expDate", prodInstMap.get("statusDate"));
@@ -4719,9 +4835,9 @@ public class CrmUserService {
                 return -1;
             }
             //号码存放到 PROD_INST_ACC_NUM
-            if ("4040500000".equals(service_offer_id)) {//改号才修改号码
+          //  if ("4040500000".equals(service_offer_id)) {//改号才修改号码
                 //判断设备号码是否重复  begin
-                try {
+                /*try {
                     Long liCount;
                     long netWorkId;
                     Map prodInstNetmMap = new HashMap();
@@ -4756,7 +4872,7 @@ public class CrmUserService {
                     msg.setResultCode(ResultCode.PRODINST_U_ERROR_035);
                     msg.setMessage(exceptionMsg);
                     return -1;
-                }
+                }*/
                 prodInstMap.put("accNumType", "1000");
                 Map<String, Object> prodInstAccNumMap4 = prodinstDao.selectProdInstAccNum4(prodInstMap);
                 if (prodInstAccNumMap4 == null || prodInstAccNumMap4.isEmpty()) {
@@ -4798,9 +4914,10 @@ public class CrmUserService {
                         msg.setMessage(exceptionMsg);
                         return -1;
                     }
+                    prodinstDao.updateProdInstNumber(accNum, prodInstId, routeId);
                 }
-                prodinstDao.updateProdInstNumber(accNum, prodInstId, routeId);
-            }
+
+           // }
             //================
             // 没空处理失效的prod_inst_region 、退出群组
             //		}
@@ -4921,7 +5038,6 @@ public class CrmUserService {
             upDateProdInstMap.put("statusCd", statusCd);
             upDateProdInstMap.put("prodId", prodInstMap.get("prodId"));
             upDateProdInstMap.put("account", prodInstMap.get("account"));
-            //upDateProdInstMap.put("actDate",prodInstMap.get("actDate"));
             upDateProdInstMap.put("statusDate", prodInstMap.get("statusDate"));
             //upDateProdInstMap.put("updateDate",prodInstMap.get("updateDate"));
             //upDateProdInstMap.put("remark",prodInstMap.get("remark"));
@@ -6229,7 +6345,7 @@ public class CrmUserService {
             Map ordCustMap = ordCustList.get(0);
             cust_id = Long.parseLong(ordCustMap.get("custId").toString());
             ord_tax_payerMap.put("routeId", routeId);
-            ord_tax_payerMap.put("stautsCd", 1000);
+            ord_tax_payerMap.put("statusCd", 1000);
             ord_tax_payerMap.put("custId", cust_id);
             long tax_payerCount = accountDao.getCountTaxPayer(ord_tax_payerMap);
             //int ord_tax_payerCount=ordBillDao.getCountOrdTaxPayer(queryord_tax_payerMap);
@@ -7513,7 +7629,9 @@ public class CrmUserService {
                 extAcctMap.put("routeId", routeId);
                 List<Map<String, Object>> extAcctList1 = accountDao
                         .getExtAcctID(extAcctMap);
-
+                if (extAcctList1.size() == 0) {
+                    extAcctList1 = accountDao.selectExtAcctID(extAcctMap);
+                }
                 if (extAcctList1.size() == 0) {
                     try {
                         extAcctMap.put("statusCd", 1);
@@ -7554,9 +7672,9 @@ public class CrmUserService {
                         updateExtAcctMap.put("acctOwnerOrgBranch", extAcctMap.get("acctOwnerOrgBranch"));
                         updateExtAcctMap.put("ifContractQuickPay", extAcctMap.get("ifContractQuickPay"));
                         updateExtAcctMap.put("custId", extAcctMap.get("custId"));
-                        updateExtAcctMap.put("statusDate", new Date());
+                        updateExtAcctMap.put("statusDate", extAcctMap.get("statusDate"));
                         updateExtAcctMap.put("routeId", extMap.get("routeId"));
-                        updateExtAcctMap.put("extAcctId", extAcctMap.get("extAcctId"));
+                        updateExtAcctMap.put("extAcctId", extMap.get("extAcctId"));
                         accountDao.updateExtAcct(updateExtAcctMap); // 失效时间
                     } catch (Exception e) {
                         String exceptionMsg = "";
@@ -7567,6 +7685,7 @@ public class CrmUserService {
                         return -1;
                     }
                     extAcctMap.put("action", 2);
+                    extAcctMap.put("extAcctId", extMap.get("extAcctId"));
                     SynMapContextHolder.addMap("extAcctobjList1", extAcctMap);
                 }
             }

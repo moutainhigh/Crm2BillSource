@@ -76,7 +76,6 @@ public class PayToPlanService implements IPayToPlanService {
         int successCount = 0;//本次处理成功数
         //处理业务逻辑。  flag=1处理成功，其他失败
         int flag = -1;
-        Map<String, Object> updateMap = new HashMap<String, Object>();
 
         Map queryMap = new HashMap();
         if (args.length > 0) {
@@ -89,6 +88,7 @@ public class PayToPlanService implements IPayToPlanService {
         List<Map<String, Object>> orderList = ordPayDao.selectOrderlist(queryMap);
         if (orderList.size() > 0) {
             for (Map<String, Object> orderMap : orderList) {
+                Map<String, Object> updateMap = new HashMap<String, Object>();
                 Message msg = new Message();
                 long startOperTime = System.currentTimeMillis();
                 SynMapContextHolder.init();
@@ -100,8 +100,8 @@ public class PayToPlanService implements IPayToPlanService {
                 TransactionStatus status = transactionManager.getTransaction(def); // 获得事务状态
                 try {
                     //for (Map<String, Object> orderMap : orderList) {
+                    updateMap.putAll(orderMap);
                     flag = acctProDeposit(orderMap, msg);
-                    updateMap = orderMap;
 
                     String strResultmsgString;
                     if (flag < 0) {
@@ -259,6 +259,14 @@ public class PayToPlanService implements IPayToPlanService {
                     + "，【archGrpId】：" + orderMap.get("ARCH_GRP_ID")
                     + "，【offerInstId】：" + orderMap.get("offerInstId"));
             try {
+                if (StringUtil.isEmpty(prodInstId)) {
+                    msg.setMessage("预存支付计划获取产品实例prod_inst_id为空");
+                    return -1;
+                }
+                if (StringUtil.isEmpty(acctId)) {
+                    msg.setMessage("预存支付计划获取acct_id为空");
+                    return -1;
+                }
                 Map sendMap=new HashMap();
                 Long seqInterPlanId = prodInstDao.getSeq("SEQ_INTER_PLAN_ID");
                 sendMap.put("interPlanID",seqInterPlanId);
@@ -267,6 +275,7 @@ public class PayToPlanService implements IPayToPlanService {
                 sendMap.put("offerID",orderMap.get("offerId"));
                 sendMap.put("acctID",acctId);
                 sendMap.put("objectType",shareLevel);
+                sendMap.put("shareLevel","1");
                 sendMap.put("objectID",prodInstId);
                 sendMap.put("amount",amount);
                 sendMap.put("operType",orderMap.get("jfOperType"));
@@ -311,7 +320,7 @@ public class PayToPlanService implements IPayToPlanService {
         int successCount = 0;//本次处理成功数
         //处理业务逻辑。  flag=1处理成功，其他失败
         int flag = -1;
-        Map<String, Object> updateMap = new HashMap<String, Object>();
+
 
         Map queryMap = new HashMap();
         if (args.length > 0) {
@@ -325,6 +334,7 @@ public class PayToPlanService implements IPayToPlanService {
         List<Map<String, Object>> oneItemList = ordPayDao.selectOneItemList(queryMap);
         if (oneItemList.size() > 0) {
             for (Map<String, Object> oneItemMap : oneItemList) {
+                Map<String, Object> updateMap = new HashMap<String, Object>();
                     long startOperTime = System.currentTimeMillis();
                     Message msg = new Message();
                     SynMapContextHolder.init();
@@ -338,8 +348,8 @@ public class PayToPlanService implements IPayToPlanService {
                     //for (Map<String, Object> oneItemMap : oneItemList) {
                     try {
                         //业务逻辑处理
+                        updateMap.putAll(oneItemMap); ;
                         flag = oneTimesCharge(oneItemMap, msg);
-                        updateMap = oneItemMap;
                         //}
                         String strResultmsgString;
                         if (flag < 0) {
@@ -443,15 +453,24 @@ public class PayToPlanService implements IPayToPlanService {
                 }
 
                 try {
+                    if (StringUtil.isEmpty(oneItemMap.get("prodInstId"))) {
+                        msg.setMessage("一次性预存款产品实例prod_inst_id为空");
+                        return -1;
+                    }
+                    if (StringUtil.isEmpty(objectId)) {
+                        msg.setMessage("一次性预存款产品实例objectId为空");
+                        return -1;
+                    }
                     Long seqInTerPlanId = prodInstDao.getSeq("SEQ_INTER_PLAN_ID");
                     oneItemMap.put("interPlanId", seqInTerPlanId);
                     oneItemMap.put("depositType", "4");
-                    oneItemMap.put("objectType", "1");
+                    oneItemMap.put("objectType", "2");
                     oneItemMap.put("acctId", objectId);
-                    oneItemMap.put("objectId", prodInstId);
+                    oneItemMap.put("objectId", String.valueOf(oneItemMap.get("prodInstId")));
                     oneItemMap.put("amount", oneItemMap.get("paidInAmount"));
                     oneItemMap.put("operType", "1");
                     oneItemMap.put("operState", "0");
+                    oneItemMap.put("shareLevel","1");
                     oneItemMap.put("effDate", dateFormat.format(oneItemMap.get("createDate")));
                     oneItemMap.put("orderDate", dateFormat.format(oneItemMap.get("createDate")));
                     oneItemMap.put("operDate",dateFormat.format(new Date()));
@@ -529,6 +548,7 @@ public class PayToPlanService implements IPayToPlanService {
             map.put("statusCd", procFlag);
             map.put("remarks", notes);
             map.put("statusDate", df.format(new Date()));
+            map.put("oneAcctItemId", oneItemMap.get("oneAcctItemId"));
             i = ordPayDao.modifyOneItemResult(map);
         } catch (Exception e) {
             e.printStackTrace();
@@ -604,7 +624,7 @@ public class PayToPlanService implements IPayToPlanService {
     public String setErrorMsg(String errorMsg, String constrantString) {
         if (errorMsg != null && !"".equals(errorMsg)) {
 
-            return constrantString + errorMsg.substring(0, 255);
+            return constrantString +  (errorMsg.length() > 256 ? errorMsg.substring(0, 255):errorMsg);
         }
         return constrantString;
     }

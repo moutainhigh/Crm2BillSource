@@ -38,6 +38,8 @@ public interface OrdBillMapper {
 
 	public List<Map<String, Object>> selectOrdProdInst1300(Map map);
 
+	public List<Map<String, Object>> selectOrdProdInstAll(Map map);
+
 	public List<Map<String, Object>> selectOrdProdInst1100(Map map);
 
 	public List<Map<String, Object>> selectOrdProdInstState(Map map);
@@ -218,6 +220,7 @@ public interface OrdBillMapper {
 
 	public Long getCntOrdBillObj(Map map);
 
+	public List<Map<String, Object>> getOrdBillObjCj(@Param("archGrpId") long archGrpId);
 	//-------------------增加停机轨迹判断--------------------------
 	public Long selectCntOrdProdInstState(Map map);
 
