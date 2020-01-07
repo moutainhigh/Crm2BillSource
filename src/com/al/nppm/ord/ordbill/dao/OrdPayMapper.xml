@@ -104,6 +104,13 @@
         <!--AND A.ARCH_GRP_ID = '310000333832'-->
         ORDER BY A.ARCH_GRP_ID
     </select>
-    
 
+    <select id="getCjAcctId" resultType="java.lang.Long" parameterType="map" >
+    select B.ACCT_ID from ord_bill_obj A,ord_prod_inst_acct_rel B
+    where A.ARCH_GRP_ID = #{ARCH_GRP_ID}
+    AND A.ARCH_GRP_ID = B.ARCH_GRP_ID
+    AND A.ORDER_ITEM_ID = B.ORDER_ITEM_ID
+    AND TABLE_NAME = 'ORD_PROD_INST_ACCT_REL'
+    AND SERVICE_OFFER_ID in  ('4020300003','4020100000');
+  </select>
 </mapper>

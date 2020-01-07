@@ -22,12 +22,14 @@ import com.al.nppm.business.syntomq.tool.TopicType;
 import com.al.nppm.common.errorcode.ErrorCodePublicEnum;
 import com.al.nppm.common.errorcode.ResultCode;
 import com.al.nppm.common.utils.DateUtils;
+import com.al.nppm.common.utils.HttpRequestUtil;
+import com.al.nppm.common.utils.PropertiesUtil;
 import com.al.nppm.common.utils.StringUtil;
 import com.al.nppm.model.Message;
-import com.al.nppm.model.SmsInfo;
 import com.al.nppm.ord.ordbill.dao.OrdBillMapper;
 import com.al.nppm.ord.ordbill.dao.OrdRouteMapper;
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,7 +56,7 @@ public class CrmUserService {
 
     private static SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     private static String expDateString = "3000-01-01";
-
+    private static PropertiesUtil propertiesUtil=new PropertiesUtil("config/sysConfig.properties");
     @Autowired
     public IAccountMapper accountDao;
     @Autowired
@@ -2280,6 +2282,7 @@ public class CrmUserService {
                     }
                     if (operType.equals("1000")) {
                         // 取历史旧的，做判断是否存在
+                        offerProdInstList = offerinstDao.getOfferInstId(map);
                         if (offerProdInstList.size() == 0) {
                             msg.setResultCode(ResultCode.OFFERGROUP_ERROR_007);
                             msg.setMessage("成员变更未找到商品实例【offerinstId】:" + map.get("offerInstId"));
@@ -3995,7 +3998,10 @@ public class CrmUserService {
                     tCount = bTrunkBillingMapperDao.countTrunkBilling(TrunkMap);
                     if (tCount > 0) {
                         bTrunkBillingMapperDao.updateTrunkBilling(TrunkMap);
-                        SmsInfo smsInfo = new SmsInfo();
+                        String smsInfo = "JLJF000042|{\"msgInfo\":\"您好！中继号码【" + accNum
+                                + "】已拆机，请及时刷新系统参数！\"}";
+                        sendMsgToPlca(smsInfo,2);
+                        /*SmsInfo smsInfo = new SmsInfo();
                         long seqSmsId = smsInfoMapperDao.getSeq("SMS_ID");
                         smsInfo.setId(seqSmsId);
                         smsInfo.setMsisdn("17390026401");
@@ -4005,7 +4011,7 @@ public class CrmUserService {
                         smsInfo.setGetDate(new Date());
                         smsInfo.setSendDate(new Date());
                         smsInfo.setPri(0);
-                        smsInfoMapperDao.insert(smsInfo);
+                        smsInfoMapperDao.insert(smsInfo);*/
 
                     }
                 }
@@ -4818,16 +4824,20 @@ public class CrmUserService {
                     updateMap.put("acctId", map.get("acctId"));
                     updateMap.put("prodInstId", prodInstId);
                     updateMap.put("remark", "用户二次业务修改代表号码");
-                    Map oldAcountMap = accountDao.getAccout(updateMap).get(0);
-                    long prodInstIdTemp = Long.parseLong(StringUtil.isEmpty(oldAcountMap.get("prodInstId"))?"0":String.valueOf(oldAcountMap.get("prodInstId")));
-                    if (prodInstIdTemp == 0) {
-                        int judge = hisService.insertAccountHis(oldAcountMap);//插入账户的历史表
-                        accountDao.updateAccount(updateMap);
-                        oldAcountMap.put("executetime", prodInstMap.get("executetime"));
-                        oldAcountMap.put("action", 2);
-                        oldAcountMap.put("prodInstId", prodInstId);
-                        SynMapContextHolder.addMap("acctobjList1", oldAcountMap);
+                    List<Map<String,Object>> acctList = accountDao.getAccout(updateMap);
+                    if(acctList.size() > 0 ){
+                        Map oldAcountMap = acctList.get(0);
+                        long prodInstIdTemp = Long.parseLong(StringUtil.isEmpty(oldAcountMap.get("prodInstId"))?"0":String.valueOf(oldAcountMap.get("prodInstId")));
+                        if (prodInstIdTemp == 0) {
+                            int judge = hisService.insertAccountHis(oldAcountMap);//插入账户的历史表
+                            accountDao.updateAccount(updateMap);
+                            oldAcountMap.put("executetime", prodInstMap.get("executetime"));
+                            oldAcountMap.put("action", 2);
+                            oldAcountMap.put("prodInstId", prodInstId);
+                            SynMapContextHolder.addMap("acctobjList1", oldAcountMap);
+                        }
                     }
+
                 }else{
                     msg.setResultCode(ResultCode.PRODINST_U_ERROR_017);
                     msg.setMessage("修改帐户代表号码时出错" + prodInstMap.get("prodInstId"));
@@ -5000,7 +5010,7 @@ public class CrmUserService {
                         for (int i = 0; i < prodInstSubmMaps.size(); i++) {
                             Map mapTemp = new HashMap();
                             mapTemp = prodInstSubmMaps.get(i);
-                            mapTemp.put("statusCd", 1100);
+                            mapTemp.put("statusCd", 110001);
                             mapTemp.put("updateDate", sdf.format(new Date()));
                             mapTemp.put("stopRentDate", prodInstMap.get("statusDate"));
                             mapTemp.put("action", 2);
@@ -5246,6 +5256,13 @@ public class CrmUserService {
             msg.setMessage("付费方式不能为NULL");
             return -1;
         }
+        if ("2100".equals(String.valueOf(prodInstMap.get("paymentModeCd")))) {
+            String smsInfo = "JLJF000042|{\"msgInfo\":\"用户【" + prodInstMap.get("accNum") +
+                    "】为ocs用户，请检查！归档组ID【" + archGrpId +  "】\"}";
+            sendMsgToPlca(smsInfo,1);
+            msg.setMessage("用户" + "【" + prodInstMap.get("accNum")  + "】为OCS用户，请检查");
+            return -1;
+        }
         List<Map<String, Object>> ordProdInstAcctList = ordBillDao.selectOrdProdInstAcctRel1000(prodInstMap);
         if (ordProdInstAcctList.size() == 0) {
             msg.setResultCode(ResultCode.PRODINST_I_ERROR_005);
@@ -5317,8 +5334,10 @@ public class CrmUserService {
                 TrunkMap.put("expDate", "3000/01/01");
                 TrunkMap.put("remark", prodInstMap.get("useCustName"));
                 bTrunkBillingMapperDao.insertTrunkbill(TrunkMap);
-
-                SmsInfo smsInfo = new SmsInfo();
+                String smsInfo = "JLJF000042|{\"msgInfo\":\"您好！中继号码有新增【" + accNum
+                        + "】请及时刷新系统参数！\"}";
+                sendMsgToPlca(smsInfo,2);
+/*                SmsInfo smsInfo = new SmsInfo();
                 long seqSmsId = smsInfoMapperDao.getSeq("SMS_ID");
                 smsInfo.setId(seqSmsId);
                 smsInfo.setMsisdn("17390026401");
@@ -5328,7 +5347,7 @@ public class CrmUserService {
                 smsInfo.setGetDate(new Date());
                 smsInfo.setSendDate(new Date());
                 smsInfo.setPri(0);
-                smsInfoMapperDao.insert(smsInfo);
+                smsInfoMapperDao.insert(smsInfo);*/
             } catch (Exception e) {
                 e.printStackTrace();
                 String exceptionMsg = "";
@@ -6568,6 +6587,7 @@ public class CrmUserService {
             prodInstMap = prodInstList.get(0);
             Map tifProdSubMap = new HashMap();
             String prodSubType = "";
+            Long prodIdBill = null;
             List<Map<String, Object>> ordProdInsSubrList =
                     ordBillDao.selectTifSubProdContrast(String.valueOf(prodInstMap.get("prodId")));
             if (ordProdInsSubrList.size() == 0) {//过滤计费不需要的附属产品
@@ -6577,6 +6597,7 @@ public class CrmUserService {
             }
             tifProdSubMap = ordProdInsSubrList.get(0);
             prodSubType = tifProdSubMap.get("prodType").toString();
+            prodIdBill = Long.parseLong(String.valueOf(tifProdSubMap.get("prodIdBill")));
             /*if ("10X".equals(prodSubType)) {
                 return 1;
             }*/
@@ -6636,7 +6657,7 @@ public class CrmUserService {
                             return -1;
                         } else {
                             Map prodInstSubMap = prodInstSubMaps.get(0);
-                            prodInstSubMap.put("statusCd", "1100");
+                            prodInstSubMap.put("statusCd", "110001");
                             prodInstSubMap.put("updateDate", df.format(new Date()));
                             prodInstSubMap.put("stopRentDate", prodInstMap.get("statusDate"));
                             prodInstSubMap.put("action", 2);
@@ -6655,7 +6676,7 @@ public class CrmUserService {
                                 prodinstDao.updateProdInstAttrSub(map);
                                 map.put("action", 2);
                                 map.put("executetime", prodInstMap.get("executetime"));
-                                prodinstDao.updateProdInstSub(prodInstSubMap);
+                                //prodinstDao.updateProdInstSub(prodInstSubMap);
                                 SynMapContextHolder.addMap("prodInstAttrSubobjList1", map);
                             }
                         }
@@ -6692,7 +6713,7 @@ public class CrmUserService {
                     prodInstMap.put("prodUseType", "2000");
                     //prodInstMap.put("beginRentDate", effDate);
                     //prodInstMap.put("stopRentDate", expDateString);
-                    prodInstMap.put("statusCd", "1000");
+                    prodInstMap.put("statusCd", "100000");
                     //prodInstMap.put("statusDate", effDate);
                     prodInstMap.put("action", 1);
                     prodinstDao.insertProdInstSub(prodInstMap);
@@ -6713,6 +6734,7 @@ public class CrmUserService {
                         prodInstMap.put("parProdInstAttrId", "1");
 							/*Long servProdId = prodinstDao.getSeq("SEQ_SERV_PROD_ID"); //获取序列
 							prodInstMap.put("prodInstId",servProdId );*/
+                        prodInstMap.put("statusCd", "1000");
                         prodInstMap.put("attrId", "167");
                         prodInstMap.put("attrValueId", "1");
                         prodInstMap.put("attrValue", "1");
@@ -6764,15 +6786,28 @@ public class CrmUserService {
                         prodInstMap.put("prodInstId", prodInstSubMap.get("prodInstId"));
                     } else if (prodInstSubList.size() > 1) {
                         msg.setResultCode(ResultCode.PRODSUB_ERROR_008);
-                        msg.setMessage("取附属产品实例时出错");
+                        msg.setMessage("附属产品实例时有多条【accProdInstId】：" + prodInstMap.get("accProdInstId") +
+                                "产品Id【prodId】：" + prodInstMap.get("prodId"));
                         return -1;
                     } else if (prodInstSubList.size() == 0) {
+                        //退订crm和计费功能产品不同的
+                        prodInstMap.put("prodId", prodIdBill);
+                        prodInstSubList = prodinstDao.getProdInstSubIdExp(prodInstMap);
+                        if (prodInstSubList.size() == 1) {
+                            Map prodInstSubMap = prodInstSubList.get(0);
+                            prodInstMap.put("prodInstId", prodInstSubMap.get("prodInstId"));
+                        }else if (prodInstSubList.size() > 1) {
+                            msg.setResultCode(ResultCode.PRODSUB_ERROR_016);
+                            msg.setMessage("附属产品实例时有多条【accProdInstId】：" + prodInstMap.get("accProdInstId") +
+                                    "产品Id【prodId】：" + prodInstMap.get("prodId"));
+                            return -1;
+                        }
                         //不处理
                         /*return 1;*/
                     }
                 }
                 if (prodInstSubList.size() > 0) {
-                    prodInstMap.put("statusCd", "1100");
+                    prodInstMap.put("statusCd", "110001");
                     //prodInstMap.put("updateDate", df.format(new Date()));
                     //prodInstMap.put("stopRentDate", prodInstMap.get("statusDate"));
                     prodInstMap.put("action", 2);
@@ -8020,4 +8055,44 @@ public class CrmUserService {
         }
 
     }
+/**
+ * @Author WangBaoQiang
+ * @Description //策略中心发送短信
+ * @Date 12:12 2020/1/1
+ * @Param [smsInfo, smsId]
+ * @return int
+*/
+public int sendMsgToPlca(String smsInfo, long smsId) {
+    SimpleDateFormat d = new SimpleDateFormat("yyyyMMddHHmmss");
+    Date date = new Date();
+    String url = propertiesUtil.readProperty("plca.otherremind");
+    List<Map<String, Object>> tifSmsInfoList = ordBillDao.selectTifSmsContrast(smsId);
+    for (Map<String, Object> tifSmsInfoMap : tifSmsInfoList) {
+        try {
+            JSONObject jsonObject = new JSONObject();
+            JSONObject jsonObjectList = new JSONObject();
+            JSONArray jsonArray = new JSONArray();
+            jsonObject.put("accNbr", tifSmsInfoMap.get("accNbr"));
+            jsonObject.put("remindType", "查询中心详单查询查询提醒");
+            jsonObject.put("remindCode", "JLJF000042");
+            jsonObject.put("remindCreateTime", d.format(date));
+            jsonObject.put("remindText", smsInfo);
+            jsonObject.put("channelId", "1");
+            jsonObject.put("businessId", d.format(date));
+            jsonObject.put("remindServId", tifSmsInfoMap.get("servId"));
+            jsonArray.add(jsonObject);
+            jsonObjectList.put("msgInfo", jsonArray);
+
+            logger.info("策略发送短信请求报文：" + jsonObjectList.toJSONString());
+            String result = HttpRequestUtil.callRemoteForPostByJSON(url, jsonObjectList.toJSONString());
+            logger.info("策略发送短信返回报文：" + result);
+            JSONObject json = (JSONObject) JSONObject.parse(result);
+        } catch (Exception ex) {
+            logger.error("调用接口失败，返回码：" + ex.getMessage());
+            return -1;
+        }
+    }
+
+    return 1;
+}
 }

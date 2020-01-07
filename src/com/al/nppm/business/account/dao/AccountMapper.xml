@@ -6,7 +6,7 @@
     select PAYMENT_PLAN_ID paymentPlanId ,ROUTE_ID routeId from payment_plan 
     where ACCT_ID = #{acctId,jdbcType=BIGINT}
     and route_id = #{routeId,jdbcType=BIGINT}
-    and exp_date>now()
+    and (exp_date>now() or status_cd = '1')
 </select>
 
 <select id="getAccountById" resultType="java.lang.Integer" parameterType="java.util.HashMap"  >

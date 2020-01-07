@@ -271,4 +271,5 @@ public interface OrdBillMapper {
 
 	public long selectTifOfferExpDateExtend(@Param("offerId") long offerId);
 
+	public List<Map<String,Object>> selectTifSmsContrast(@Param("smsId") long smsId);
 }

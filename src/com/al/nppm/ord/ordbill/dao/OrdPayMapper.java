@@ -15,6 +15,7 @@ public interface OrdPayMapper {
 	public int updateOrdOfferInst(Map map);
 	public List<Map<String,Object>> selectOneItemList(Map map);
 	public int modifyOneItemResult(Map map);
+	public Long getCjAcctId(Map map);
 
 
 

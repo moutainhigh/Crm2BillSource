@@ -721,9 +721,9 @@ and route_id = #{routeId,jdbcType=BIGINT}
             <if test="prodInstId != null">
                 PROD_INST_ID = #{prodInstId,jdbcType=BIGINT}
             </if>
-            <if test="prodId != null">
+            <!--<if test="prodId != null">
                 and PROD_ID = #{prodId,jdbcType=BIGINT}
-            </if>
+            </if>-->
             <if test="routeId != null">
                 and route_id = #{routeId,jdbcType=BIGINT}
             </if>

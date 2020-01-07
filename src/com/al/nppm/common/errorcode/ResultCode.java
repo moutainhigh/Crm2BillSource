@@ -170,6 +170,7 @@ public class ResultCode {
     public static String PRODSUB_ERROR_013 = "PRODSUB_ERROR_013";
     public static String PRODSUB_ERROR_014 = "PRODSUB_ERROR_014";
     public static String PRODSUB_ERROR_015 = "PRODSUB_ERROR_015";
+    public static String PRODSUB_ERROR_016 = "PRODSUB_ERROR_016";
     //用户群
     public static String PRODGROUP_ERROR_001 = "PRODGROUP_ERROR_001";
     public static String PRODGROUP_ERROR_002 = "PRODGROUP_ERROR_002";

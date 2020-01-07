@@ -25,7 +25,7 @@ public class stringTest {
         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String str = "2019-12-08 12:23:22";
         Map ordOfferInstMap = new HashMap<>();
-        ordOfferInstMap.put("expDate","2019-12-08 12:23:22");
+        ordOfferInstMap.put("expDate","2019-12-01 00:00:00");
         //取当月第一天
         Date firstDate = DateUtils.getMonthFirstDay(0, 0);
         //获取下月的第一天

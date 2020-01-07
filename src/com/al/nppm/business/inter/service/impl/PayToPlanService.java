@@ -237,9 +237,16 @@ public class PayToPlanService implements IPayToPlanService {
                     }
                     acctId = payToPlanDao.getAcctId(map);
                     if (StringUtil.isEmpty(acctId)) {
-                        msg.setResultCode(ResultCode.PAYPLAN_ERROR_017);
-                        msg.setMessage("获取acctId为空，产品实例prod_inst_id为：" + prodInstId);
-                        return -1;
+                        //用户拆机，活动退订有可能比失效账务关系的动作晚，找不到账户id
+                        if ("1100".equals(orderMap.get("operType"))) {
+                            acctId = ordPayDao.getCjAcctId(orderMap);
+                        }
+                        if (StringUtil.isEmpty(acctId)) {
+                            msg.setResultCode(ResultCode.PAYPLAN_ERROR_017);
+                            msg.setMessage("获取acctId为空，产品实例prod_inst_id为：" + prodInstId);
+                            return -1;
+                        }
+
                     }
 //                        if(StringUtil.isEmpty(acctId)){
 //                            acctId = 0L;

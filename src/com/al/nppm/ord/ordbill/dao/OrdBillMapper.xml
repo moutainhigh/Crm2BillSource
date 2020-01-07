@@ -1526,7 +1526,7 @@ VER_NUM verNum,ATTR_VALUE_ID attrValueId
   </select>
   <select id="selectTifSubProdContrast" resultType="java.util.Map" parameterType="java.lang.String" >
     select 
-    PROD_ID_97, PROD_NAME_97, PROD_ID_BILL, PROD_NAME_BILL, PROD_TYPE prodType, DESCRIPTION
+    PROD_ID_97, PROD_NAME_97, PROD_ID_BILL prodIdBill, PROD_NAME_BILL, PROD_TYPE prodType, DESCRIPTION
     from tif_subprod_contrast
     where PROD_ID_97 = #{prodId,jdbcType=VARCHAR}
   </select>
@@ -1793,5 +1793,9 @@ WHERE ARCH_GRP_ID = #{ARCH_GRP_ID,jdbcType=BIGINT}
     select count(1) from tif_offer_exp_date_extend
     where
       offer_id = #{offerId}
+  </select>
+    <select id="selectTifSmsContrast" resultType="java.util.Map"  >
+    select acc_nbr accNbr,serv_id servId from tif_sms_contrast
+    where SMS_ID = #{smsId}
   </select>
 </mapper>
