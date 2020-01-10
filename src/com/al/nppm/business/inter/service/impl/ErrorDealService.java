@@ -70,6 +70,7 @@ public class ErrorDealService implements IErrorDealService {
         if (orderList.size() > 0) {
             for (Map<String, Object> orderMap : orderList) {
                 long archGrpId = Long.parseLong(orderMap.get("ARCH_GRP_ID").toString());
+                long procCnt = Long.parseLong(String.valueOf(orderMap.get("PROC_CNT")));
                 long listCnt = ordBillMapperDao.selectOrdBillProdInstAcctRel(archGrpId);
                 WebApplicationContext contextLoader = ContextLoader.getCurrentWebApplicationContext();
                 DataSourceTransactionManager transactionManager = (DataSourceTransactionManager) contextLoader.getBean("transactionManager");
@@ -88,9 +89,11 @@ public class ErrorDealService implements IErrorDealService {
                         } else {
                             Map map = new HashMap();
                             map.put("archGrpId", orderMap.get("ARCH_GRP_ID"));
-                            map.put("procFlag", 0);
+                            if (procCnt < 199) {
+                                map.put("procFlag", 0);
+                                ordBillMapperDao.updateOrdBill(map);
+                            }
                             transactionManager.commit(status);
-                            ordBillMapperDao.updateOrdBill(map);
                         }
                         //}
 

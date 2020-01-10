@@ -1592,8 +1592,13 @@ public class CrmUserService {
                 ordOfferInstMap.put("action", 2);
                 SynMapContextHolder.addMap("offerInstobjList1", ordOfferInstMap);
             }
+            List<Map<String, Object>> tifContrastofferList = ordBillDao.selectTifDisctIdContrast(offerId);
+            if (tifContrastofferList.size() > 0) {
+                Map tifContrastMap = tifContrastofferList.get(0);
+                ordOfferInstMap.put("offerId", tifContrastMap.get("DISCT_ID_BILL"));
+                logger.info("计费转化crm的套餐落地【offerId】" + offerId + "，【offerInstId】：" + ordOfferInstMap.get("offerInstId"));
 
-
+            }
             // 修改 ord_offer_prod_inst
             if (deleteOfferProdInst(ordOfferInstMap, userMap, msg, acctId,expNextFlag) < 0) {
                 return -1;
